@@ -1,9 +1,17 @@
-// Cloudflare Workers Builds: `npm run build` -> dist/, then `npx wrangler deploy` serves dist/ as static assets.
+// Cloudflare Workers Builds: `npm run build` -> dist/, then `npx wrangler deploy`.
+// The worker serves dist/ as static assets and the live-edit rooms at /api/room/<code> (one Durable Object per room).
 {
   "name": "agent-ohm-site",
+  "main": "worker/index.js",
   "compatibility_date": "2025-09-01",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "404-page"
-  }
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"]
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "ROOMS", "class_name": "Room" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }]
 }

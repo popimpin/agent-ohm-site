@@ -12,6 +12,10 @@ Everything here is covered by [LICENSE](LICENSE) (PolyForm Noncommercial 1.0.0) 
 | `public/site/akira_side_coaster/`, `mesh3d_glass_gallery/`, `mesh_avatar/`, `puppet_canvas/`, `alice_puppet/`, `station/`, `studio_flight_coaster/`, `design_space/anim/` | the live engines and the files they load | built in Design Space. **Source of the engines' artwork not yet verified per file** - if a file turns out to come from a model or library under its own terms, those terms apply to it and it will be listed here |
 | `public/site/design_space/assets/goats_kinetic_flow/` | caricature-lab stills | from the goats demo; source not yet verified per file |
 
-Third-party code: [Vite](https://vitejs.dev) and [Wrangler](https://github.com/cloudflare/workers-sdk) are dev dependencies only
+Third-party code shipped: `public/site/design_space/assets/agent_ohm_site/qrcode.js` is
+[qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) 1.4.4, Copyright (c) 2009 Kazuhiko Arase, MIT
+(its licence header is kept in the file). `worker/index.js` is ours: it serves the site and the live-edit rooms.
+
+Build tooling: [Vite](https://vitejs.dev) and [Wrangler](https://github.com/cloudflare/workers-sdk) are dev dependencies only
 (build and deploy tooling, MIT / MIT-or-Apache-2.0) and are not part of the shipped site. Fonts are loaded by name from the
 visitor's system; none are bundled.
