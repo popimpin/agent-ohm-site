@@ -17,3 +17,8 @@ What's inside:
   exactly what it asked for.
 
 Every number on the page comes from a recorded take. Deployed to Cloudflare on every push to `main`.
+
+## License
+
+[PolyForm Noncommercial 1.0.0](LICENSE): download it, run it, read it, learn from it and change it for any
+**noncommercial** purpose. Commercial use needs permission. Where each part of the bundle comes from: [ASSETS.md](ASSETS.md).
