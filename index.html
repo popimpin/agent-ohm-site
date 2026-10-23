@@ -1,15 +1,2866 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Agent Ohm</title>
-  </head>
-  <body>
-    <main>
-      <h1>Agent Ohm</h1>
-      <p>Built and published by its own agents. The first pages are on their way.</p>
-    </main>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OhmOS // Kinetic Video Substrate</title>
+  <style>
+    :root {
+      --bg-dark: #050508;
+      --bg-light: #ebebeb;
+      --text-dark: #0d0d0d;
+      --text-light: #f3f4f6;
+      --accent: #ff0055;
+      --accent-cyan: #00f0ff;
+      --border-light: rgba(0, 0, 0, 0.12);
+      --border-dark: rgba(255, 255, 255, 0.12);
+      --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      font-family: var(--font-display);
+      /* overflow-x handled via clip */
+      -webkit-font-smoothing: antialiased;
+    }
+
+    section[id] {
+      scroll-margin-top: 100px;
+    }
+
+    /* ━━ HEADER ━━ */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 18px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(5, 5, 8, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #fff;
+      pointer-events: none;
+    }
+    .site-header * {
+      pointer-events: auto;
+    }
+    .brand-logo {
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-logo .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .header-nav {
+      display: flex;
+      gap: 32px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.05em;
+    }
+    .header-nav a {
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .header-nav a:hover {
+      color: var(--accent);
+    }
+    .header-status {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.1);
+      padding: 6px 14px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      background: #00ff66;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #00ff66;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    /* ━━ BEAT 1: HERO (AMBIENT VIDEO GROUND) ━━ */
+    .hero-section {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 64px 48px;
+      overflow: hidden;
+    }
+    .hero-video-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+    .hero-shade {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(5,5,8,0.2) 0%, rgba(5,5,8,0.7) 100%);
+      z-index: 2;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      max-width: 860px;
+    }
+    .hero-stage-socket {
+      position: absolute;
+      right: 48px;
+      bottom: 0px;
+      width: 640px;
+      height: 840px;
+      z-index: 4;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .hero-stage-socket.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #hero-stage-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.7));
+    }
+    .hero-tag {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      color: var(--accent-cyan);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+    .hero-title {
+      font-size: clamp(48px, 7vw, 110px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+    }
+    .hero-sub {
+      font-size: clamp(18px, 1.8vw, 24px);
+      color: rgba(255, 255, 255, 0.7);
+      max-width: 680px;
+      line-height: 1.4;
+    }
+
+    /* ━━ BEAT 2: MANIFESTO (PIN & UNPIN RETINAL RESET) ━━ */
+    .manifesto-section {
+      background: radial-gradient(circle at 50% 20%, #0d0d18 0%, var(--bg-dark) 70%);
+      color: var(--text-light);
+      position: relative;
+      height: 210vh;
+      z-index: 10;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .manifesto-sticky-wrapper {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 48px;
+    }
+    .manifesto-container {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .paradigm-tracker {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .manifesto-label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+    }
+    .tracker-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .tracker-step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: all 0.3s ease;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-light);
+    }
+    .tracker-step:hover {
+      opacity: 0.9;
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+    .tracker-step.active {
+      opacity: 1;
+      font-weight: 700;
+      background: rgba(0, 240, 255, 0.08);
+      border-color: rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.12);
+      transform: translateX(4px);
+    }
+    .tracker-step.active .step-num {
+      color: var(--accent-cyan);
+    }
+    .step-num {
+      font-weight: 800;
+      color: #888;
+    }
+    .tracker-progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .tracker-progress-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--accent-cyan);
+      transition: width 0.1s linear;
+    }
+    .paradigm-phase-stage {
+      position: relative;
+      width: 100%;
+      min-height: 480px;
+    }
+    .paradigm-phase {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(24px);
+      pointer-events: none;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .paradigm-phase.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .paradigm-subtag {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .paradigm-headline {
+      font-size: clamp(36px, 4vw, 68px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+    .paradigm-headline .highlight {
+      color: var(--accent-cyan);
+    }
+    .paradigm-body {
+      font-size: clamp(18px, 1.8vw, 24px);
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.5;
+      max-width: 820px;
+      margin-bottom: 20px;
+    }
+    .paradigm-body .highlight {
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+    .paradigm-foot {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.6;
+      max-width: 780px;
+    }
+    .paradigm-engine-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .engine-teaser-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 18px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .engine-teaser-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-cyan);
+      background: rgba(255, 255, 255, 0.07);
+      box-shadow: 0 16px 36px rgba(0, 240, 255, 0.15);
+    }
+    .teaser-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .teaser-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .teaser-desc {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.4;
+    }
+    .paradigm-unpin-cue {
+      margin-top: 24px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent-cyan);
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: bounceDown 2s infinite ease-in-out;
+    }
+    @keyframes bounceDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
+    }
+
+    /* ━━ BEAT 3: PINNED DIMENSIONAL MORPH & HORIZONTAL RAIL ━━ */
+    .morph-track {
+      position: relative;
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      /* Height set by calculateLayout() */
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .morph-sticky-frame {
+      position: sticky;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Pinned Background Intro Video */
+    .morph-intro-video-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+      will-change: transform, opacity;
+      transform-origin: center center;
+    }
+    .morph-intro-video-wrap video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .morph-intro-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 80px;
+      color: #fff;
+    }
+    .morph-intro-overlay h2 {
+      font-size: clamp(40px, 5vw, 84px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    /* Horizontal Cards Rail */
+    .morph-inner-rail {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      width: max-content;
+      will-change: transform;
+      padding-left: 100vw; /* Starts right after the 100vw intro view */
+      padding-right: 120px;
+    }
+
+    .morph-screen-cards {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+    }
+    .cards-title-block {
+      min-width: 420px;
+      padding-right: 32px;
+    }
+    .cards-title-block h3 {
+      font-size: clamp(36px, 3.5vw, 56px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+    .cards-title-block p {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.5;
+    }
+
+    .kinetic-card {
+      width: 420px;
+      height: 560px;
+      border-radius: 28px;
+      overflow: hidden;
+      position: relative;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s, border-color 0.4s;
+    }
+    .kinetic-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: rgba(0, 240, 255, 0.3);
+      box-shadow: 0 32px 64px rgba(0, 240, 255, 0.12), 0 32px 64px rgba(0,0,0,0.6);
+    }
+    .card-img-wrap {
+      width: 100%;
+      height: 65%;
+      overflow: hidden;
+      position: relative;
+    }
+    .card-img-wrap video, .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .kinetic-card:hover .card-img-wrap video,
+    .kinetic-card:hover .card-img-wrap img {
+      transform: scale(1.08);
+    }
+    .card-info {
+      padding: 28px;
+      height: 35%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent-cyan);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .card-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .card-tags {
+      display: flex;
+      gap: 8px;
+    }
+    .tag-pill {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 5px 12px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 14px;
+      color: #ccc;
+    }
+
+    /* ━━ BEAT 4: CAPABILITY & NODE MATRIX ━━ */
+    .matrix-section {
+      background-color: var(--bg-dark);
+      padding: 160px 48px;
+      position: relative;
+      z-index: 10;
+    }
+    .matrix-header {
+      max-width: 1200px;
+      margin: 0 auto 64px auto;
+      text-align: center;
+    }
+    .matrix-header h2 {
+      font-size: clamp(36px, 4vw, 64px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    .matrix-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .matrix-tile {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 36px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .matrix-tile:hover {
+      border-color: var(--accent-cyan);
+      transform: translateY(-4px);
+    }
+    .tile-node {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .tile-name {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .tile-desc {
+      font-size: 14px;
+      color: #888;
+      line-height: 1.5;
+    }
+
+    /* ━━ BEAT 5: TIME-SCRUBBED CLIMAX (FOOTER) ━━ */
+    .climax-track {
+      position: relative;
+      background: var(--text-dark);
+      /* Height set to 300vh for deep, tactile scrubbing */
+    }
+    .climax-sticky {
+      position: sticky;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 64px 48px;
+      color: #fff;
+    }
+    .climax-video-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+    .climax-shade {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(13,13,13,0.35) 0%, rgba(13,13,13,0.9) 100%);
+      z-index: 2;
+    }
+    .climax-top {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      will-change: opacity, transform;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .climax-brand {
+      font-size: clamp(48px, 8vw, 140px);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      line-height: 0.9;
+    }
+    .climax-brand span {
+      color: var(--accent);
+    }
+    .climax-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: right;
+    }
+    .contact-link {
+      font-size: clamp(24px, 2.5vw, 44px);
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      border-bottom: 2px solid rgba(255,255,255,0.4);
+      padding-bottom: 8px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .contact-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .climax-bottom {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      padding-top: 32px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #aaa;
+    }
+    .scroll-top-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .scroll-top-btn:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    /* ━━━ BEAT 2.5: FOREGROUND PROPER TYPOGRAPHY & SPATIAL MIST ━━━ */
+    .anamorph-section {
+      position: relative;
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      height: 280vh;
+      z-index: 10;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .anamorph-sticky-wrapper {
+      position: sticky;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #0e0d1a 0%, var(--bg-dark) 82%);
+    }
+    .anamorph-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Centered Radiant Shockwave Blast Ring */
+    .anamorph-shockwave {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 360px;
+      height: 360px;
+      margin-left: -180px;
+      margin-top: -180px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-cyan);
+      box-shadow: 0 0 60px var(--accent-cyan), 0 0 120px var(--accent-cyan), inset 0 0 40px var(--accent-cyan);
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      transform: scale(0.1);
+      transition: transform 0.6s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .anamorph-shockwave.detonate {
+      opacity: 0.95;
+      transform: scale(3.6);
+      transition: transform 0.55s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.55s ease-out;
+    }
+
+    /* Proper Crisp Kinetic Typography Layer (Pinned on Top) */
+    .anamorph-typography-layer {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      z-index: 5;
+      pointer-events: none;
+      padding: 0 48px;
+      transform-origin: center center;
+      will-change: transform, opacity, filter;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .anamorph-subhead-top {
+      font-family: var(--font-mono);
+      font-size: clamp(12px, 1.4vw, 17px);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 22px;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
+    }
+    .anamorph-headline-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+    .anamorph-hero-title {
+      font-size: clamp(48px, 6.8vw, 108px);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 0.96;
+      text-transform: uppercase;
+      white-space: nowrap;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.35em;
+    }
+    .anamorph-hero-title .word-base {
+      color: #ffffff;
+      text-shadow: 0 4px 28px rgba(0, 0, 0, 0.95), 0 0 32px rgba(255, 255, 255, 0.2);
+    }
+    .anamorph-hero-title .word-accent {
+      color: var(--accent-cyan);
+      text-shadow: 0 0 35px var(--accent-cyan), 0 0 70px var(--accent-cyan), 0 4px 28px rgba(0, 0, 0, 0.95);
+      transition: color 0.35s ease, text-shadow 0.35s ease;
+    }
+    .anamorph-subhead-bottom {
+      font-family: var(--font-mono);
+      font-size: clamp(12px, 1.3vw, 16px);
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: rgba(255, 255, 255, 0.75);
+      text-transform: uppercase;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 8px 22px;
+      border-radius: 24px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+    }
+    .anamorph-hud {
+      position: absolute;
+      top: 86px;
+      left: 48px;
+      right: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      pointer-events: auto;
+    }
+    .anamorph-hud-tag {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .live-morph-hud {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 8px 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    .morph-hud-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: #aaa;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .palette-swatches {
+      display: flex;
+      gap: 6px;
+    }
+    .palette-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 6px 12px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .palette-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+    .palette-btn.active {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: #fff;
+      box-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
+    }
+    .swatch {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .anamorph-bottom-hud {
+      position: absolute;
+      bottom: 28px;
+      left: 48px;
+      right: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #888;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+    .anamorph-pct {
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+    .anamorph-msg-stepper {
+      display: flex;
+      gap: 8px;
+      pointer-events: auto;
+    }
+    .msg-pill-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.65);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.25s ease;
+      letter-spacing: 0.08em;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .msg-pill-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.35);
+      transform: translateY(-2px);
+    }
+    .msg-pill-btn.active {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 16px var(--accent-glow, rgba(0, 240, 255, 0.25));
+    }
+    .msg-num {
+      color: var(--accent-cyan);
+      font-weight: 800;
+    }
+    .anamorph-hint {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #888;
+      letter-spacing: 0.1em;
+      pointer-events: auto;
+    }
+    .anamorph-hint span {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 4px 10px;
+      border-radius: 10px;
+    }
+
+    /* ━━━ DEDICATED UNIFIED CINEMA STAGE ━━━ */
+    .engine-stage-section {
+      background: var(--bg-dark);
+      color: #fff;
+      padding: 120px 48px 100px 48px;
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .engine-stage-container {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    .engine-stage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .engine-stage-tag {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      color: var(--accent-cyan);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .engine-stage-title {
+      font-size: clamp(36px, 4vw, 56px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .engine-stage-badge-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .stage-mode-switcher {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-dark);
+      border-radius: 14px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .stage-mode-btn {
+      background: transparent;
+      border: none;
+      color: #888;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-weight: 600;
+    }
+    .stage-mode-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .stage-mode-btn.active {
+      background: rgba(0, 240, 255, 0.15);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+    }
+    .engine-cinema-frame {
+      width: 100%;
+      height: 820px;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      background: #000;
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 60px rgba(0, 240, 255, 0.2), 0 32px 64px rgba(0, 0, 0, 0.6);
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+    .engine-stage-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #777;
+      letter-spacing: 0.08em;
+    }
+    .card-action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+    }
+    .card-action-btn:hover {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+      transform: scale(1.02);
+    }
+    .card-live-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 10;
+    }
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #00ff66;
+      box-shadow: 0 0 6px #00ff66;
+    }
+
+    /* Split Caricature Lab View */
+    .caricature-split-view {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      background: #08080c;
+    }
+    .caricature-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 32px;
+      position: relative;
+    }
+    .caricature-panel-header {
+      margin-bottom: 20px;
+    }
+    .caricature-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .caricature-panel-header h4 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .caricature-media-wrap {
+      flex: 1;
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .caricature-media-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .chroma-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(0, 255, 100, 0.2);
+      border: 1px solid #00ff66;
+      color: #00ff66;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+    .caricature-divider {
+      width: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .caricature-arrow-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 8px 12px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #fff;
+      white-space: nowrap;
+      transform: rotate(90deg);
+    }
+    .caricature-arrow-pill small {
+      display: block;
+      font-size: 8px;
+      color: #888;
+      margin-top: 2px;
+    }
+    .caricature-desc {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #888;
+      line-height: 1.5;
+    }
+    .game-hud-floater {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      background: rgba(255, 0, 85, 0.25);
+      border: 1px solid var(--accent);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+
+    /* Modal Chrome */
+    .stage-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      padding: 24px;
+    }
+    .modal-chrome {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 16px;
+    }
+    .modal-title {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      color: #fff;
+      font-weight: 700;
+    }
+    .modal-close-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      color: #fff;
+      padding: 8px 18px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .modal-close-btn:hover {
+      background: #fff;
+      color: #000;
+    }
+    .modal-iframe {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 16px;
+      background: #000;
+    }
+
+  </style>
+</head>
+<body>
+
+<script type="application/json" id="ohm-endpoints">
+{
+  "engine": "goats_kinetic_flow",
+  "category": "kinetic_video_flow",
+  "layers": {
+    "typography": {
+      "label": "Content & Typography",
+      "slots": [
+        "headline",
+        "subhead",
+        "manifesto_headline",
+        "manifesto_body"
+      ]
+    },
+    "visual_primitive": {
+      "label": "Accent Colors",
+      "tokens": [
+        "--accent",
+        "--accent-cyan"
+      ]
+    },
+    "backdrop": {
+      "label": "Ground Atmosphere",
+      "tokens": [
+        "--bg-dark",
+        "--bg-light",
+        "--border-dark"
+      ]
+    },
+    "media": {
+      "label": "Videos & Stills",
+      "assets": [
+        "hero_video",
+        "morph_intro",
+        "climax_scrub",
+        "green_screen_caricature",
+        "game_standee",
+        "akira_showcase",
+        "mesh3d_showcase"
+      ]
+    }
+  },
+  "slots": {
+    "headline": {
+      "label": "Hero Display Headline",
+      "required": true
+    },
+    "subhead": {
+      "label": "Hero Subhead Copy",
+      "required": true
+    },
+    "manifesto_body": {
+      "label": "Manifesto Body Text",
+      "required": true
+    },
+    "manifesto_headline": {
+      "label": "Manifesto Section Headline",
+      "required": false
+    }
+  },
+  "tokens": {
+    "--accent": {
+      "type": "color",
+      "label": "Primary Neon Accent",
+      "default": "#ff0055"
+    },
+    "--accent-cyan": {
+      "type": "color",
+      "label": "Secondary Cyan Accent",
+      "default": "#00f0ff"
+    },
+    "--bg-dark": {
+      "type": "color",
+      "label": "Dark Background Ground",
+      "default": "#050508"
+    },
+    "--bg-light": {
+      "type": "color",
+      "label": "Light Neutral Surface",
+      "default": "#ebebeb"
+    },
+    "--border-dark": {
+      "type": "color",
+      "label": "Dark Border Tone",
+      "default": "rgba(255,255,255,0.12)"
+    }
+  },
+  "assets": {
+    "hero_video": {
+      "type": "video",
+      "label": "Hero Ambient Stream (also the Showcase backdrop)"
+    },
+    "morph_intro": {
+      "type": "video",
+      "label": "Pinned Dimensional Morph Clip"
+    },
+    "climax_scrub": {
+      "type": "video",
+      "label": "Footer 1:1 Scroll-Scrub Clip"
+    },
+    "green_screen_caricature": {
+      "type": "image",
+      "label": "Sentinel Green-Screen Plate"
+    },
+    "game_standee": {
+      "type": "image",
+      "label": "Extracted Game Standee"
+    },
+    "akira_showcase": {
+      "type": "image",
+      "label": "Akira Coaster Showcase Still"
+    },
+    "mesh3d_showcase": {
+      "type": "image",
+      "label": "Mesh3D Glass Showcase Still"
+    }
+  },
+  "controls": {
+    "host_actor": {
+      "kind": "select",
+      "label": "Hero Stage Host Actor",
+      "options": ["none", "aria"],
+      "default": "none",
+      "target": "window.setHostActor"
+    }
+  }
+}
+</script>
+<script src="/site/design_space/assets/agent_ohm_site/anamorph_messages_data.js"></script>
+
+  <!-- SITE HEADER -->
+  <header class="site-header">
+    <div class="brand-logo">
+      <span>AGENT OHM</span>
+      <span class="dot"></span>
+    </div>
+    <nav class="header-nav">
+      <a href="#manifesto">THE IDEA</a>
+      <a href="#collapse">IN FOUR LINES</a>
+      <a href="#section-stage">BUILT HERE</a>
+      <a href="#work">THE POSTS</a>
+      <a href="#matrix">THE LADDER</a>
+      <a href="#contact">INSPECT IT</a>
+    </nav>
+    <div class="header-status">
+      <span class="pulse-dot"></span>
+      <span>BUILT + PUBLISHED BY ITS OWN AGENTS</span>
+    </div>
+  </header>
+
+  <!-- BEAT 1: HERO (AMBIENT VIDEO GROUND) -->
+  <section class="hero-section" id="hero">
+    <video data-ohm-asset="hero_video" class="hero-video-bg" autoplay loop muted playsinline>
+      <source src="/site/design_space/assets/agent_ohm_site/hero_video.webm" type="video/webm">
+    </video>
+    <div class="hero-shade"></div>
+    <div class="hero-content">
+      <div class="hero-tag">AGENT OHM // THE MESH, WORKING</div>
+      <h1 class="hero-title" data-ohm-slot="headline">ONE THOUGHT.<br/>MANY NODES.</h1>
+      <p class="hero-sub" data-ohm-slot="subhead">
+        An agent that runs across the machines you already own, and calls frontier models when you want them. Ohm scales with the hardware.
+      </p>
+    </div>
+    <div class="hero-stage-socket" id="hero-stage-socket">
+      <canvas id="hero-stage-canvas" width="1024" height="1024"></canvas>
+    </div>
+  </section>
+
+  <!-- BEAT 2: MANIFESTO (RETINAL RESET - PIN & UNPIN MULTI-PHASE SCROLLER) -->
+  <section class="manifesto-section" id="manifesto">
+    <div class="manifesto-sticky-wrapper">
+      <div class="manifesto-container">
+        
+        <!-- Left Column: Interactive Phase Stepper & Track Progress -->
+        <div class="paradigm-tracker">
+          <div class="manifesto-label">01 // THE IDEA</div>
+          <div class="tracker-steps">
+            <div class="tracker-step active" data-step="1" onclick="jumpToParadigmStep(1)">
+              <span class="step-num">01</span>
+              <span class="step-label">YOUR MACHINES</span>
+            </div>
+            <div class="tracker-step" data-step="2" onclick="jumpToParadigmStep(2)">
+              <span class="step-num">02</span>
+              <span class="step-label">YOUR YES</span>
+            </div>
+            <div class="tracker-step" data-step="3" onclick="jumpToParadigmStep(3)">
+              <span class="step-num">03</span>
+              <span class="step-label">BUILT HERE</span>
+            </div>
+          </div>
+          <div class="tracker-progress-bar">
+            <div class="tracker-progress-fill" id="paradigmProgressFill"></div>
+          </div>
+        </div>
+
+        <!-- Right Column: Pinned Narrative Phase Stage -->
+        <div class="paradigm-phase-stage">
+          
+          <!-- Phase 1: The Sovereign Symbiosis -->
+          <div class="paradigm-phase active" id="paradigmPhase1">
+            <div class="paradigm-subtag">OWNERSHIP, NOT PRICE</div>
+            <h3 class="paradigm-headline" data-ohm-slot="manifesto_headline">FRONTIER OR LOCAL.<br/><span class="highlight">YOUR CALL.</span></h3>
+            <p class="paradigm-body" data-ohm-slot="manifesto_body">
+              Use a frontier model when the job needs one. Run locally when your hardware allows it. The agents, the files and the accounts stay yours either way.
+            </p>
+            <p class="paradigm-foot">
+              <strong>Ohm scales with the hardware.</strong> A phone can drive the whole mesh. A laptop with a 4 GB graphics card runs a 30-billion-parameter model. Every machine that joins is measured, then put to work.
+            </p>
+          </div>
+
+          <!-- Phase 2: The Malleable Mirror -->
+          <div class="paradigm-phase" id="paradigmPhase2">
+            <div class="paradigm-subtag">NEVER A BLIND YES</div>
+            <h3 class="paradigm-headline">AGENTS DO THE WORK.<br/><span class="highlight">YOUR THUMB SIGNS IT.</span></h3>
+            <p class="paradigm-body">
+              Before anything goes out, your phone shows <span class="highlight">what is being asked, where it goes and why</span>. Nothing ships until your fingerprint signs it.
+            </p>
+            <p class="paradigm-foot">
+              Every number on this site comes from a recorded take. The clocks, the logs and the approvals are real, and each post is cut from footage of the work itself.
+            </p>
+          </div>
+
+          <!-- Phase 3: Runtime Stage Preview -->
+          <div class="paradigm-phase" id="paradigmPhase3">
+            <div class="paradigm-subtag">BUILT IN DESIGN SPACE</div>
+            <h3 class="paradigm-headline">THIS SITE. THE POSTS.<br/><span class="highlight">THESE ENGINES.</span></h3>
+            <p class="paradigm-body">
+              Agents built all of it in Design Space, Ohm's own editor. These three run live in your browser right now:
+            </p>
+            <div class="paradigm-engine-cards">
+              <div class="engine-teaser-card" onclick="switchStageMode('akira'); document.querySelector('#section-stage').scrollIntoView({behavior: 'smooth'})">
+                <div class="teaser-tag">2.5D PARALLAX</div>
+                <div class="teaser-title">Akira Cyber Coaster</div>
+                <div class="teaser-desc">6 depth planes & spline physics at locked 60 FPS.</div>
+              </div>
+              <div class="engine-teaser-card" onclick="switchStageMode('glass'); document.querySelector('#section-stage').scrollIntoView({behavior: 'smooth'})">
+                <div class="teaser-tag">OPTICAL PBR</div>
+                <div class="teaser-title">Mesh3D Refractive Glass</div>
+                <div class="teaser-desc">Physical transmission, IOR 1.54 dispersion & 6DOF orbit.</div>
+              </div>
+              <div class="engine-teaser-card" onclick="switchStageMode('caricature'); document.querySelector('#section-stage').scrollIntoView({behavior: 'smooth'})">
+                <div class="teaser-tag">CHROMA EXTRACTION</div>
+                <div class="teaser-title">Neural Caricature Lab</div>
+                <div class="teaser-desc">Instant #00FF00 keying from video to playable cel standee.</div>
+              </div>
+            </div>
+            <div class="paradigm-unpin-cue">
+              <span>Scroll to unpin and operate the interactive stage below &darr;</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- BEAT 2.5: SPATIAL ANAMORPHIC MIST RUNTIME (AGENT OHM IN FOUR LINES) -->
+  <section class="anamorph-section" id="collapse">
+    <div class="anamorph-sticky-wrapper">
+      <canvas id="anamorphCanvas" class="anamorph-canvas"></canvas>
+      <div class="anamorph-shockwave" id="anamorphShockwave"></div>
+
+      <!-- Foreground Proper Typography Stage Layer (Pinned Kinetic Morph) -->
+      <div class="anamorph-typography-layer" id="anamorphTypography">
+        <div class="anamorph-subhead-top" id="morphSubheadTop">AGENT OHM IN FOUR LINES</div>
+        
+        <div class="anamorph-headline-box" id="morphHeadlines">
+          <h2 class="anamorph-hero-title" id="morphLine1">
+            <span class="word-base" id="morphWord1">CLOUD</span> 
+            <span class="word-accent" id="morphWord2">IF YOU WANT.</span>
+          </h2>
+          <h2 class="anamorph-hero-title" id="morphLine2">
+            <span class="word-base" id="morphWord3">LOCAL</span> 
+            <span class="word-accent" id="morphWord4">IF YOU CAN.</span>
+          </h2>
+        </div>
+
+        <div class="anamorph-subhead-bottom" id="morphSubheadBottom">
+          PHONE &middot; 4 GB LAPTOP &middot; iGPU &middot; BEE &middot; FRONTIER WHEN YOU WANT IT
+        </div>
+      </div>
+
+      <!-- Top HUD with Live Palette Morpher -->
+      <div class="anamorph-hud">
+        <div class="anamorph-hud-tag" id="anamorphHudTag">02 // THE THESIS</div>
+        <div class="live-morph-hud" id="paletteHud">
+          <span class="morph-hud-label">&#x26A1; LIVE PALETTE:</span>
+          <div class="palette-swatches">
+            <button class="palette-btn active" data-color="cyan" onclick="setGlobalColorway('cyan', true)"><span class="swatch" style="background:#00f0ff; color:#00f0ff;"></span>CYAN</button>
+            <button class="palette-btn" data-color="crimson" onclick="setGlobalColorway('crimson', true)"><span class="swatch" style="background:#ff0055; color:#ff0055;"></span>CRIMSON</button>
+            <button class="palette-btn" data-color="emerald" onclick="setGlobalColorway('emerald', true)"><span class="swatch" style="background:#00ff88; color:#00ff88;"></span>EMERALD</button>
+            <button class="palette-btn" data-color="violet" onclick="setGlobalColorway('violet', true)"><span class="swatch" style="background:#c084fc; color:#c084fc;"></span>VIOLET</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Convergence & Narrative Stepper HUD -->
+      <div class="anamorph-bottom-hud">
+        <div class="anamorph-telemetry">
+          <span id="anamorphPct" class="anamorph-pct">0%</span> CONVERGED &middot; 2,400 3D PARTICLES
+        </div>
+
+        <div class="anamorph-msg-stepper" id="msgStepper">
+          <button class="msg-pill-btn active" data-msg="0" data-color="cyan" onclick="selectAnamorphMessage(0)"><span class="swatch" style="background:#00f0ff; box-shadow:0 0 6px #00f0ff;"></span><span class="msg-num">01</span> THESIS</button>
+          <button class="msg-pill-btn" data-msg="1" data-color="crimson" onclick="selectAnamorphMessage(1)"><span class="swatch" style="background:#ff0055; box-shadow:0 0 6px #ff0055;"></span><span class="msg-num">02</span> NO API</button>
+          <button class="msg-pill-btn" data-msg="2" data-color="emerald" onclick="selectAnamorphMessage(2)"><span class="swatch" style="background:#00ff88; box-shadow:0 0 6px #00ff88;"></span><span class="msg-num">03</span> YOUR YES</button>
+          <button class="msg-pill-btn" data-msg="3" data-color="violet" onclick="selectAnamorphMessage(3)"><span class="swatch" style="background:#c084fc; box-shadow:0 0 6px #c084fc;"></span><span class="msg-num">04</span> THE LADDER</button>
+        </div>
+
+        <div class="anamorph-hint">
+          <span id="morphCycleHint">SCROLL OR TAP TO MORPH</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UNIFIED HIGH-IMPACT CINEMA STAGE WITH MODE SWITCHER -->
+  <section class="engine-stage-section" id="section-stage">
+    <div class="engine-stage-container">
+      <div class="engine-stage-header">
+        <div>
+          <div class="engine-stage-tag" id="stageTag">BUILT IN DESIGN SPACE // 2.5D MULTIPLANE LIGHTBOX</div>
+          <h2 class="engine-stage-title" id="stageTitle">Akira Cyber Coaster</h2>
+        </div>
+        
+        <!-- Segmented Mode Switcher -->
+        <div class="stage-mode-switcher" id="stageModeSwitcher">
+          <button class="stage-mode-btn active" data-mode="akira" onclick="switchStageMode('akira')">&#x1F3CE;&#xFE0F; AKIRA COASTER</button>
+          <button class="stage-mode-btn" data-mode="glass" onclick="switchStageMode('glass')">&#x1F48E; REFRACTIVE GLASS</button>
+          <button class="stage-mode-btn" data-mode="caricature" onclick="switchStageMode('caricature')">&#x1F3AD; CARICATURE LAB</button>
+        </div>
+
+        <div class="engine-stage-badge-group" id="stageBadges">
+          <span class="tag-pill" style="border-color: rgba(0,255,100,0.4); color: #00ff66;"><span class="badge-dot" style="display:inline-block; margin-right:4px;"></span> 60 FPS LIVE</span>
+          <span class="tag-pill">6-Plane Parallax</span>
+          <span class="tag-pill">Spline Coaster</span>
+          <span class="tag-pill">Zero WASM</span>
+          <button class="card-action-btn" id="stageExpandBtn" onclick="openStageModal('akira')">EXPAND RUNTIME &#x2197;</button>
+        </div>
+      </div>
+
+      <!-- Cinema Frame -->
+      <div class="engine-cinema-frame" id="stageCinemaFrame" style="border-color: rgba(0, 240, 255, 0.35);">
+        <iframe class="card-engine-frame" id="frame-unified" style="width: 100%; height: 100%; transform: none; border: none;" src="/site/akira_side_coaster/index.html"></iframe>
+        
+        <!-- Caricature Comparison View (Mounted when caricature mode active) -->
+        <div id="caricatureView" class="caricature-split-view" style="display: none;">
+          <div class="caricature-panel">
+            <div class="caricature-panel-header">
+              <span class="caricature-tag" style="color: #00ff88;">STEP 01 // SOURCE CHROMA FOOTAGE</span>
+              <h4>Rendered Video Green Screen</h4>
+            </div>
+            <div class="caricature-media-wrap">
+              <img src="/site/design_space/assets/goats_kinetic_flow/sentinel_greenscreen.webp" alt="Rendered Video Green Screen" data-ohm-asset="green_screen_caricature" class="caricature-img-raw" />
+              <div class="chroma-badge">#00FF00 DETECTED</div>
+            </div>
+            <p class="caricature-desc">Rendered villain video footage captured with high-saturation green screen backing for instant optical keying.</p>
+          </div>
+
+          <div class="caricature-divider">
+            <div class="caricature-arrow-pill">
+              <span>EXTRACTION &#x27F6;</span>
+              <small>BUILT IN DESIGN SPACE</small>
+            </div>
+          </div>
+
+          <div class="caricature-panel">
+            <div class="caricature-panel-header">
+              <span class="caricature-tag" style="color: var(--accent-cyan);">STEP 02 // RUNTIME GAME STANDEE</span>
+              <h4>Extracted Cel-Shaded Boss</h4>
+            </div>
+            <div class="caricature-media-wrap caricature-media-game">
+              <img src="/site/design_space/assets/goats_kinetic_flow/sentinel_standee_idle.webp" alt="Extracted Game Standee" data-ohm-asset="game_standee" class="caricature-img-game" />
+              <div class="game-hud-floater">SILICON SENTINEL // 48 HP</div>
+            </div>
+            <p class="caricature-desc">Zero-latency alpha standee extracted directly into the running Silicon Spire combat encounter without external DCC tools.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="engine-stage-footer" id="stageFooter">
+        <div id="stageFooterSpecs">6 DEPTH PLANES &#xB7; REAL-TIME TOON CEL SHADER &#xB7; CHASE / STATIONARY CAMERA MODES &#xB7; ZERO LATENCY</div>
+        <div id="stageFooterTag" style="color: var(--accent-cyan);">SOVEREIGN MULTIPLANE LIGHTBOX</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEAT 3: PINNED DIMENSIONAL MORPH & HORIZONTAL RAIL -->
+  <section class="morph-track" id="work">
+    <div class="morph-sticky-frame">
+      
+      <!-- PINNED INTRO VIDEO LAYER (Fades in place without sliding off) -->
+      <div class="morph-intro-video-wrap" id="morphVideoWrap">
+        <video data-ohm-asset="morph_intro" loop muted playsinline preload="auto" id="morphVideo">
+          <source src="/site/design_space/assets/agent_ohm_site/morph_intro.webm" type="video/webm">
+        </video>
+        <div class="morph-intro-overlay">
+          <h2>THE<br/>POSTS</h2>
+        </div>
+      </div>
+
+      <!-- HORIZONTAL SLIDING RAIL -->
+      <div class="morph-inner-rail" id="morphRail">
+        <div class="morph-screen-cards">
+          <div class="cards-title-block">
+            <h3>MADE BY<br/>ITS AGENTS</h3>
+            <p>Each post is cut from real footage of the work, on one clock. Nothing on screen that a receipt didn't produce.</p>
+          </div>
+
+          <div class="kinetic-card" id="card-post01">
+            <div class="card-img-wrap">
+              <div class="card-live-badge"><span class="badge-dot"></span> LIVE</div>
+              <img src="/site/design_space/assets/agent_ohm_site/card_post01.jpg" alt="Pocket Mesh">
+            </div>
+            <div class="card-info">
+              <span class="card-meta">POST 01 // LIVE ON TIKTOK + X</span>
+              <h4 class="card-title">Pocket Mesh</h4>
+              <div class="card-tags"><span class="tag-pill">One phone</span><span class="tag-pill">Four PCs</span><span class="tag-pill">Published</span></div>
+              <a class="card-action-btn" href="https://www.tiktok.com/@agent.ohm/video/7699541857189055752" target="_blank" rel="noopener">WATCH ON TIKTOK &#x2197;</a>
+            </div>
+          </div>
+
+          <div class="kinetic-card" id="card-post02">
+            <div class="card-img-wrap">
+              <div class="card-live-badge"><span class="badge-dot"></span> CUT</div>
+              <img src="/site/design_space/assets/agent_ohm_site/card_post02.jpg" alt="No API">
+            </div>
+            <div class="card-info">
+              <span class="card-meta">POST 02 // BUILT, NOT POSTED YET</span>
+              <h4 class="card-title">No API</h4>
+              <div class="card-tags"><span class="tag-pill">TikTok + X</span><span class="tag-pill">Real websites</span><span class="tag-pill">Phone approvals</span></div>
+            </div>
+          </div>
+
+          <div class="kinetic-card" id="card-post03">
+            <div class="card-img-wrap">
+              <div class="card-live-badge"><span class="badge-dot"></span> NEXT</div>
+              <img src="/site/design_space/assets/agent_ohm_site/card_post03.jpg" alt="30B on a 4 GB GPU">
+            </div>
+            <div class="card-info">
+              <span class="card-meta">POST 03 // SHIPS MON 26 OCT</span>
+              <h4 class="card-title">30B on a 4 GB GPU</h4>
+              <div class="card-tags"><span class="tag-pill">Qwen3 30B-A3B</span><span class="tag-pill">RTX 3050 Ti</span><span class="tag-pill">Experts in RAM</span></div>
+            </div>
+          </div>
+
+          <div class="kinetic-card" id="card-inspect">
+            <div class="card-img-wrap">
+              <div class="card-live-badge"><span class="badge-dot"></span> OPEN SOURCE</div>
+              <video autoplay loop muted playsinline src="/site/design_space/assets/agent_ohm_site/hero_video.webm"></video>
+            </div>
+            <div class="card-info">
+              <span class="card-meta">THIS SITE // A VITE PACKAGE</span>
+              <h4 class="card-title">Download it. Inspect it.</h4>
+              <div class="card-tags"><span class="tag-pill">npm install</span><span class="tag-pill">npm run dev</span><span class="tag-pill">No account</span></div>
+              <a class="card-action-btn" href="https://github.com/popimpin/agent-ohm-site" target="_blank" rel="noopener">OPEN THE REPO &#x2197;</a>
+            </div>
+          </div>
+
+          </div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BEAT 4: CAPABILITY MATRIX -->
+  <section class="matrix-section" id="matrix">
+    <div class="matrix-header">
+      <h2>MESH TOPOLOGY</h2>
+      <p style="color: #888; font-family: var(--font-mono); font-size: 14px;">THE LADDER // MEASURED, NOT CLAIMED</p>
+    </div>
+    <div class="matrix-grid">
+      <div class="matrix-tile">
+        <div class="tile-node">NODE // PHONE</div>
+        <div class="tile-name">Pixel 10 Pro Fold</div>
+        <div class="tile-desc">Drives the whole mesh through frontier models: one tap, one fingerprint, any PC.</div>
+      </div>
+      <div class="matrix-tile">
+        <div class="tile-node">NODE // WINS</div>
+        <div class="tile-name">RTX 3050 Ti &middot; 4 GB laptop</div>
+        <div class="tile-desc">Qwen3 30B-A3B at 27.7 tokens/s in 1.3 GB of VRAM, 26.7 at 8K context. The experts live in system RAM.</div>
+      </div>
+      <div class="matrix-tile">
+        <div class="tile-node">NODE // RYZEN</div>
+        <div class="tile-name">Radeon 880M &middot; integrated</div>
+        <div class="tile-desc">The same 30B model at 25.1 tokens/s over Vulkan, on integrated graphics.</div>
+      </div>
+      <div class="matrix-tile">
+        <div class="tile-node">NODE // BEE</div>
+        <div class="tile-name">Radeon 890M &middot; integrated</div>
+        <div class="tile-desc">Ornith 35B-A3B fully on the GPU at 31.5 tokens/s warm. The workhorse for tool jobs.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEAT 5: TIME-SCRUBBED CLIMAX (FOOTER) -->
+  <section class="climax-track" id="contact">
+    <div class="climax-sticky">
+      <video data-ohm-asset="climax_scrub" class="climax-video-bg" id="climaxVideo" muted playsinline preload="auto">
+        <source src="/site/design_space/assets/agent_ohm_site/climax_scrub.mp4" type="video/mp4">
+      </video>
+      <div class="climax-shade"></div>
+      
+      <div class="climax-top" id="climaxTop">
+        <div class="climax-brand">
+          AGENT<span>.</span>OHM
+        </div>
+        <div class="climax-contact">
+          <span style="font-family: var(--font-mono); font-size: 12px; color: var(--accent-cyan); letter-spacing: 0.1em;">DOWNLOAD IT. INSPECT IT.</span>
+          <a href="https://github.com/popimpin/agent-ohm-site" class="contact-link" target="_blank" rel="noopener">github.com/popimpin/agent-ohm-site</a>
+          <a href="https://www.tiktok.com/@agent.ohm" class="contact-link" target="_blank" rel="noopener">tiktok @agent.ohm</a>
+          <a href="https://x.com/The_Mighty_Ohm" class="contact-link" target="_blank" rel="noopener">x @The_Mighty_Ohm</a>
+        </div>
+      </div>
+
+      <div class="climax-bottom" id="climaxBottom">
+        <div>BUILT IN DESIGN SPACE // PUBLISHED BY ITS OWN AGENTS // DOWNLOAD IT AND INSPECT IT</div>
+        <button class="scroll-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">TOP ↑</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- KINETIC CHOREOGRAPHY ENGINE SCRIPT -->
+  <script>
+    const morphTrack = document.getElementById('work');
+    const morphRail = document.getElementById('morphRail');
+    const morphVideoWrap = document.getElementById('morphVideoWrap');
+    const climaxTrack = document.getElementById('contact');
+    const climaxVideo = document.getElementById('climaxVideo');
+    const climaxTop = document.getElementById('climaxTop');
+    const climaxBottom = document.getElementById('climaxBottom');
+
+    // ─── Beat 2.5: Pure Spatial 3D Particle Typography Engine ───
+    const anamorphSec = document.getElementById('collapse');
+    const anamorphCv = document.getElementById('anamorphCanvas');
+    const anamorphCtx = anamorphCv ? anamorphCv.getContext('2d') : null;
+    const anamorphPct = document.getElementById('anamorphPct');
+
+    const ANAMORPH_FOV = 52.0;
+    const ANAMORPH_APPROACH = 26.0;
+    let anamorphW = 0, anamorphH = 0, anamorphF = 833;
+    let currentAnamorphU = 0;
+    let targetAnamorphU = 0;
+    let activeColorway = 'cyan';
+    let currentMessageIdx = 0;
+    let autoCyclePaused = false;
+    let lastMorphTime = performance.now();
+    const MORPH_INTERVAL = 4500; // 4.5s auto-cycle when landed
+
+    let anamorphParticles = [];
+
+    function initAnamorphParticles() {
+      const data = window.ANAMORPH_MESSAGES;
+      if (!data || !data[0] || !data[0].points) return;
+      const initialPts = data[0].points;
+      anamorphParticles = [];
+      for (let i = 0; i < initialPts.length; i++) {
+        const pt = initialPts[i];
+        anamorphParticles.push({
+          x: pt[0], y: pt[1], z: pt[2],
+          tx: pt[0], ty: pt[1], tz: pt[2],
+          vx: 0, vy: 0, vz: 0,
+          baseZ: pt[2],
+          mass: 0.85 + (i % 6) * 0.32 + Math.random() * 0.3,
+          seed: i * 0.73 + (i % 19) * 0.37
+        });
+      }
+    }
+
+    function sizeAnamorph() {
+      if (!anamorphCv || !anamorphCtx) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      anamorphW = window.innerWidth;
+      anamorphH = window.innerHeight;
+      anamorphCv.width = anamorphW * dpr;
+      anamorphCv.height = anamorphH * dpr;
+      anamorphCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      anamorphF = (anamorphH / 2) / Math.tan(ANAMORPH_FOV * Math.PI / 180 / 2);
+    }
+
+    const MORPH_TEXT_MESSAGES = [
+      {
+        tag: "02 // THE THESIS \u00B7 CYAN",
+        colorway: "cyan",
+        subheadTop: "AGENT OHM IN FOUR LINES",
+        line1: ["CLOUD", "IF YOU WANT."],
+        line2: ["LOCAL", "IF YOU CAN."],
+        subheadBottom: "PHONE \u00B7 4 GB LAPTOP \u00B7 iGPU \u00B7 BEE \u00B7 FRONTIER WHEN YOU WANT IT"
+      },
+      {
+        tag: "02 // NO API \u00B7 CRIMSON",
+        colorway: "crimson",
+        subheadTop: "POSTED THROUGH THE WEBSITES THEMSELVES",
+        line1: ["NO", "API KEYS."],
+        line2: ["JUST", "THE WEB."],
+        subheadBottom: "A VISIBLE BROWSER \u00B7 YOUR ACCOUNTS \u00B7 READ BACK BEFORE EVERY CLICK"
+      },
+      {
+        tag: "02 // YOUR YES \u00B7 EMERALD",
+        colorway: "emerald",
+        subheadTop: "NEVER A BLIND APPROVAL",
+        line1: ["AGENTS", "DO THE WORK."],
+        line2: ["YOUR", "THUMB SIGNS."],
+        subheadBottom: "WHAT \u00B7 WHERE \u00B7 WHY \u00B7 THEN YOUR FINGERPRINT"
+      },
+      {
+        tag: "02 // THE LADDER \u00B7 VIOLET",
+        colorway: "violet",
+        subheadTop: "MEASURED ON A MID-RANGE LAPTOP",
+        line1: ["30B", "MODEL."],
+        line2: ["4", "GB CARD."],
+        subheadBottom: "QWEN3 30B-A3B \u00B7 27.7 TOKENS/S \u00B7 1.3 GB OF VRAM"
+      }
+    ];
+
+    function updateTypographyDOM(idx, animated = true) {
+      const data = MORPH_TEXT_MESSAGES[idx];
+      if (!data) return;
+      const typoLayer = document.getElementById('anamorphTypography');
+      const subTop = document.getElementById('morphSubheadTop');
+      const w1 = document.getElementById('morphWord1');
+      const w2 = document.getElementById('morphWord2');
+      const w3 = document.getElementById('morphWord3');
+      const w4 = document.getElementById('morphWord4');
+      const subBottom = document.getElementById('morphSubheadBottom');
+
+      if (!animated || !typoLayer) {
+        if (subTop) subTop.textContent = data.subheadTop;
+        if (w1) w1.textContent = data.line1[0];
+        if (w2) w2.textContent = data.line1[1];
+        if (w3) w3.textContent = data.line2[0];
+        if (w4) w4.textContent = data.line2[1];
+        if (subBottom) subBottom.textContent = data.subheadBottom;
+        return;
+      }
+
+      // Phase 1: Radial Explosive Detonation expanding outward from dead-center
+      typoLayer.style.transition = 'transform 0.16s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.16s ease-out, filter 0.16s ease-out';
+      typoLayer.style.transform = 'scale(1.24)';
+      typoLayer.style.opacity = '0';
+      typoLayer.style.filter = 'blur(12px) brightness(2.2)';
+
+      setTimeout(() => {
+        if (subTop) subTop.textContent = data.subheadTop;
+        if (w1) w1.textContent = data.line1[0];
+        if (w2) w2.textContent = data.line1[1];
+        if (w3) w3.textContent = data.line2[0];
+        if (w4) w4.textContent = data.line2[1];
+        if (subBottom) subBottom.textContent = data.subheadBottom;
+
+        // Prep Phase 2 from condensed core
+        typoLayer.style.transition = 'none';
+        typoLayer.style.transform = 'scale(0.80)';
+        typoLayer.style.filter = 'blur(6px) brightness(1.8)';
+        typoLayer.style.opacity = '0.35';
+        void typoLayer.offsetWidth; // Force reflow
+
+        // Phase 2: Weighted Slam into Center with physical bounce & settle
+        typoLayer.style.transition = 'transform 0.42s cubic-bezier(0.16, 1.25, 0.3, 1), opacity 0.3s ease-out, filter 0.42s cubic-bezier(0.16, 1, 0.3, 1)';
+        typoLayer.style.transform = 'scale(1.0)';
+        typoLayer.style.opacity = '1';
+        typoLayer.style.filter = 'blur(0) brightness(1.0)';
+      }, 160);
+    }
+
+    function morphToMessage(nextIdx, animated = true) {
+      if (nextIdx === currentMessageIdx && anamorphParticles.length > 0) return;
+      currentMessageIdx = nextIdx;
+      const data = window.ANAMORPH_MESSAGES;
+
+      if (anamorphParticles.length === 0) {
+        initAnamorphParticles();
+      }
+
+      // Detonate center shockwave ring
+      const shockwave = document.getElementById('anamorphShockwave');
+      if (shockwave && animated) {
+        shockwave.classList.remove('detonate');
+        void shockwave.offsetWidth; // Force reflow
+        shockwave.classList.add('detonate');
+        setTimeout(() => { shockwave.classList.remove('detonate'); }, 600);
+      }
+
+      if (data && data[currentMessageIdx] && data[currentMessageIdx].points) {
+        const nextPts = data[currentMessageIdx].points;
+        const len = anamorphParticles.length;
+        for (let i = 0; i < len; i++) {
+          const p = anamorphParticles[i];
+          const target = nextPts[i];
+          p.tx = target[0];
+          p.ty = target[1];
+          p.tz = target[2];
+          p.baseZ = target[2];
+
+          if (animated) {
+            // Radial vector from dead center (0, 0)
+            const r2D = Math.sqrt(p.x * p.x + p.y * p.y) + 0.4;
+            const nx = p.x / r2D;
+            const ny = p.y / r2D;
+
+            // Perpendicular vortex swirl vector (-ny, nx)
+            const vortexSign = (i % 2 === 0) ? 1 : -1;
+            const swirlX = -ny * vortexSign;
+            const swirlY = nx * vortexSign;
+
+            // Massive explosive outward impulse
+            const blastMag = 20.0 + Math.random() * 28.0;
+            const swirlMag = 18.0 + Math.random() * 24.0;
+            const zBurst = (Math.random() - 0.5) * 36.0;
+
+            const m = p.mass || 1.2;
+            p.vx = (nx * blastMag + swirlX * swirlMag) / m;
+            p.vy = (ny * blastMag + swirlY * swirlMag) / m;
+            p.vz = zBurst / m;
+          }
+        }
+      }
+
+      // Update proper typography on top with explosive transition
+      updateTypographyDOM(currentMessageIdx, animated);
+
+      // Update stepper pill active states
+      document.querySelectorAll('.msg-pill-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === currentMessageIdx);
+      });
+
+      // Update upper HUD tag
+      const tagEl = document.getElementById('anamorphHudTag');
+      if (tagEl && MORPH_TEXT_MESSAGES[currentMessageIdx]) {
+        tagEl.textContent = MORPH_TEXT_MESSAGES[currentMessageIdx].tag;
+      }
+
+      // Sync beat colorway: each of the four beats in 2.5 is one of the color choices
+      const BEAT_COLORWAYS = ['cyan', 'crimson', 'emerald', 'violet'];
+      const targetColor = (MORPH_TEXT_MESSAGES[currentMessageIdx] && MORPH_TEXT_MESSAGES[currentMessageIdx].colorway) || BEAT_COLORWAYS[currentMessageIdx] || 'cyan';
+      if (typeof setGlobalColorway === 'function' && activeColorway !== targetColor) {
+        setGlobalColorway(targetColor, false);
+      }
+    }
+    window.morphToMessage = morphToMessage;
+
+    let manualUserPillSelection = false;
+    let manualPillTimer = null;
+    function selectAnamorphMessage(idx) {
+      manualUserPillSelection = true;
+      clearTimeout(manualPillTimer);
+      manualPillTimer = setTimeout(() => { manualUserPillSelection = false; }, 4000);
+      autoCyclePaused = true;
+      lastMorphTime = performance.now();
+      morphToMessage(idx, true);
+      const hint = document.getElementById('morphCycleHint');
+      if (hint) {
+        hint.textContent = 'MANUAL MODE \u00B7 SCROLL TO RESUME';
+        hint.style.borderColor = 'var(--accent-cyan)';
+        hint.style.color = '#fff';
+      }
+    }
+    window.selectAnamorphMessage = selectAnamorphMessage;
+
+    function drawAnamorph(u) {
+      if (!anamorphCtx || !anamorphCv) return;
+      if (anamorphParticles.length === 0) {
+        initAnamorphParticles();
+      }
+
+      // Camera: DEAD-CENTERED! Zero lateral slide from right side!
+      const cz = ANAMORPH_APPROACH * (1 - u) * 1.35;
+      const cx = 0; // Pure dead center
+      const cy = 0; // Pure dead center
+
+      // Initial centrifugal vortex swirl when entering from top of scroll
+      // Symmetrically spins around center axis (0, 0) in 3D space
+      const entrySwirl = (1 - u) * 2.2;
+      const cosSwirl = Math.cos(entrySwirl);
+      const sinSwirl = Math.sin(entrySwirl);
+
+      anamorphCtx.clearRect(0, 0, anamorphW, anamorphH);
+
+      let cr = 0, cg = 240, cb = 255;
+      if (activeColorway === 'crimson') { cr = 255; cg = 0; cb = 85; }
+      else if (activeColorway === 'emerald') { cr = 0; cg = 255; cb = 136; }
+      else if (activeColorway === 'violet') { cr = 192; cg = 132; cb = 252; }
+
+      const now = performance.now();
+      const BREATH = 0.22;
+      const len = anamorphParticles.length;
+
+      for (let i = 0; i < len; i++) {
+        const p = anamorphParticles[i];
+        const m = p.mass || 1.2;
+
+        // Vector to target
+        const dx = p.tx - p.x;
+        const dy = p.ty - p.y;
+        const dz = p.tz - p.z;
+
+        // Weighted gravitational acceleration with elastic snap
+        const pull = 0.085 / m;
+        const drag = 0.84 + (0.035 / m);
+
+        // Organic micro-turbulence for alive particle breathing
+        const turbX = Math.sin(now * 0.0022 + p.seed) * 0.4;
+        const turbY = Math.cos(now * 0.0022 + p.seed * 1.3) * 0.4;
+
+        p.vx = (p.vx + dx * pull + turbX) * drag;
+        p.vy = (p.vy + dy * pull + turbY) * drag;
+        p.vz = (p.vz + dz * pull) * drag;
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.z += p.vz;
+
+        // 3D breathing expansion
+        const k = 1 + BREATH * Math.sin(now * 0.0011 + p.seed);
+        let px = p.x * k;
+        let py = p.y * k;
+        let pz = p.z * k;
+
+        // Apply symmetric vortex rotation during entry
+        if (entrySwirl > 0.01) {
+          const rx = px * cosSwirl - py * sinSwirl;
+          const ry = px * sinSwirl + py * cosSwirl;
+          px = rx;
+          py = ry;
+        }
+
+        const d = -pz - cz;
+        if (d <= 0.5) continue;
+        const s = anamorphF / d;
+        const x = anamorphW / 2 + (px - cx) * s;
+        const y = anamorphH / 2 - py * s;
+        if (x < -40 || x > anamorphW + 40 || y < -40 || y > anamorphH + 40) continue;
+
+        const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy + p.vz * p.vz);
+
+        // High-velocity streak trail during explosive burst
+        if (speed > 4.5) {
+          const tailX = x - (p.vx * s * 0.22);
+          const tailY = y + (p.vy * s * 0.22);
+          anamorphCtx.strokeStyle = `rgba(${cr},${cg},${cb},${Math.min(0.85, 0.2 + speed * 0.04).toFixed(3)})`;
+          anamorphCtx.lineWidth = Math.min(2.8, 1.0 + speed * 0.08);
+          anamorphCtx.beginPath();
+          anamorphCtx.moveTo(tailX, tailY);
+          anamorphCtx.lineTo(x, y);
+          anamorphCtx.stroke();
+        }
+
+        const r = Math.min(Math.max(0.38 * s * 0.45, 0.7), (speed > 5.0) ? 3.8 : 2.8);
+        const a = Math.max(0.25, Math.min(1, 34 / d));
+        const depthG = Math.max(0, cg - Math.min(75, d));
+        anamorphCtx.fillStyle = `rgba(${cr},${depthG},${cb},${a.toFixed(3)})`;
+        anamorphCtx.fillRect(x - r, y - r, r * 2, r * 2);
+      }
+
+      if (anamorphPct) {
+        anamorphPct.textContent = Math.round(u * 100) + '%';
+      }
+    }
+
+    function calculateLayout() {
+      const vh = window.innerHeight;
+      const vw = window.innerWidth;
+
+      const manifestoTrack = document.getElementById('manifesto');
+      if (manifestoTrack) {
+        // Calibrated 2.1 viewports for smooth, fatigue-free stepping (70vh per phase)
+        manifestoTrack.style.height = (vh * 2.1) + 'px';
+      }
+
+      if (anamorphSec) {
+        // 2.8 viewports for tactile pinned scroll-through across all 4 narrative chapters
+        anamorphSec.style.height = (vh * 2.8) + 'px';
+        sizeAnamorph();
+      }
+
+      if (morphTrack && morphRail) {
+        // Total horizontal distance = morphRail scrollWidth
+        const scrollDelta = morphRail.scrollWidth;
+        // Allocate ample runway (1 full viewport for intro + scrollDelta distance)
+        morphTrack.style.height = (vh + scrollDelta) + 'px';
+      }
+
+      if (climaxTrack) {
+        // Allocate 2.8x viewport height for tactile, responsive scrubbing across 6s video
+        climaxTrack.style.height = (vh * 2.8) + 'px';
+      }
+    }
+
+    // Target values for smooth lerping
+    let currentRailX = 0;
+    let targetRailX = 0;
+    let currentVideoOpacity = 1;
+    let targetVideoOpacity = 1;
+    let currentVideoScale = 1;
+    let targetVideoScale = 1;
+    let currentVideoTime = 0;
+    let targetVideoTime = 0;
+
+    let currentParadigmPhase = 1;
+    function setParadigmActivePhase(step) {
+      if (currentParadigmPhase === step) return;
+      currentParadigmPhase = step;
+
+      document.querySelectorAll('.paradigm-phase').forEach((el, idx) => {
+        el.classList.toggle('active', (idx + 1) === step);
+      });
+
+      document.querySelectorAll('.tracker-step').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.step) === step);
+      });
+    }
+
+    function jumpToParadigmStep(step, instant = false) {
+      const manifestoTrack = document.getElementById('manifesto');
+      if (!manifestoTrack) return;
+      const vh = window.innerHeight;
+      const maxScroll = manifestoTrack.offsetHeight - vh;
+      const targetOffset = manifestoTrack.offsetTop;
+      let scrollFraction = 0;
+      if (step === 1) scrollFraction = 0.05;
+      else if (step === 2) scrollFraction = 0.50;
+      else if (step === 3) scrollFraction = 0.85;
+
+      const destY = targetOffset + (maxScroll * scrollFraction);
+      window.scrollTo({ top: destY, behavior: instant ? 'instant' : 'smooth' });
+    }
+    window.jumpToParadigmStep = jumpToParadigmStep;
+
+    function updateTargets() {
+      const vh = window.innerHeight;
+      const vw = window.innerWidth;
+
+      // ─── Beat 2 Paradigm Phase Target Calculations ───
+      const manifestoTrack = document.getElementById('manifesto');
+      if (manifestoTrack) {
+        const rect = manifestoTrack.getBoundingClientRect();
+        const maxScroll = manifestoTrack.offsetHeight - vh;
+        if (maxScroll > 0) {
+          const progress = Math.min(1, Math.max(0, -rect.top / maxScroll));
+          const fill = document.getElementById('paradigmProgressFill');
+          if (fill) fill.style.width = (progress * 100).toFixed(1) + '%';
+
+          let activePhase = 1;
+          if (progress < 0.33) {
+            activePhase = 1;
+          } else if (progress < 0.66) {
+            activePhase = 2;
+          } else {
+            activePhase = 3;
+          }
+          setParadigmActivePhase(activePhase);
+        }
+      }
+
+      // ─── Beat 3 Morph Target Calculations ───
+      if (morphTrack && morphRail) {
+        const rect = morphTrack.getBoundingClientRect();
+        const maxScroll = morphTrack.offsetHeight - vh;
+
+        if (maxScroll > 0) {
+          const progress = Math.min(1, Math.max(0, -rect.top / maxScroll));
+          const totalDistance = morphRail.scrollWidth;
+
+          // Rail glides left across the screen
+          targetRailX = -progress * totalDistance;
+
+          // Intro video dissolves in the first 25% of scroll
+          const fadeProgress = Math.min(1, progress / 0.25);
+          targetVideoScale = 1.0 + (fadeProgress * 0.12);
+          targetVideoOpacity = 1.0 - fadeProgress;
+        }
+      }
+
+      // ─── Beat 2.5 Spatial Anamorphic Mist Target Calculations ───
+      if (anamorphSec) {
+        const rect = anamorphSec.getBoundingClientRect();
+        const maxScroll = Math.max(anamorphSec.offsetHeight - vh, 1);
+        if (maxScroll > 0) {
+          const progress = Math.min(1, Math.max(0, -rect.top / maxScroll));
+          targetAnamorphU = progress;
+
+          // Pinned scroll-through narrative morphing across the 4 chapters
+          if (rect.top <= 0 && rect.bottom >= vh && !manualUserPillSelection) {
+            let targetIdx = 0;
+            if (progress < 0.28) {
+              targetIdx = 0;
+            } else if (progress < 0.52) {
+              targetIdx = 1;
+            } else if (progress < 0.76) {
+              targetIdx = 2;
+            } else {
+              targetIdx = 3;
+            }
+            if (targetIdx !== currentMessageIdx) {
+              morphToMessage(targetIdx, true);
+            }
+          }
+        }
+      }
+
+      // ─── Beat 5 Climax Scrub Target Calculations ───
+      if (climaxTrack && climaxVideo && climaxVideo.duration) {
+        const rect = climaxTrack.getBoundingClientRect();
+        const maxScroll = climaxTrack.offsetHeight - vh;
+
+        if (maxScroll > 0) {
+          const progress = Math.min(1, Math.max(0, -rect.top / maxScroll));
+          targetVideoTime = progress * Math.max(0, climaxVideo.duration - 0.05);
+
+          // Reveal text smoothly as user scrubs into the second half
+          if (climaxTop && climaxBottom) {
+            const textAlpha = Math.min(1, Math.max(0, (progress - 0.15) / 0.35));
+            climaxTop.style.opacity = textAlpha;
+            climaxTop.style.transform = 'translateY(' + ((1 - textAlpha) * 20) + 'px)';
+            climaxBottom.style.opacity = textAlpha;
+          }
+        }
+      }
+    }
+
+
+    // ─── Smooth Header Navigation Click Handlers (with Fixed Header Clearance) ───
+    document.querySelectorAll('.header-nav a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const targetId = link.getAttribute('href');
+        if (targetId && targetId.startsWith('#')) {
+          e.preventDefault();
+          const targetEl = document.querySelector(targetId);
+          if (targetEl) {
+            const headerOffset = 74;
+            const elementPosition = targetEl.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+          }
+        }
+      });
+    });
+
+    // ─── 60 FPS Render Loop with Smooth Lerping (GATED: auto-stops when idle) ───
+    let loopRunning = false;
+
+    function startRenderLoop() {
+      if (!loopRunning) {
+        loopRunning = true;
+        requestAnimationFrame(renderLoop);
+      }
+    }
+
+    function renderLoop() {
+      // Lerp morph rail transform
+      currentRailX += (targetRailX - currentRailX) * 0.18;
+      if (morphRail) {
+        morphRail.style.transform = 'translateX(' + currentRailX.toFixed(2) + 'px)';
+      }
+
+      // Lerp intro video wrap
+      currentVideoOpacity += (targetVideoOpacity - currentVideoOpacity) * 0.2;
+      currentVideoScale += (targetVideoScale - currentVideoScale) * 0.2;
+      if (morphVideoWrap) {
+        morphVideoWrap.style.opacity = currentVideoOpacity.toFixed(3);
+        morphVideoWrap.style.transform = 'scale(' + currentVideoScale.toFixed(3) + ')';
+      }
+
+      // Update scrubbed video playhead (smooth non-blocking seek)
+      if (climaxVideo && climaxVideo.duration) {
+        currentVideoTime += (targetVideoTime - currentVideoTime) * 0.35;
+        if (Math.abs(climaxVideo.currentTime - currentVideoTime) > 0.015) {
+          applyVideoSeek(currentVideoTime);
+        }
+      }
+
+      // Lerp anamorph convergence & mist render
+      const anamorphDelta = targetAnamorphU - currentAnamorphU;
+      currentAnamorphU += anamorphDelta * 0.18;
+
+      let anamorphInView = false;
+      if (anamorphSec) {
+        const rect = anamorphSec.getBoundingClientRect();
+        anamorphInView = (rect.bottom > 0 && rect.top < window.innerHeight);
+        if (rect.bottom > -200 && rect.top < window.innerHeight + 200) {
+          const u = currentAnamorphU * currentAnamorphU * (3 - 2 * currentAnamorphU);
+          drawAnamorph(u);
+        }
+
+        // Auto-cycle through message sets when fully landed at convergence
+        const msgCount = (window.ANAMORPH_MESSAGES && window.ANAMORPH_MESSAGES.length) || 4;
+        if (anamorphInView && currentAnamorphU > 0.85 && !autoCyclePaused) {
+          const now = performance.now();
+          if (now - lastMorphTime > MORPH_INTERVAL) {
+            lastMorphTime = now;
+            morphToMessage((currentMessageIdx + 1) % msgCount);
+          }
+        } else if (!anamorphInView || currentAnamorphU <= 0.85) {
+          lastMorphTime = performance.now();
+        }
+      }
+
+      // Check if all values have converged — if so, stop the loop (zero idle CPU)
+      const settled =
+        !anamorphInView &&
+        Math.abs(targetAnamorphU - currentAnamorphU) < 0.001 &&
+        Math.abs(targetRailX - currentRailX) < 0.1 &&
+        Math.abs(targetVideoOpacity - currentVideoOpacity) < 0.001 &&
+        Math.abs(targetVideoScale - currentVideoScale) < 0.001 &&
+        Math.abs(targetVideoTime - currentVideoTime) < 0.01 &&
+        pendingSeekTime === null &&
+        !isSeeking;
+
+      if (settled) {
+        loopRunning = false; // Loop stops — scroll/resize will restart it
+      } else {
+        requestAnimationFrame(renderLoop);
+      }
+    }
+
+    // ─── Non-Blocking Hardware Video Seek Gate ───
+    let isSeeking = false;
+    let pendingSeekTime = null;
+
+    function applyVideoSeek(time) {
+      if (!climaxVideo || !climaxVideo.duration) return;
+      if (climaxVideo.seeking || isSeeking) {
+        pendingSeekTime = time;
+        return;
+      }
+      isSeeking = true;
+      if (typeof climaxVideo.fastSeek === 'function') {
+        try {
+          climaxVideo.fastSeek(time);
+          return;
+        } catch (e) {}
+      }
+      climaxVideo.currentTime = time;
+    }
+
+    if (climaxVideo) {
+      climaxVideo.addEventListener('seeked', () => {
+        isSeeking = false;
+        if (pendingSeekTime !== null) {
+          const t = pendingSeekTime;
+          pendingSeekTime = null;
+          if (Math.abs(climaxVideo.currentTime - t) > 0.015) {
+            applyVideoSeek(t);
+            startRenderLoop();
+          }
+        }
+      });
+    }
+
+    window.calculateLayout = calculateLayout;
+    window.updateKineticEngines = function() {
+      updateTargets();
+      // Snap immediately on programmatic calls
+      currentRailX = targetRailX;
+      currentVideoOpacity = targetVideoOpacity;
+      currentVideoScale = targetVideoScale;
+      currentVideoTime = targetVideoTime;
+      if (morphRail) morphRail.style.transform = 'translateX(' + currentRailX.toFixed(2) + 'px)';
+      if (morphVideoWrap) {
+        morphVideoWrap.style.opacity = currentVideoOpacity.toFixed(3);
+        morphVideoWrap.style.transform = 'scale(' + currentVideoScale.toFixed(3) + ')';
+      }
+      if (climaxVideo && climaxVideo.duration) {
+        climaxVideo.currentTime = currentVideoTime;
+      }
+    };
+
+    // ─── Precision Viewport Video Playback Controller ───
+    // 1. Hero video: loops continuously at 60fps while viewing top; pauses only when deep down.
+    // 2. Middle video (#morphVideo): stays paused at 0s until user arrives at #work, then plays smoothly from 0:00!
+    // 3. Climax video: dedicated scroll-scrubbed footer (managed by applyVideoSeek).
+    function updateVideoPlaybackState() {
+      const vh = window.innerHeight;
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+
+      // Hero Video
+      const heroVideo = document.querySelector('.hero-video-bg');
+      if (heroVideo) {
+        if (scrollY < vh * 1.5) {
+          if (heroVideo.paused) {
+            heroVideo.play().catch(() => {});
+          }
+        } else {
+          if (!heroVideo.paused) {
+            heroVideo.pause();
+          }
+        }
+      }
+
+      // Middle Showcase Intro Video (#morphVideo)
+      const morphTrack = document.getElementById('work');
+      const morphVideo = document.getElementById('morphVideo');
+      if (morphTrack && morphVideo) {
+        const rect = morphTrack.getBoundingClientRect();
+        // Active arrival zone: user has arrived at the showcase section
+        const isArrived = rect.top <= (vh * 0.75) && rect.bottom >= (vh * 0.1);
+
+        if (isArrived) {
+          if (morphVideo.paused) {
+            morphVideo.play().catch(() => {});
+          }
+        } else {
+          if (!morphVideo.paused) {
+            morphVideo.pause();
+          }
+          // If scrolled back up above the section, rewind to 0:00 for a clean entrance next time
+          if (rect.top > vh) {
+            morphVideo.currentTime = 0;
+          }
+        }
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      manualUserPillSelection = false;
+      updateTargets();
+      updateVideoPlaybackState();
+      startRenderLoop();
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      calculateLayout();
+      updateTargets();
+      updateVideoPlaybackState();
+      startRenderLoop();
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initAnamorphParticles();
+      calculateLayout();
+      updateTargets();
+      updateVideoPlaybackState();
+      updateTypographyDOM(0, false);
+      drawAnamorph(0);
+      startRenderLoop();
+    });
+
+    window.addEventListener('load', () => {
+      initAnamorphParticles();
+      calculateLayout();
+      updateTargets();
+      updateVideoPlaybackState();
+      updateTypographyDOM(0, false);
+      drawAnamorph(0);
+    });
+
+    if (climaxVideo) {
+      climaxVideo.addEventListener('loadedmetadata', () => {
+        calculateLayout();
+        updateTargets();
+      });
+    }
+
+    // ─── Unified Stage Mode Switcher & Modal Controller ───
+    let currentStageMode = 'akira';
+    const stageModes = {
+      akira: {
+        title: 'Akira Cyber Coaster',
+        tag: 'BUILT IN DESIGN SPACE // 2.5D MULTIPLANE LIGHTBOX',
+        color: 'var(--accent-cyan)',
+        borderColor: 'rgba(0, 240, 255, 0.4)',
+        shadow: '0 0 60px rgba(0, 240, 255, 0.25), 0 32px 64px rgba(0, 0, 0, 0.6)',
+        badges: [
+          { text: '60 FPS LIVE', color: '#00ff66', border: 'rgba(0,255,100,0.4)', dot: true },
+          { text: '6-Plane Parallax' },
+          { text: 'Spline Coaster' },
+          { text: 'Zero WASM' }
+        ],
+        expandText: 'EXPAND RUNTIME ↗',
+        specs: '6 DEPTH PLANES · REAL-TIME TOON CEL SHADER · CHASE / STATIONARY CAMERA MODES · ZERO LATENCY',
+        footerTag: 'SOVEREIGN MULTIPLANE LIGHTBOX',
+        src: '/site/akira_side_coaster/index.html'
+      },
+      glass: {
+        title: 'Mesh3D Refractive Glass Monolith',
+        tag: 'BUILT IN DESIGN SPACE // PHYSICAL OPTICAL PBR',
+        color: '#c084fc',
+        borderColor: 'rgba(192, 132, 252, 0.4)',
+        shadow: '0 0 60px rgba(192, 132, 252, 0.25), 0 32px 64px rgba(0, 0, 0, 0.6)',
+        badges: [
+          { text: '60 FPS LOCKED', color: '#00ff66', border: 'rgba(0,255,100,0.4)', dot: true },
+          { text: 'IOR 1.54 Glass' },
+          { text: 'Studio HDRI' },
+          { text: '6DOF Orbit' }
+        ],
+        expandText: 'EXPAND RUNTIME ↗',
+        specs: 'BEVELED OPTICAL MONOLITH · PHYSICAL TRANSMISSION DISPERSION · 3D CORRIDOR STEADICAM · ZERO LATENCY',
+        footerTag: 'SOVEREIGN OPTICAL PBR RUNTIME',
+        src: '/site/mesh3d_glass_gallery/index.html'
+      },
+      caricature: {
+        title: 'Green Screen Caricature Studio',
+        tag: 'BUILT IN DESIGN SPACE // CHROMA TO TOON PIPELINE',
+        color: '#00ff88',
+        borderColor: 'rgba(0, 255, 136, 0.4)',
+        shadow: '0 0 60px rgba(0, 255, 136, 0.25), 0 32px 64px rgba(0, 0, 0, 0.6)',
+        badges: [
+          { text: 'OPTICAL HOMOGRAPHY', color: '#00ff88', border: 'rgba(0,255,136,0.4)', dot: true, dotColor: '#00ff88' },
+          { text: '#00FF00 Keying' },
+          { text: 'Cel-Shaded Standee' },
+          { text: 'Live Ingestion' }
+        ],
+        expandText: 'EXPAND RUNTIME ↗',
+        specs: 'REAL-TIME VIDEO CHROMA EXTRACTION · INSTANT DIE-CUT GAME ASSETS · ZERO EXTERNAL DCC',
+        footerTag: 'NEURAL CARICATURE STUDIO'
+      }
+    };
+
+    function switchStageMode(mode) {
+      if (!stageModes[mode]) return;
+      currentStageMode = mode;
+      const conf = stageModes[mode];
+
+      document.querySelectorAll('.stage-mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+
+      const title = document.getElementById('stageTitle');
+      const tag = document.getElementById('stageTag');
+      const cinema = document.getElementById('stageCinemaFrame');
+      const badges = document.getElementById('stageBadges');
+      const expandBtn = document.getElementById('stageExpandBtn');
+      const specs = document.getElementById('stageFooterSpecs');
+      const footerTag = document.getElementById('stageFooterTag');
+      const unifiedFrame = document.getElementById('frame-unified');
+      const caricatureView = document.getElementById('caricatureView');
+
+      if (title) title.textContent = conf.title;
+      if (tag) {
+        tag.textContent = conf.tag;
+        tag.style.color = conf.color;
+      }
+      if (cinema) {
+        cinema.style.borderColor = conf.borderColor;
+        cinema.style.boxShadow = conf.shadow;
+      }
+      if (specs) specs.textContent = conf.specs;
+      if (footerTag) {
+        footerTag.textContent = conf.footerTag;
+        footerTag.style.color = conf.color;
+      }
+      if (expandBtn) {
+        expandBtn.textContent = conf.expandText;
+        expandBtn.onclick = () => openStageModal(mode);
+      }
+
+      if (badges) {
+        let badgeHtml = '';
+        conf.badges.forEach(b => {
+          const style = [];
+          if (b.border) style.push('border-color:' + b.border);
+          if (b.color) style.push('color:' + b.color);
+          const dot = b.dot ? '<span class="badge-dot" style="' + (b.dotColor ? 'background:' + b.dotColor + '; box-shadow:0 0 6px ' + b.dotColor + ';' : '') + 'display:inline-block; margin-right:4px;"></span> ' : '';
+          badgeHtml += '<span class="tag-pill" style="' + style.join(';') + '">' + dot + b.text + '</span>';
+        });
+        badgeHtml += '<button class="card-action-btn" id="stageExpandBtn" onclick="openStageModal(\'' + mode + '\')">' + conf.expandText + '</button>';
+        badges.innerHTML = badgeHtml;
+      }
+
+      if (mode === 'caricature') {
+        if (unifiedFrame) unifiedFrame.style.display = 'none';
+        if (caricatureView) caricatureView.style.display = 'flex';
+      } else {
+        if (caricatureView) caricatureView.style.display = 'none';
+        if (unifiedFrame) {
+          unifiedFrame.style.display = 'block';
+          if (unifiedFrame.src !== conf.src && !unifiedFrame.src.endsWith(conf.src)) {
+            unifiedFrame.src = conf.src;
+          }
+        }
+      }
+    }
+    window.switchStageMode = switchStageMode;
+
+    function openStageModal(type) {
+      const modal = document.getElementById('stageModal');
+      const frame = document.getElementById('modalFrame');
+      const title = document.getElementById('modalTitle');
+      if (!modal || !frame) return;
+      if (type === 'akira') {
+        title.textContent = 'AKIRA CYBER COASTER // 2.5D MULTIPLANE ENGINE';
+        frame.src = '/site/akira_side_coaster/index.html';
+      } else if (type === 'glass') {
+        title.textContent = 'MESH3D REFRACTIVE GLASS // OPTICAL PBR ENGINE';
+        frame.src = '/site/mesh3d_glass_gallery/index.html';
+      } else if (type === 'caricature') {
+        title.textContent = 'GREEN SCREEN CARICATURE STUDIO // NEURAL PIPELINE';
+        frame.src = '/site/design_space/assets/goats_kinetic_flow/sentinel_greenscreen.webp';
+      }
+      modal.classList.add('active');
+      modal.style.display = 'flex';
+      setTimeout(() => { modal.style.opacity = '1'; }, 10);
+    }
+
+    function closeStageModal() {
+      const modal = document.getElementById('stageModal');
+      const frame = document.getElementById('modalFrame');
+      if (!modal || !frame) return;
+      modal.style.opacity = '0';
+      setTimeout(() => {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+        frame.src = 'about:blank';
+      }, 300);
+    }
+    // ─── Live Global Colorway & Palette Morpher ───
+    const COLOR_TO_BEAT = {
+      cyan: 0,
+      crimson: 1,
+      emerald: 2,
+      violet: 3
+    };
+
+    function setGlobalColorway(colorName, syncBeat = true) {
+      const root = document.documentElement;
+      const swatches = {
+        cyan: {
+          accent: '#ff0055',
+          accentCyan: '#00f0ff',
+          glow: 'rgba(0, 240, 255, 0.25)'
+        },
+        crimson: {
+          accent: '#00f0ff',
+          accentCyan: '#ff0055',
+          glow: 'rgba(255, 0, 85, 0.25)'
+        },
+        emerald: {
+          accent: '#00f0ff',
+          accentCyan: '#00ff88',
+          glow: 'rgba(0, 255, 136, 0.25)'
+        },
+        violet: {
+          accent: '#ff0055',
+          accentCyan: '#c084fc',
+          glow: 'rgba(192, 132, 252, 0.25)'
+        }
+      };
+      if (!swatches[colorName]) return;
+      const c = swatches[colorName];
+      root.style.setProperty('--accent', c.accent);
+      root.style.setProperty('--accent-cyan', c.accentCyan);
+      root.style.setProperty('--accent-glow', c.glow);
+
+      document.querySelectorAll('.palette-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.color === colorName);
+      });
+
+      // Update particle mist colorway and redraw immediate frame
+      activeColorway = colorName;
+      if (anamorphSec) {
+        const u = currentAnamorphU * currentAnamorphU * (3 - 2 * currentAnamorphU);
+        drawAnamorph(u);
+      }
+
+      // Update active cinema frame backglow if in akira mode
+      const cinema = document.getElementById('stageCinemaFrame');
+      if (cinema && currentStageMode === 'akira') {
+        cinema.style.borderColor = c.accentCyan;
+        cinema.style.boxShadow = '0 0 60px ' + c.glow + ', 0 32px 64px rgba(0, 0, 0, 0.6)';
+      }
+
+      // Sync to corresponding narrative beat if requested (e.g. palette button clicked)
+      if (syncBeat && typeof morphToMessage === 'function' && COLOR_TO_BEAT[colorName] !== undefined && COLOR_TO_BEAT[colorName] !== currentMessageIdx) {
+        morphToMessage(COLOR_TO_BEAT[colorName], true);
+      }
+    }
+    window.setGlobalColorway = setGlobalColorway;
+
+    var audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    window.hostActorState = 'none';
+    window.hostAvatarInstance = null;
+    window.setHostActor = async function (v) {
+      window.hostActorState = (v === 'aria') ? 'aria' : 'none';
+      var sk = document.getElementById('hero-stage-socket');
+      var cv = document.getElementById('hero-stage-canvas');
+      if (!cv) return;
+      if (window.hostActorState === 'none') {
+        if (sk) sk.classList.remove('active');
+        if (window.hostAvatarInstance) {
+          try { window.hostAvatarInstance.destroy(); } catch (e) {}
+          window.hostAvatarInstance = null;
+        }
+        var ctx = cv.getContext('2d');
+        if (ctx) ctx.clearRect(0, 0, cv.width, cv.height);
+        return;
+      }
+      if (window.hostActorState === 'aria') {
+        try {
+          if (sk) sk.classList.add('active');
+          cv.width = 1024;
+          cv.height = 1024;
+          var mod = await import('/site/mesh_avatar/engine/createMeshAvatar.js?v=8.6.2');
+          var rigRes = await fetch('/site/mesh_avatar/assets/ohm-host/rig.json');
+          var rig = await rigRes.json();
+          window.hostAvatarInstance = await mod.createMeshAvatarImpl(cv, {
+            project: '/site/mesh_avatar/assets/ohm-host/avatar.project.json',
+            rig: rig,
+            assetsBase: '/site/mesh_avatar/assets/ohm-host/built/',
+            manual: false
+          });
+          if (window.hostAvatarInstance && window.hostAvatarInstance.setEmotion) {
+            window.hostAvatarInstance.setEmotion('happy');
+          }
+        } catch (err) {
+          console.error('[goats] setHostActor aria error:', err);
+        }
+      }
+    };
+    window.getHostActor = function () {
+      return window.hostActorState || 'none';
+    };
+
+    window.speakHostDialogue = async function (customText) {
+      if (!window.hostAvatarInstance) return;
+      var txt = customText || "Welcome to Design Space. Here, computing power scales across the mesh to fulfill the Architect's vision. One thought, many nodes.";
+      try {
+        var res = await fetch('http://127.0.0.1:8899/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: txt, voice: 'af_heart', speed: 1.0 })
+        });
+        var data = await res.json();
+        var b64 = data && (data.audio_b64 || data.audio);
+        if (b64) {
+          initAudio();
+          var binary = atob(b64);
+          var bytes = new Uint8Array(binary.length);
+          for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+          var audioBuf = await audioCtx.decodeAudioData(bytes.buffer);
+          var source = audioCtx.createBufferSource();
+          source.buffer = audioBuf;
+
+          var analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 256;
+          source.connect(analyser);
+          analyser.connect(audioCtx.destination);
+          source.start(0);
+
+          var pcm = new Float32Array(analyser.frequencyBinCount);
+          var intervalId = setInterval(function () {
+            analyser.getFloatTimeDomainData(pcm);
+            var sumSq = 0;
+            for (var j = 0; j < pcm.length; j++) sumSq += pcm[j] * pcm[j];
+            var rms = Math.sqrt(sumSq / pcm.length);
+            var lvl = Math.min(1.0, rms * 5.0);
+            if (window.hostAvatarInstance && window.hostAvatarInstance.setVoiceLevel) {
+              window.hostAvatarInstance.setVoiceLevel(lvl);
+            }
+          }, 30);
+
+          source.onended = function () {
+            clearInterval(intervalId);
+            if (window.hostAvatarInstance && window.hostAvatarInstance.setVoiceLevel) {
+              window.hostAvatarInstance.setVoiceLevel(0.0);
+            }
+          };
+        }
+      } catch (e) {
+        console.error('[goats] speakHostDialogue error:', e);
+      }
+    };
+
+    window.openStageModal = openStageModal;
+    window.closeStageModal = closeStageModal;
+
+  </script>
+
+  <!-- INTERACTIVE FULL-STAGE MODAL FOR PLAYABLE ENGINES -->
+  <div id="stageModal" class="stage-modal">
+    <div class="modal-chrome">
+      <div class="modal-title" id="modalTitle">ENGINE STAGE</div>
+      <button class="modal-close-btn" onclick="closeStageModal()">CLOSE &#xD7;</button>
+    </div>
+    <iframe id="modalFrame" class="modal-iframe" src="about:blank"></iframe>
+  </div>
+
+</body>
 </html>

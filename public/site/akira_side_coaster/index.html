@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Animation Station (Redirecting...)</title>
+  <script>
+    location.replace('../station/index.html' + location.search + location.hash);
+  </script>
+</head>
+<body style="background:#080b12;color:#94a3b8;font-family:sans-serif;padding:40px;text-align:center;">
+  <p>The Animation Station engine has moved to <a id="station-redirect-link" href="../station/index.html" style="color:#2dd4bf;">surfaces/station/index.html</a>.</p>
+  <script>
+    const a = document.getElementById('station-redirect-link');
+    if (a) a.href = '../station/index.html' + location.search + location.hash;
+  </script>
+</body>
+</html>

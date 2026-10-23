@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mesh3D Glass Gallery · Award-Grade Studio Polish</title>
+<style>
+  :root {
+    --bg-dark: #03060a;
+    --text-main: #e8f6f8;
+    --accent-teal: #00f0ff;
+    --accent-glow: rgba(0, 240, 255, 0.45);
+    --panel-bg: rgba(3, 9, 14, 0.82);
+    --border-line: rgba(0, 240, 255, 0.28);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body {
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:var(--bg-dark);
+    color:var(--text-main);
+    font-family:'JetBrains Mono',-apple-system,BlinkMacSystemFont,monospace;
+    user-select:none;
+    transition:background 0.4s ease;
+  }
+  body.editorial {
+    --bg-dark: #f2f5f8;
+    --text-main: #0e1920;
+    --accent-teal: #d42b3b;
+    --accent-glow: rgba(212, 43, 59, 0.35);
+    --panel-bg: rgba(255, 255, 255, 0.92);
+    --border-line: rgba(14, 25, 32, 0.2);
+  }
+
+  #stage {
+    position:relative;
+    width:100%;
+    height:100%;
+  }
+  canvas#webgl {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    display:block;
+    cursor:grab;
+  }
+  canvas#webgl:active {
+    cursor:grabbing;
+  }
+
+  /* 35mm Micro-Noise Film Dither Overlay (Eradicates 8-bit banding) */
+  .film-grain {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:15;
+    opacity:0.04;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  /* HUD Top Left */
+  .hud-top {
+    position:absolute;
+    top:20px;
+    left:24px;
+    z-index:20;
+    pointer-events:none;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .hud-badge {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 12px;
+    border-radius:4px;
+    background:var(--panel-bg);
+    border:1px solid var(--border-line);
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--accent-teal);
+    backdrop-filter:blur(14px);
+  }
+  .pulse-dot {
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--accent-teal);
+    box-shadow:0 0 12px var(--accent-teal);
+    animation:pulse 2s infinite ease-in-out;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; transform: scale(0.9); }
+    50% { opacity: 1.0; transform: scale(1.15); }
+  }
+  .hud-telemetry {
+    font-size:10px;
+    color:rgba(232, 246, 248, 0.65);
+    letter-spacing:0.08em;
+    line-height:1.6;
+    background:var(--panel-bg);
+    padding:8px 12px;
+    border-radius:4px;
+    border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+    width:fit-content;
+  }
+  body.editorial .hud-telemetry {
+    color:rgba(14, 25, 32, 0.65);
+  }
+  .hud-telemetry b { color:var(--text-main); }
+
+  /* Station Title Card Overlay */
+  .station-card {
+    position:absolute;
+    top:24px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:20;
+    pointer-events:none;
+    text-align:center;
+    background:var(--panel-bg);
+    border:1px solid var(--border-line);
+    padding:8px 24px;
+    border-radius:999px;
+    backdrop-filter:blur(14px);
+    box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  }
+  .station-title {
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    color:var(--text-main);
+  }
+  .station-meta {
+    font-size:10px;
+    color:var(--accent-teal);
+    letter-spacing:0.08em;
+  }
+
+  /* Navigation & Presets */
+  .hud-presets {
+    position:absolute;
+    top:20px;
+    right:24px;
+    z-index:20;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+
+  /* Bottom Controls */
+  .hud-bottom {
+    position:absolute;
+    bottom:24px;
+    left:24px;
+    right:24px;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    pointer-events:none;
+  }
+  .corridor-bar {
+    pointer-events:auto;
+    flex:1;
+    max-width:540px;
+    background:var(--panel-bg);
+    border:1px solid var(--border-line);
+    padding:10px 16px;
+    border-radius:6px;
+    backdrop-filter:blur(14px);
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  }
+  .corridor-header {
+    display:flex;
+    justify-content:space-between;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--accent-teal);
+  }
+  .corridor-slider-row {
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  input[type="range"] {
+    flex:1;
+    -webkit-appearance:none;
+    height:4px;
+    border-radius:2px;
+    background:rgba(255,255,255,0.2);
+    outline:none;
+    cursor:pointer;
+  }
+  body.editorial input[type="range"] {
+    background:rgba(14, 25, 32, 0.2);
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance:none;
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:var(--accent-teal);
+    box-shadow:0 0 12px var(--accent-glow);
+    cursor:pointer;
+    border:none;
+  }
+
+  .action-buttons {
+    pointer-events:auto;
+    display:flex;
+    gap:8px;
+  }
+  button {
+    cursor:pointer;
+    background:var(--panel-bg);
+    border:1px solid var(--border-line);
+    color:var(--text-main);
+    padding:8px 14px;
+    border-radius:4px;
+    font-family:inherit;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    transition:all 0.2s ease;
+    backdrop-filter:blur(14px);
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  button:hover {
+    border-color:var(--accent-teal);
+    color:var(--accent-teal);
+    transform:translateY(-1px);
+    box-shadow:0 0 14px var(--accent-glow);
+  }
+  button.active {
+    background:var(--accent-teal);
+    color:var(--bg-dark);
+    font-weight:700;
+  }
+</style>
+
+<script src="three.min.js"></script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="webgl"></canvas>
+  <div class="film-grain"></div>
+
+  <!-- Top Left Telemetry -->
+  <div class="hud-top">
+    <div class="hud-badge">
+      <span class="pulse-dot"></span>
+      <span>MESH3D · STUDIO REFRACTIVE GLASS ENGINE</span>
+    </div>
+    <div class="hud-telemetry" id="telemetry">
+      STATION: <b id="stat-num">01 / 03</b> · FPS: <b id="fps">60</b><br/>
+      STUDIO HDRI: <b id="opt-hdri">ANALYTICAL 6500K</b><br/>
+      TRANSMISSION: <b id="opt-trans">95% PHYSICAL GLASS</b> · IOR: <b id="opt-ior">1.54</b>
+    </div>
+  </div>
+
+  <!-- Center Station Title Badge -->
+  <div class="station-card">
+    <div class="station-title" id="card-title">STATION 01 · IGLOO ARCTIC 3D</div>
+    <div class="station-meta" id="card-meta">BEVELED OPTICAL MONOLITH · STUDIO LIGHTBOX</div>
+  </div>
+
+  <!-- Top Right Navigation Presets -->
+  <div class="hud-presets">
+    <button id="btn-st-0" class="active">Station 01</button>
+    <button id="btn-st-1">Station 02</button>
+    <button id="btn-st-2">Station 03</button>
+    <button id="btn-free">Free 6DOF Orbit</button>
+    <button id="btn-mode">Luminance Mode</button>
+  </div>
+
+  <!-- Bottom Corridor & Shader Control -->
+  <div class="hud-bottom">
+    <div class="corridor-bar">
+      <div class="corridor-header">
+        <span>3D Corridor Navigation (Steadicam Spring Playhead)</span>
+        <span id="pos-pct">CORRIDOR 0.0m</span>
+      </div>
+      <div class="corridor-slider-row">
+        <button id="btn-prev">Prev</button>
+        <input type="range" id="corridor-slider" min="0" max="2000" value="0" />
+        <button id="btn-next">Next</button>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button id="btn-ripple">Liquid Glass Ripple</button>
+      <button id="btn-capture">Capture 4K Frame</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('webgl');
+  const fpsEl = document.getElementById('fps');
+  const statNumEl = document.getElementById('stat-num');
+  const cardTitleEl = document.getElementById('card-title');
+  const cardMetaEl = document.getElementById('card-meta');
+  const posPctEl = document.getElementById('pos-pct');
+  const corridorSlider = document.getElementById('corridor-slider');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  const btnRipple = document.getElementById('btn-ripple');
+  const btnCapture = document.getElementById('btn-capture');
+  const btnMode = document.getElementById('btn-mode');
+  const btnFree = document.getElementById('btn-free');
+
+  const stationButtons = [
+    document.getElementById('btn-st-0'),
+    document.getElementById('btn-st-1'),
+    document.getElementById('btn-st-2')
+  ];
+
+  let isEditorial = false;
+  let isFreeOrbit = false;
+  let activeStation = 0;
+  let corridorZ = 0.0;
+  let targetCorridorZ = 0.0;
+  let corridorVelZ = 0.0;
+
+  // Scene & Renderer
+  const scene = new THREE.Scene();
+  const bgDark = new THREE.Color(0x03060a);
+  const bgLight = new THREE.Color(0xf2f5f8);
+  scene.background = bgDark;
+  scene.fog = new THREE.FogExp2(0x03060a, 0.016);
+
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    powerPreference: 'high-performance',
+    preserveDrawingBuffer: true
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
+
+  const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 300);
+  camera.position.set(2.4, 0.6, 15.5);
+
+  // PILLAR 1: Analytical HDR Studio Environment (Creates glowing specular highlights)
+  function createStudioEnvironment() {
+    const w = 1024, h = 512;
+    const cv = document.createElement('canvas');
+    cv.width = w; cv.height = h;
+    const g = cv.getContext('2d');
+
+    const grad = g.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, '#0a1620');
+    grad.addColorStop(0.5, '#03060a');
+    grad.addColorStop(1, '#010204');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, w, h);
+
+    // Overhead high-intensity lightbox
+    const topLight = g.createRadialGradient(w * 0.5, h * 0.22, 10, w * 0.5, h * 0.22, 180);
+    topLight.addColorStop(0, '#ffffff');
+    topLight.addColorStop(0.25, 'rgba(230, 245, 255, 0.9)');
+    topLight.addColorStop(0.7, 'rgba(0, 240, 255, 0.3)');
+    topLight.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    g.fillStyle = topLight;
+    g.fillRect(0, 0, w, h * 0.5);
+
+    // Left lateral rim light (Cyan)
+    const leftRim = g.createRadialGradient(w * 0.18, h * 0.45, 10, w * 0.18, h * 0.45, 150);
+    leftRim.addColorStop(0, '#40f0ff');
+    leftRim.addColorStop(0.5, 'rgba(0, 240, 255, 0.4)');
+    leftRim.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    g.fillStyle = leftRim;
+    g.fillRect(0, 0, w * 0.35, h);
+
+    // Right lateral fill strip (Warm Amber)
+    const rightRim = g.createRadialGradient(w * 0.82, h * 0.5, 10, w * 0.82, h * 0.5, 130);
+    rightRim.addColorStop(0, '#ff9a70');
+    rightRim.addColorStop(0.45, 'rgba(255, 120, 80, 0.3)');
+    rightRim.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    g.fillStyle = rightRim;
+    g.fillRect(w * 0.65, 0, w * 0.35, h);
+
+    const tex = new THREE.CanvasTexture(cv);
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    return tex;
+  }
+
+  const studioEnv = createStudioEnvironment();
+  scene.environment = studioEnv;
+
+  // Key & Rim Lights
+  const ambient = new THREE.AmbientLight(0x0e2430, 1.4);
+  scene.add(ambient);
+
+  const keyLight = new THREE.DirectionalLight(0x7df9ff, 2.6);
+  keyLight.position.set(22, 32, 22);
+  scene.add(keyLight);
+
+  const rimLight = new THREE.DirectionalLight(0xff6878, 1.4);
+  rimLight.position.set(-25, -12, -22);
+  scene.add(rimLight);
+
+  // Subtle studio grid
+  const gridGeo = new THREE.PlaneGeometry(180, 260, 45, 65);
+  const gridMat = new THREE.MeshBasicMaterial({
+    color: 0x00f0ff,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.04
+  });
+  const grid = new THREE.Mesh(gridGeo, gridMat);
+  grid.rotation.x = -Math.PI / 2;
+  grid.position.y = -6.5;
+  grid.position.z = -40;
+  scene.add(grid);
+
+  // PILLAR 2: Precision Rounded Bevel Geometry
+  function createBeveledSlabGeometry(w, h, depth, radius) {
+    const shape = new THREE.Shape();
+    const x = -w / 2, y = -h / 2;
+    const r = Math.min(radius, Math.min(w, h) / 2);
+    shape.moveTo(x + r, y);
+    shape.lineTo(x + w - r, y);
+    shape.quadraticCurveTo(x + w, y, x + w, y + r);
+    shape.lineTo(x + w, y + h - r);
+    shape.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    shape.lineTo(x + r, y + h);
+    shape.quadraticCurveTo(x, y + h, x, y + h - r);
+    shape.lineTo(x, y + r);
+    shape.quadraticCurveTo(x, y, x + r, y);
+
+    return new THREE.ExtrudeGeometry(shape, {
+      depth: depth,
+      bevelEnabled: true,
+      bevelSegments: 5,
+      steps: 1,
+      bevelSize: r * 0.45,
+      bevelThickness: r * 0.45
+    });
+  }
+
+  const STATIONS_DATA = [
+    {
+      title: 'STATION 01 · IGLOO ARCTIC 3D',
+      meta: 'EXPEDITION PORTAL · 1920x1080 60FPS',
+      z: 0.0,
+      accent: 0x00f0ff,
+      type: 'arctic'
+    },
+    {
+      title: 'STATION 02 · OXIGEN VOXEL OASIS',
+      meta: 'INSTANCED MATRIX · 6,752 VOXELS',
+      z: -32.0,
+      accent: 0x3cf3ff,
+      type: 'voxel'
+    },
+    {
+      title: 'STATION 03 · SYNAPSE NEURAL SUBSTRATE',
+      meta: 'SOVEREIGN MESH · DUAL-CORE INGEST',
+      z: -64.0,
+      accent: 0xa78bfa,
+      type: 'neural'
+    }
+  ];
+
+  function createStationTexture(type, accentHex) {
+    const cv = document.createElement('canvas');
+    cv.width = 960;
+    cv.height = 640;
+    const g = cv.getContext('2d');
+
+    const texture = new THREE.CanvasTexture(cv);
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+
+    let tick = 0;
+    function update() {
+      tick++;
+      g.fillStyle = '#050c12';
+      g.fillRect(0, 0, cv.width, cv.height);
+
+      const cx = cv.width / 2;
+      const cy = cv.height / 2;
+
+      if (type === 'arctic') {
+        g.strokeStyle = '#00f0ff';
+        g.lineWidth = 2.5;
+        for (let i = 0; i < 9; i++) {
+          const r = 160 + Math.sin(tick * 0.03 + i) * 22;
+          g.beginPath();
+          g.ellipse(cx, cy, r, r * 0.45, (tick * 0.015) + (i * 0.35), 0, Math.PI * 2);
+          g.stroke();
+        }
+        g.fillStyle = '#ffffff';
+        g.font = 'bold 28px monospace';
+        g.fillText('IGLOO · 3D ARCTIC EXPEDITION', 60, 90);
+        g.fillStyle = 'rgba(0, 240, 255, 0.8)';
+        g.font = '16px monospace';
+        g.fillText('OPTICAL PBR STREAM · 60FPS LOCKED', 60, 125);
+      } else if (type === 'voxel') {
+        const s = 32;
+        for (let y = 140; y < cv.height - 80; y += s) {
+          for (let x = 80; x < cv.width - 80; x += s) {
+            const d = Math.hypot(x - cx, y - cy);
+            const val = Math.sin(d * 0.02 - tick * 0.05);
+            if (val > 0.25) {
+              g.fillStyle = val > 0.8 ? '#00f0ff' : 'rgba(14, 45, 54, 0.85)';
+              g.fillRect(x, y, s - 4, s - 4);
+            }
+          }
+        }
+        g.fillStyle = '#ffffff';
+        g.font = 'bold 28px monospace';
+        g.fillText('OXIGEN · VOXEL OASIS', 60, 90);
+        g.fillStyle = 'rgba(60, 243, 255, 0.8)';
+        g.font = '16px monospace';
+        g.fillText('INSTANCED GPU DISPERSION ENGINE', 60, 125);
+      } else {
+        g.fillStyle = '#ffffff';
+        g.font = 'bold 28px monospace';
+        g.fillText('SYNAPSE · NEURAL MESH V8.6', 60, 90);
+        g.fillStyle = 'rgba(167, 139, 250, 0.85)';
+        g.font = '16px monospace';
+        g.fillText('SOVEREIGN AGENT FIRST SUBSTRATE', 60, 125);
+
+        g.strokeStyle = 'rgba(167, 139, 250, 0.45)';
+        for (let i = 0; i < 18; i++) {
+          const x1 = cx + Math.sin(tick * 0.02 + i) * 220;
+          const y1 = cy + Math.cos(tick * 0.02 + i * 2) * 120;
+          const x2 = cx + Math.sin(tick * 0.02 + i + 1) * 220;
+          const y2 = cy + Math.cos(tick * 0.02 + (i + 1) * 2) * 120;
+          g.beginPath();
+          g.moveTo(x1, y1);
+          g.lineTo(x2, y2);
+          g.stroke();
+          g.fillStyle = '#a78bfa';
+          g.beginPath();
+          g.arc(x1, y1, 5.5, 0, Math.PI * 2);
+          g.fill();
+        }
+      }
+
+      // Frame counter badge
+      g.fillStyle = 'rgba(0, 0, 0, 0.75)';
+      g.fillRect(cv.width - 180, 40, 130, 36);
+      g.strokeStyle = 'rgba(0, 240, 255, 0.3)';
+      g.strokeRect(cv.width - 180, 40, 130, 36);
+      g.fillStyle = '#00f0ff';
+      g.font = '13px monospace';
+      g.fillText(`FRAME ${tick}`, cv.width - 165, 63);
+
+      texture.needsUpdate = true;
+    }
+
+    return { texture, update };
+  }
+
+  const stationMeshes = [];
+  const screenUpdaters = [];
+
+  const slabWidth = 13.5;
+  const slabHeight = 9.0;
+  const slabThickness = 0.75;
+
+  const beveledGlassGeo = createBeveledSlabGeometry(slabWidth, slabHeight, slabThickness, 0.35);
+  // Center extruded geometry
+  beveledGlassGeo.center();
+
+  const screenGeo = new THREE.PlaneGeometry(slabWidth * 0.94, slabHeight * 0.92);
+
+  STATIONS_DATA.forEach((st) => {
+    const group = new THREE.Group();
+    group.position.set(0, 0, st.z);
+
+    const scr = createStationTexture(st.type, st.accent);
+    screenUpdaters.push(scr.update);
+
+    const screenMat = new THREE.MeshBasicMaterial({
+      map: scr.texture,
+      side: THREE.FrontSide
+    });
+    const screenMesh = new THREE.Mesh(screenGeo, screenMat);
+    screenMesh.position.set(0, 0, -(slabThickness / 2) + 0.02);
+    group.add(screenMesh);
+
+    // High-End Physical Glass Material with Environmental Reflections
+    const glassMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      metalness: 0.05,
+      roughness: 0.08,
+      transmission: 0.95,
+      ior: 1.54,
+      thickness: 1.8,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.04,
+      reflectivity: 0.95,
+      attenuationColor: new THREE.Color(st.accent),
+      attenuationDistance: 3.2,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+
+    const glassSlab = new THREE.Mesh(beveledGlassGeo, glassMat);
+    group.add(glassSlab);
+
+    // Beveled pedestal
+    const baseGeo = createBeveledSlabGeometry(slabWidth + 1.2, 0.45, slabThickness + 0.8, 0.15);
+    baseGeo.center();
+    const baseMat = new THREE.MeshStandardMaterial({
+      color: 0x091218,
+      roughness: 0.35,
+      metalness: 0.85
+    });
+    const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+    baseMesh.position.y = -(slabHeight / 2) - 0.25;
+    group.add(baseMesh);
+
+    scene.add(group);
+    stationMeshes.push({ group, glassMat, screenMesh });
+  });
+
+  function setStation(idx) {
+    activeStation = Math.max(0, Math.min(STATIONS_DATA.length - 1, idx));
+    targetCorridorZ = STATIONS_DATA[activeStation].z;
+    isFreeOrbit = false;
+    btnFree.classList.remove('active');
+
+    stationButtons.forEach((b, i) => b.classList.toggle('active', i === activeStation));
+
+    statNumEl.textContent = `0${activeStation + 1} / 03`;
+    cardTitleEl.textContent = STATIONS_DATA[activeStation].title;
+    cardMetaEl.textContent = STATIONS_DATA[activeStation].meta;
+
+    corridorSlider.value = (activeStation / (STATIONS_DATA.length - 1)) * 2000;
+    posPctEl.textContent = `CORRIDOR ${Math.abs(targetCorridorZ).toFixed(1)}m`;
+  }
+
+  stationButtons.forEach((b, i) => b.addEventListener('click', () => setStation(i)));
+  btnNext.addEventListener('click', () => setStation(activeStation + 1));
+  btnPrev.addEventListener('click', () => setStation(activeStation - 1));
+
+  corridorSlider.addEventListener('input', (e) => {
+    isFreeOrbit = false;
+    btnFree.classList.remove('active');
+    const frac = parseInt(e.target.value, 10) / 2000;
+    targetCorridorZ = -(frac * 64.0);
+    posPctEl.textContent = `CORRIDOR ${Math.abs(targetCorridorZ).toFixed(1)}m`;
+
+    const nearestIdx = Math.round(frac * 2);
+    if (nearestIdx !== activeStation) {
+      activeStation = nearestIdx;
+      stationButtons.forEach((b, i) => b.classList.toggle('active', i === activeStation));
+      statNumEl.textContent = `0${activeStation + 1} / 03`;
+      cardTitleEl.textContent = STATIONS_DATA[activeStation].title;
+      cardMetaEl.textContent = STATIONS_DATA[activeStation].meta;
+    }
+  });
+
+  window.addEventListener('wheel', (e) => {
+    if (!isFreeOrbit) {
+      targetCorridorZ -= e.deltaY * 0.04;
+      targetCorridorZ = Math.max(-64.0, Math.min(0.0, targetCorridorZ));
+      const frac = Math.abs(targetCorridorZ) / 64.0;
+      corridorSlider.value = frac * 2000;
+      posPctEl.textContent = `CORRIDOR ${Math.abs(targetCorridorZ).toFixed(1)}m`;
+    }
+  }, { passive: true });
+
+  let orbitTheta = 0;
+  let orbitPhi = 1.5;
+  let orbitRadius = 16;
+  let isDragging = false;
+  let prevX = 0, prevY = 0;
+
+  btnFree.addEventListener('click', () => {
+    isFreeOrbit = !isFreeOrbit;
+    btnFree.classList.toggle('active', isFreeOrbit);
+  });
+
+  canvas.addEventListener('pointerdown', (e) => {
+    isDragging = true;
+    prevX = e.clientX;
+    prevY = e.clientY;
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - prevX;
+    const dy = e.clientY - prevY;
+    prevX = e.clientX;
+    prevY = e.clientY;
+
+    if (isFreeOrbit) {
+      orbitTheta -= dx * 0.008;
+      orbitPhi = Math.max(0.2, Math.min(Math.PI - 0.2, orbitPhi - dy * 0.008));
+    }
+  });
+
+  window.addEventListener('pointerup', () => { isDragging = false; });
+
+  let rippleTime = 0.0;
+  btnRipple.addEventListener('click', () => {
+    rippleTime = 1.0;
+  });
+
+  btnMode.addEventListener('click', () => {
+    isEditorial = !isEditorial;
+    document.body.classList.toggle('editorial', isEditorial);
+    const col = isEditorial ? bgLight : bgDark;
+    scene.background = col;
+    scene.fog.color = col;
+    ambient.intensity = isEditorial ? 2.4 : 1.4;
+    gridMat.color.set(isEditorial ? 0x112228 : 0x00f0ff);
+    btnMode.textContent = isEditorial ? 'Obsidian Mode' : 'Editorial Mode';
+  });
+
+  btnCapture.addEventListener('click', () => {
+    renderer.render(scene, camera);
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.download = `mesh3d_studio_glass_${Date.now()}.png`;
+    a.href = dataUrl;
+    a.click();
+  });
+
+  function onResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+  window.addEventListener('resize', onResize);
+
+  let lastTime = performance.now();
+  let frameCount = 0;
+
+  // Main 60FPS Render Loop with Second-Order Steadicam Spring Dynamics
+  function loop(now) {
+    requestAnimationFrame(loop);
+
+    frameCount++;
+    if (now - lastTime >= 1000) {
+      fpsEl.textContent = frameCount;
+      frameCount = 0;
+      lastTime = now;
+    }
+
+    screenUpdaters.forEach(fn => fn());
+
+    // Second-order spring-damper camera physics
+    const springForce = (targetCorridorZ - corridorZ) * 0.12;
+    corridorVelZ = (corridorVelZ + springForce) * 0.86;
+    corridorZ += corridorVelZ;
+
+    if (!isFreeOrbit) {
+      const bankAngle = Math.sin(corridorZ * 0.09) * 0.07;
+      // Gentle cinematic breathing sway
+      camera.position.x = 2.4 + Math.sin(now * 0.0006) * 0.5;
+      camera.position.y = 0.6 + Math.cos(now * 0.0008) * 0.25;
+      camera.position.z = corridorZ + 15.5;
+
+      camera.lookAt(0, 0, corridorZ);
+      camera.rotation.z = bankAngle;
+    } else {
+      const targetZ = targetCorridorZ;
+      camera.position.x = orbitRadius * Math.sin(orbitPhi) * Math.sin(orbitTheta);
+      camera.position.y = orbitRadius * Math.cos(orbitPhi);
+      camera.position.z = targetZ + orbitRadius * Math.sin(orbitPhi) * Math.cos(orbitTheta);
+      camera.lookAt(0, 0, targetZ);
+    }
+
+    // Subtle floating levitation
+    stationMeshes.forEach((st, i) => {
+      st.group.position.y = Math.sin(now * 0.0014 + i * 1.5) * 0.22;
+      st.group.rotation.y = Math.sin(now * 0.0007 + i) * 0.025;
+    });
+
+    renderer.render(scene, camera);
+  }
+
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "schema": "ohm.avatar.project.v1",
+  "meta": {
+    "id": "ohm-host",
+    "name": "Aria \u00b7 Ohm Mascot Host",
+    "version": "1.0.0",
+    "author": "OhmOS Studio"
+  },
+  "dimensions": {
+    "width": 1024,
+    "height": 1024
+  },
+  "layers": {
+    "base": "built/base.png",
+    "hairmask": "built/hairmask.png",
+    "eye0_ball": "built/eye0_ball.png",
+    "eye0_lash": "built/eye0_lash.png",
+    "eye0_low": "built/eye0_low.png",
+    "eye0_crease": "built/eye0_crease.png",
+    "eye1_ball": "built/eye1_ball.png",
+    "eye1_lash": "built/eye1_lash.png",
+    "eye1_low": "built/eye1_low.png",
+    "eye1_crease": "built/eye1_crease.png"
+  },
+  "sprites": {
+    "manifest": "built/sprites/sprites.json",
+    "modularLids": true
+  },
+  "rig": "rig.json"
+}

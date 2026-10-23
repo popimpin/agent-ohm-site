@@ -1,0 +1,160 @@
+{
+  "scene": {
+    "_doc": "Akira Side Coaster as a DOCUMENT. Extracted verbatim 2026-09-12 from values that were hardcoded in index.html (assets, paneLayers, getTrackProfile, CIRCUIT_LENGTH). The engine ships; this is one thing you can load into it. Item 1 of docs/ANIMATION_STATION_LANE.md.",
+    "scene": "akira_side_coaster",
+    "display_title": "Akira Side Coaster",
+    "circuit": {
+      "length": 8000
+    },
+    "_track_doc": "y(x) = baseYFrac*H + SUM(terms), x normalised over circuit.length. `sine` is amp*sin(cycles*PI*normX); `gaussian` is amp*exp(-((normX-at)*width)^2). slopeEps is the central-difference step used for the tangent. NOTE the manual's 4.3 claims an analytical derivative; the code has always used a central difference at eps=2.0, which is what is recorded here.",
+    "track": {
+      "baseYFrac": 0.54,
+      "slopeEps": 2,
+      "terms": [
+        {
+          "id": "wave1",
+          "kind": "sine",
+          "cycles": 2,
+          "amp": 65
+        },
+        {
+          "id": "drop1",
+          "kind": "gaussian",
+          "at": 0.35,
+          "width": 14,
+          "amp": 110
+        },
+        {
+          "id": "hill2",
+          "kind": "sine",
+          "cycles": 6,
+          "amp": 30
+        },
+        {
+          "id": "loopDip",
+          "kind": "gaussian",
+          "at": 0.72,
+          "width": 12,
+          "amp": -75
+        }
+      ]
+    },
+    "_panes_doc": "The 6-plane contract. parallax is the multiplane rate: scrollX = camX * parallax. A module's src may be an image, a video, or an engine key mounting a canvas — the pane accessors are polymorphic as of 2026-09-12, so the loader does not care which. `asset` names the slot a module binds to; `modular` marks the panes drawn as scrolling chains (3 and 4 are procedural geometry and the actor, and must NOT become chain entries). `contractParallax` is the 6-plane contract rate; `parallax` is what this scene actually uses. A deviation is a CORRECTION and must be declared, not hidden in a draw function. `z` raises or lowers a plane in the stack (the Z-elevation tool).",
+    "panes": [
+      {
+        "id": "pane0",
+        "index": 0,
+        "label": "Deep Horizon",
+        "parallax": 0.1,
+        "modules": [
+          {
+            "id": "skyline_01",
+            "src": "assets/hero_cel0_vast_skyline.png",
+            "width": 1286,
+            "asset": "skylineFar"
+          }
+        ],
+        "modular": true,
+        "contractParallax": 0.1,
+        "z": 0
+      },
+      {
+        "id": "pane1",
+        "index": 1,
+        "label": "Far Scenery",
+        "parallax": 0.25,
+        "modules": [
+          {
+            "id": "refinery_01",
+            "src": "assets/hero_cel1_seamless.png",
+            "width": 1296,
+            "asset": "midHighway"
+          }
+        ],
+        "modular": true,
+        "contractParallax": 0.25,
+        "z": 0
+      },
+      {
+        "id": "pane2",
+        "index": 2,
+        "label": "Mid Occlusion",
+        "parallax": 0.45,
+        "modules": [
+          {
+            "id": "canyon_01",
+            "src": "assets/hero_cel2_seamless.png",
+            "width": 1356,
+            "asset": "lowFog"
+          }
+        ],
+        "modular": true,
+        "contractParallax": 0.55,
+        "z": 185,
+        "_correction": "Carried as literals in drawPane2 until 2026-09-12: scrollX = camX * 0.45 (contract 0.55) and offsetY = pane2ZOffset = 185. Behaviour is UNCHANGED by moving them here - this only gives the corrections a home. Whether 0.45 is the intended canyon speed or drift is a look call, and it is now visible and adjustable instead of buried."
+      },
+      {
+        "id": "pane3",
+        "index": 3,
+        "label": "Gameplay Geometry",
+        "parallax": 1,
+        "modules": [
+          {
+            "id": "track_01",
+            "src": "assets/cel3_track_transparent.png",
+            "asset": "trackCel"
+          }
+        ],
+        "modular": false,
+        "contractParallax": 1,
+        "z": 0
+      },
+      {
+        "id": "pane4",
+        "index": 4,
+        "label": "Actor Entity",
+        "parallax": 1,
+        "modules": [],
+        "modular": false,
+        "contractParallax": 1,
+        "z": 0
+      },
+      {
+        "id": "pane5",
+        "index": 5,
+        "label": "Foreground Frame",
+        "parallax": 1.5,
+        "mode": "sparse_props",
+        "modules": [
+          {
+            "id": "foreground_panoramic_01",
+            "src": "assets/hero_cel5_panoramic_props.png",
+            "width": 3840,
+            "asset": "foregroundGantry"
+          }
+        ],
+        "gantryInterval": 2800,
+        "modular": true,
+        "contractParallax": 1.5,
+        "z": 0
+      }
+    ],
+    "_actor_doc": "Pane 4 carries the actor. `cel` is the painted rider; `rig` names the puppet engine that articulates it (puppet_canvas/puppet_engine.js, consumed by path, never forked).",
+    "actor": {
+      "pane": 4,
+      "cel": "assets/hero_cel4_kaneda.png",
+      "rig": "puppet",
+      "clip": "ride",
+      "asset": "riderCel"
+    },
+    "props": {
+      "kanjiKeikoku": "../studio_flight_coaster/assets/art/hazard_kanji_keikoku.png",
+      "kanjiKinkyuu": "../studio_flight_coaster/assets/art/hazard_kanji_kinkyuu.png"
+    },
+    "shots": [],
+    "keys": [],
+    "dialogue": []
+  },
+  "stage": "design_space",
+  "saved": 1792688064911
+}
