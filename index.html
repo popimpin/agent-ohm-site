@@ -1271,6 +1271,43 @@
     }
 
   </style>
+
+  <style>
+    /* PHONE (2026-10-22): goats shipped no breakpoints - TikTok/X visitors arrive on phones. Last in <head>, so it wins. */
+    @media (max-width: 760px) {
+      .site-header { padding: 12px 16px; }
+      .header-nav, .header-status { display: none; }
+      .hero-content { padding: 0 16px; }
+      .hero-stage-socket { right: 0; width: 100%; }
+      .manifesto-sticky-wrapper { padding: 0 16px; }
+      .manifesto-container { grid-template-columns: 1fr; gap: 20px; }
+      .tracker-steps { flex-direction: row; gap: 8px; }
+      .tracker-step { flex: 1; min-width: 0; }
+      .step-label { font-size: 10px; }
+      .paradigm-phase-stage { min-height: 460px; }
+      .paradigm-headline { font-size: clamp(28px, 8.4vw, 40px); }
+      .paradigm-body { font-size: 15px; }
+      .paradigm-foot { font-size: 13px; }
+      .paradigm-engine-cards { grid-template-columns: 1fr; gap: 8px; }
+      .teaser-desc { display: none; }
+      .anamorph-hud { left: 16px; right: 16px; top: 72px; }
+      .live-morph-hud, .anamorph-hint { display: none; }
+      .anamorph-hero-title { font-size: 7.6vw; }
+      .anamorph-subhead-top, .anamorph-subhead-bottom { font-size: 10px; letter-spacing: 0.1em; white-space: normal; max-width: 92vw; }
+      .anamorph-bottom-hud { left: 16px; right: 16px; bottom: 16px; flex-direction: column; gap: 8px; }
+      .anamorph-msg-stepper { flex-wrap: wrap; justify-content: center; }
+      .engine-stage-section { padding: 80px 16px 64px; }
+      .engine-cinema-frame { height: 62vh; border-radius: 16px; }
+      .kinetic-card { width: 78vw; height: 470px; }
+      .cards-title-block { min-width: 78vw; padding-right: 16px; }
+      .matrix-section { padding: 96px 16px; }
+      .climax-top { flex-direction: column; gap: 24px; }
+      .climax-brand { font-size: 12.5vw; }
+      .climax-contact { text-align: left; }
+      .contact-link { font-size: 18px; }
+      .climax-bottom { flex-direction: column; align-items: flex-start; gap: 16px; font-size: 11px; }
+    }
+  </style>
 </head>
 <body>
 
