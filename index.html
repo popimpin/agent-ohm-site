@@ -1414,6 +1414,7 @@
       <a href="#manifesto">THE IDEA</a>
       <a href="#collapse">IN FOUR LINES</a>
       <a href="#section-stage">BUILT HERE</a>
+      <a href="#try">TRY IT</a>
       <a href="#work">THE POSTS</a>
       <a href="#matrix">THE LADDER</a>
       <a href="#contact">INSPECT IT</a>
@@ -1661,6 +1662,85 @@
       </div>
     </div>
   </section>
+
+
+  <!-- TRY IT: the visitor edits a live headline (text + colour), and the page measures how fast it reached the screen -->
+  <style>
+    .try-section { background: var(--bg-dark); color: #fff; padding: 112px 48px; position: relative; z-index: 10;
+                   border-bottom: 1px solid rgba(255,255,255,0.08); --try-ink: #00f0ff; }
+    .try-wrap { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: 360px 1fr; gap: 48px; align-items: stretch; }
+    .try-tag { font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; color: var(--accent-cyan); margin-bottom: 16px; }
+    .try-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(32px, 4vw, 52px); line-height: .98;
+                 letter-spacing: -.03em; text-transform: uppercase; margin: 0 0 16px; }
+    .try-copy { color: #9aa3ad; font-size: 15px; line-height: 1.6; margin: 0 0 32px; }
+    .try-label { display: block; font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; color: #7d8590; margin: 0 0 8px; }
+    .try-input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.16);
+                 border-radius: 6px; color: #fff; font: 600 16px var(--font-display); padding: 12px 14px; outline: none;
+                 transition: border-color .16s ease-out; margin-bottom: 24px; }
+    .try-input:focus { border-color: var(--try-ink); }
+    .try-swatches { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .try-sw { width: 36px; height: 36px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0;
+              transition: transform .14s ease-out, border-color .14s ease-out; }
+    .try-sw:hover { transform: scale(1.1); }
+    .try-sw.on { border-color: #fff; }
+    .try-pick { width: 40px; height: 36px; border: 1px solid rgba(255,255,255,.2); border-radius: 6px; background: none; cursor: pointer; padding: 2px; }
+    .try-stage { position: relative; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; overflow: hidden; min-height: 360px;
+                 display: flex; flex-direction: column; justify-content: center; padding: 48px;
+                 background: radial-gradient(120% 90% at 80% 10%, color-mix(in srgb, var(--try-ink) 16%, transparent), transparent 60%), #08090d;
+                 box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 24px 64px rgba(0,0,0,.55); transition: background .2s ease-out; }
+    .try-head { font-family: var(--font-display); font-weight: 900; font-size: clamp(40px, 6vw, 96px); line-height: .95; letter-spacing: -.04em;
+                text-transform: uppercase; color: var(--try-ink); text-shadow: 0 0 36px color-mix(in srgb, var(--try-ink) 45%, transparent);
+                margin: 0; word-break: break-word; transition: color .12s ease-out; }
+    .try-sub { font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; color: #7d8590; margin-top: 20px; }
+    .try-receipt { position: absolute; left: 24px; bottom: 18px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; color: #ffd166; }
+    @media (max-width: 900px) { .try-section { padding: 80px 16px; } .try-wrap { grid-template-columns: 1fr; gap: 32px; } .try-stage { padding: 32px 24px 56px; min-height: 280px; } }
+    @media (prefers-reduced-motion: reduce) { .try-sw, .try-head, .try-stage, .try-input { transition: none; } }
+  </style>
+  <section class="try-section" id="try">
+    <div class="try-wrap">
+      <div>
+        <div class="try-tag">03 // TRY IT</div>
+        <h2 class="try-title">Change it.<br/>It's live.</h2>
+        <p class="try-copy">This is how Design Space edits work. Type your own words and pick a colour: the headline changes as you go, with no reload. The number in the corner is measured in your browser, every edit.</p>
+        <label class="try-label" for="tryText">YOUR WORDS</label>
+        <input class="try-input" id="tryText" maxlength="40" value="Your words. Your colour." autocomplete="off" spellcheck="false">
+        <span class="try-label">COLOUR</span>
+        <div class="try-swatches" id="trySwatches">
+          <button class="try-sw on" style="background:#00f0ff" data-c="#00f0ff" aria-label="cyan"></button>
+          <button class="try-sw" style="background:#ff0055" data-c="#ff0055" aria-label="crimson"></button>
+          <button class="try-sw" style="background:#00ff88" data-c="#00ff88" aria-label="emerald"></button>
+          <button class="try-sw" style="background:#c084fc" data-c="#c084fc" aria-label="violet"></button>
+          <button class="try-sw" style="background:#ffd166" data-c="#ffd166" aria-label="amber"></button>
+          <input class="try-pick" id="tryPick" type="color" value="#00f0ff" aria-label="any colour">
+        </div>
+      </div>
+      <div class="try-stage" id="tryStage">
+        <h3 class="try-head" id="tryHead">Your words. Your colour.</h3>
+        <div class="try-sub">AGENT OHM // DESIGN SPACE</div>
+        <div class="try-receipt" id="tryReceipt">EDIT SOMETHING</div>
+      </div>
+    </div>
+  </section>
+  <script>
+    (function () {
+      var sec = document.getElementById('try'), head = document.getElementById('tryHead'), rec = document.getElementById('tryReceipt');
+      var txt = document.getElementById('tryText'), pick = document.getElementById('tryPick'), sw = document.getElementById('trySwatches');
+      var n = 0;
+      function timed(apply, what) {                       // measured: input -> the frame that shows it
+        var t0 = performance.now(); apply();
+        requestAnimationFrame(function () { requestAnimationFrame(function () {
+          n += 1; rec.textContent = 'EDIT ' + n + ' · ' + what + ' · ON SCREEN IN ' + (performance.now() - t0).toFixed(1) + ' MS · NO RELOAD';
+        }); });
+      }
+      function ink(c) {
+        timed(function () { sec.style.setProperty('--try-ink', c); pick.value = c;
+          [].forEach.call(sw.querySelectorAll('.try-sw'), function (b) { b.classList.toggle('on', b.dataset.c === c); }); }, 'COLOUR');
+      }
+      txt.addEventListener('input', function () { timed(function () { head.textContent = txt.value || ' '; }, 'TEXT'); });
+      sw.addEventListener('click', function (e) { var b = e.target.closest('.try-sw'); if (b) ink(b.dataset.c); });
+      pick.addEventListener('input', function () { ink(pick.value); });
+    })();
+  </script>
 
   <!-- BEAT 3: PINNED DIMENSIONAL MORPH & HORIZONTAL RAIL -->
   <section class="morph-track" id="work">
