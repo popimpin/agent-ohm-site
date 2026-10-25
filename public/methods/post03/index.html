@@ -125,6 +125,34 @@
   <p>Measured 2026-10-24 22:41 EDT (llama-bench on the machine; flm paused for the run and restarted). On this machine the ceiling from bandwidth alone would be ~117 tokens/s.</p>
 </section>
 
+
+<section>
+  <p class="tag">A bigger AMD chip</p><h2>Bee: everything on the built-in GPU, 44 tokens/s</h2>
+  <p>The same file on a mini PC: AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M, 32 GB LPDDR5-7500 (4x 8 GB Micron MT62F2G32D4DS-026 WT). Its Vulkan driver sees one pool of
+  24186 MiB - the 16 GB carved for graphics plus
+  a window into the rest of the RAM - so all 13.8 GB fit on the GPU. Here the dial runs the other way: every layer of experts moved
+  to the CPU costs speed. Memory read: 82.3 GB/s. Measured by agy on 2026-10-25, 5 runs each, same llama.cpp build.</p>
+  <table><tr><th>run (Q3 file, --no-host 1)</th><th>tokens/s</th><th></th></tr>
+  <tr><td>all experts on the GPU (--n-cpu-moe 0)</td><td>43.99</td><td>±0.05</td></tr>
+  <tr><td>same, without --no-host</td><td>43.75</td><td>no failure here; no difference</td></tr>
+  <tr><td>8K context</td><td>31.07</td><td></td></tr>
+  <tr><td>16K context, q8 KV</td><td>26.98</td><td></td></tr>
+  <tr><td>32K context, q8 KV</td><td>21.12</td><td>still ~4x reading speed</td></tr>
+  <tr><td>12 layers of experts on the CPU</td><td>32.67</td><td></td></tr>
+  <tr><td>24 layers of experts on the CPU</td><td>29.20</td><td></td></tr>
+  <tr><td>48 layers of experts on the CPU</td><td>27.67</td><td></td></tr>
+  <tr><td>Q4_K_M file instead of Q3 (all on the GPU)</td><td>41.86</td><td>the bigger quant costs ~5% *</td></tr></table>
+  <p style="font:13px var(--mono);color:var(--mu)">* the Q4 file is Ollama's copy: Qwen3-30B-A3B <i>Thinking</i>-2507, Q4_K_M (read from the file) - the same
+  architecture and size as the Instruct model above, a different fine-tune.</p>
+  <h2 style="font-size:clamp(22px,2.6vw,30px);margin-top:40px">Defaults vs. the method: 18.46 vs 41.86</h2>
+  <p>Same Q4 file, same chip, same day. Run through Ollama as Bee is configured for its everyday work - a 128K-token context
+  reserved up front, placement left to Ollama - it generates <b>18.46 tokens/s</b>. The context's memory is reserved
+  first, which crowds part of the model off the GPU: under the same setting, the model Bee runs every day shows 5.3 of its 22.4 GiB
+  on the CPU (Ollama's own /api/ps). Placed by hand with llama.cpp (every layer on the GPU, sized for an 8K context) it does
+  <b>41.86</b>. That is a difference in configuration, not a verdict on either runtime - Bee keeps the 128K
+  context on purpose, because its tool work needs it.</p>
+</section>
+
 <section>
   <p class="tag">Run it yourself</p><h2>The exact command from the take</h2>
   <div class="code"><code id="cn">llama-server -m Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 --n-cpu-moe 48 -t 12 -fa on -c 8192</code><button onclick="navigator.clipboard.writeText(document.getElementById('cn').textContent);this.textContent='COPIED'">COPY</button></div>
@@ -145,6 +173,8 @@
   there a better split than "all experts on the CPU"?</div>
   <div class="q">On the AMD laptop the bandwidth ceiling is ~117 tokens/s and I see 29. The iGPU's compute is the likely limit
   - is there a better placement on a unified-memory chip?</div>
+  <div class="q">On Bee - everything on the GPU, no paging - memory allows ~103 tokens/s and I see 44.
+  With nothing spilling, what holds an integrated GPU at under half its memory ceiling?</div>
   <p>Tell me in the comments of the post, or open an issue on <a href="https://github.com/popimpin/agent-ohm-site">the repo</a>.</p>
 </section>
 
@@ -152,7 +182,7 @@
   <p class="tag">Credit + the raw data</p><h2>None of this is my invention</h2>
   <p>The trick is llama.cpp's <code>--n-cpu-moe</code> and Vulkan backend; the quant is Unsloth's UD-Q3_K_XL; the model is Qwen's.
   I measured it on hardware you might already own. The files behind every number:</p>
-  <ul class="data"><li><a href="data/receipt.json">receipt.json</a></li><li><a href="data/gguf_bytes.json">gguf_bytes.json</a></li><li><a href="data/gguf_bytes.py">gguf_bytes.py</a></li><li><a href="data/sweeps.json">sweeps.json</a></li><li><a href="data/sweeps2.json">sweeps2.json</a></li><li><a href="data/ram_bw.py">ram_bw.py</a></li><li><a href="data/ram_bw_laptop.json">ram_bw_laptop.json</a></li><li><a href="data/ram_bw_amd.json">ram_bw_amd.json</a></li><li><a href="data/amd_vulkan_bench.log">amd_vulkan_bench.log</a></li><li><a href="data/amd_vulkan_without_no_host.log">amd_vulkan_without_no_host.log</a></li></ul>
+  <ul class="data"><li><a href="data/receipt.json">receipt.json</a></li><li><a href="data/gguf_bytes.json">gguf_bytes.json</a></li><li><a href="data/gguf_bytes.py">gguf_bytes.py</a></li><li><a href="data/sweeps.json">sweeps.json</a></li><li><a href="data/sweeps2.json">sweeps2.json</a></li><li><a href="data/ram_bw.py">ram_bw.py</a></li><li><a href="data/ram_bw_laptop.json">ram_bw_laptop.json</a></li><li><a href="data/ram_bw_amd.json">ram_bw_amd.json</a></li><li><a href="data/amd_vulkan_bench.log">amd_vulkan_bench.log</a></li><li><a href="data/amd_vulkan_without_no_host.log">amd_vulkan_without_no_host.log</a></li><li><a href="data/bee_receipt.json">bee_receipt.json</a></li><li><a href="data/bee_bench.jsonl">bee_bench.jsonl</a></li><li><a href="data/bee_q4_vs_ollama_receipt.json">bee_q4_vs_ollama_receipt.json</a></li><li><a href="data/bee_q4_bench.jsonl">bee_q4_bench.jsonl</a></li></ul>
 </section>
 <footer>Agent Ohm · post 03 · measured 2026-10-24/25</footer>
 </div></body></html>

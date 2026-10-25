@@ -1,0 +1,257 @@
+{
+  "post": "03",
+  "node": "bee",
+  "title": "Bee Q4 Like-for-Like Benchmark: llama.cpp vs Ollama",
+  "measured_at": "2026-10-25 20:06:10 UTC",
+  "status": "PASS",
+  "file_identity": {
+    "blob_path": "/opt/ohm/ollama_data/models/blobs/sha256-58574f2e94b99fb9e4391408b57e5aeaaaec10f6384e9a699fc2cb43a5c8eabf",
+    "sha256": "58574f2e94b99fb9e4391408b57e5aeaaaec10f6384e9a699fc2cb43a5c8eabf",
+    "byte_size": 18556685856,
+    "gguf_general_file_type": 15,
+    "quant_type": "MOSTLY_Q4_K_M",
+    "model_name": "Qwen3 30B A3B Thinking 2507",
+    "architecture": "qwen3moe"
+  },
+  "hardware": {
+    "cpu": "AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M",
+    "cores": 12,
+    "threads": 24,
+    "ram": "32 GB LPDDR5-7500 (4x 8 GB Micron MT62F2G32D4DS-026 WT)",
+    "devices": "Vulkan0: AMD Radeon Graphics (RADV GFX1150) (24186 MiB pool, 16 GB dedicated BIOS carve)"
+  },
+  "runtimes": {
+    "llama_cpp": {
+      "build": "llama-b11172 (ubuntu-vulkan)",
+      "command_d0": "/home/ohm/ohm_local_ai/llama-b11172/llama-bench -m /opt/ohm/ollama_data/models/blobs/sha256-58574f2e94b99fb9e4391408b57e5aeaaaec10f6384e9a699fc2cb43a5c8eabf -ngl 99 -fa 1 -t 12 -lm none --no-host 1 --n-cpu-moe 0 -r 5 -o jsonl -d 0",
+      "mem_info_d0": {
+        "peak_vram_mib": 16347.1,
+        "peak_gtt_mib": 7556.33,
+        "start_vram_mib": 5383.28,
+        "end_vram_mib": 3427.95
+      },
+      "command_d8192": "/home/ohm/ohm_local_ai/llama-b11172/llama-bench -m /opt/ohm/ollama_data/models/blobs/sha256-58574f2e94b99fb9e4391408b57e5aeaaaec10f6384e9a699fc2cb43a5c8eabf -ngl 99 -fa 1 -t 12 -lm none --no-host 1 --n-cpu-moe 0 -r 5 -o jsonl -d 8192",
+      "mem_info_d8192": {
+        "peak_vram_mib": 16327.2,
+        "peak_gtt_mib": 6764.98,
+        "start_vram_mib": 3427.95,
+        "end_vram_mib": 3427.95
+      },
+      "results": [
+        {
+          "test": "pp512",
+          "depth": 0,
+          "tps": 497.1,
+          "sd": 2.57,
+          "samples": [
+            499.38,
+            495.08,
+            500.29,
+            496.09,
+            494.66
+          ],
+          "type_k": "f16",
+          "type_v": "f16"
+        },
+        {
+          "test": "tg128",
+          "depth": 0,
+          "tps": 41.86,
+          "sd": 0.04,
+          "samples": [
+            41.82,
+            41.87,
+            41.85,
+            41.88,
+            41.91
+          ],
+          "type_k": "f16",
+          "type_v": "f16"
+        },
+        {
+          "test": "pp512",
+          "depth": 8192,
+          "tps": 156.54,
+          "sd": 6.42,
+          "samples": [
+            155.86,
+            147.63,
+            161.8,
+            153.8,
+            163.61
+          ],
+          "type_k": "f16",
+          "type_v": "f16"
+        },
+        {
+          "test": "tg128",
+          "depth": 8192,
+          "tps": 29.97,
+          "sd": 0.02,
+          "samples": [
+            29.93,
+            29.98,
+            29.97,
+            29.98,
+            29.97
+          ],
+          "type_k": "f16",
+          "type_v": "f16"
+        }
+      ]
+    },
+    "ollama_today": {
+      "version": "ollama version is 0.30.10",
+      "backend": "Vulkan",
+      "endpoint": "http://127.0.0.1:11435/api/generate",
+      "request_options": {
+        "num_predict": 128,
+        "temperature": 0,
+        "think": false
+      },
+      "summary": {
+        "gen_tps_mean": 18.46,
+        "gen_tps_sd": 0.74,
+        "gen_samples": [
+          17.08,
+          19.01,
+          19.08,
+          18.83,
+          18.3
+        ],
+        "prompt_tps_mean": 2495.75,
+        "prompt_tps_sd": 1253.4,
+        "prompt_samples": [
+          109.22,
+          3341.09,
+          2349.82,
+          3354.99,
+          3323.61
+        ],
+        "peak_vram_mib": 16305.66,
+        "peak_gtt_mib": 7009.42
+      },
+      "runs": [
+        {
+          "run_idx": 1,
+          "elapsed_s": 11.315440893173218,
+          "prompt_eval_count": 392,
+          "prompt_eval_duration_ns": 3589026000,
+          "prompt_tps": 109.22,
+          "eval_count": 128,
+          "eval_duration_ns": 7492268000,
+          "gen_tps": 17.08,
+          "mem_info": {
+            "peak_vram_mib": 16305.66,
+            "peak_gtt_mib": 7009.42,
+            "start_vram_mib": 16305.0,
+            "end_vram_mib": 16305.66
+          },
+          "response_preview": "Okay, the user has presented a highly technical query about modern heterogeneous computing architect"
+        },
+        {
+          "run_idx": 2,
+          "elapsed_s": 7.083321571350098,
+          "prompt_eval_count": 392,
+          "prompt_eval_duration_ns": 117327000,
+          "prompt_tps": 3341.09,
+          "eval_count": 128,
+          "eval_duration_ns": 6733429000,
+          "gen_tps": 19.01,
+          "mem_info": {
+            "peak_vram_mib": 16305.66,
+            "peak_gtt_mib": 7009.42,
+            "start_vram_mib": 16305.66,
+            "end_vram_mib": 16305.66
+          },
+          "response_preview": "Okay, the user has presented a highly technical query about modern heterogeneous system architecture"
+        },
+        {
+          "run_idx": 3,
+          "elapsed_s": 7.142325162887573,
+          "prompt_eval_count": 392,
+          "prompt_eval_duration_ns": 166821000,
+          "prompt_tps": 2349.82,
+          "eval_count": 128,
+          "eval_duration_ns": 6708355000,
+          "gen_tps": 19.08,
+          "mem_info": {
+            "peak_vram_mib": 16305.66,
+            "peak_gtt_mib": 7009.42,
+            "start_vram_mib": 16305.66,
+            "end_vram_mib": 16305.66
+          },
+          "response_preview": "Okay, the user has presented a highly technical query about modern heterogeneous computing architect"
+        },
+        {
+          "run_idx": 4,
+          "elapsed_s": 7.169979810714722,
+          "prompt_eval_count": 392,
+          "prompt_eval_duration_ns": 116841000,
+          "prompt_tps": 3354.99,
+          "eval_count": 128,
+          "eval_duration_ns": 6798140000,
+          "gen_tps": 18.83,
+          "mem_info": {
+            "peak_vram_mib": 16305.66,
+            "peak_gtt_mib": 7009.42,
+            "start_vram_mib": 16305.66,
+            "end_vram_mib": 16305.66
+          },
+          "response_preview": "Okay, the user has presented a highly technical query about modern heterogeneous computing architect"
+        },
+        {
+          "run_idx": 5,
+          "elapsed_s": 7.343333959579468,
+          "prompt_eval_count": 392,
+          "prompt_eval_duration_ns": 117944000,
+          "prompt_tps": 3323.61,
+          "eval_count": 128,
+          "eval_duration_ns": 6995906000,
+          "gen_tps": 18.3,
+          "mem_info": {
+            "peak_vram_mib": 16305.66,
+            "peak_gtt_mib": 7009.42,
+            "start_vram_mib": 16305.66,
+            "end_vram_mib": 16305.66
+          },
+          "response_preview": "Okay, the user has presented a highly technical query about modern heterogeneous system architecture"
+        }
+      ]
+    }
+  },
+  "like_for_like_comparison": {
+    "model": "qwen3:30b-a3b (Q4_K_M)",
+    "llama_cpp_q4_tg128_tps": 41.86,
+    "ollama_q4_today_tg128_tps": 18.46,
+    "ollama_baseline_aug24_tps": 35.7,
+    "speedup_llama_vs_ollama_today": 2.27
+  },
+  "restore_proof": {
+    "restored": true,
+    "pinned": true,
+    "api_ps": {
+      "models": [
+        {
+          "name": "hf.co/ornith-ai/Ornith-1.5-35B-A3B-GGUF:Q4_K_M",
+          "model": "hf.co/ornith-ai/Ornith-1.5-35B-A3B-GGUF:Q4_K_M",
+          "size": 24039005375,
+          "digest": "e418857d056538b10aaffb08e62148e1841fed50ed8c0ba44b6d2de0036e332e",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "qwen35moe",
+            "families": [
+              "qwen35moe"
+            ],
+            "parameter_size": "35.5B",
+            "quantization_level": "unknown"
+          },
+          "expires_at": "2319-02-04T14:53:27.294996438-05:00",
+          "size_vram": 18359663983,
+          "context_length": 131072
+        }
+      ]
+    }
+  }
+}

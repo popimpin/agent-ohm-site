@@ -1,0 +1,441 @@
+{
+  "post": "03",
+  "node": "bee",
+  "measured_at": "2026-10-25 19:36:22 UTC",
+  "status": "PASS",
+  "hardware": {
+    "cpu": "AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M",
+    "cores": 12,
+    "threads": 24,
+    "ram_modules": [
+      {
+        "size": "8 GB",
+        "type": "LPDDR5",
+        "speed": "7500 MT/s",
+        "manufacturer": "Micron Technology",
+        "part_number": "MT62F2G32D4DS-026 WT"
+      },
+      {
+        "size": "8 GB",
+        "type": "LPDDR5",
+        "speed": "7500 MT/s",
+        "manufacturer": "Micron Technology",
+        "part_number": "MT62F2G32D4DS-026 WT"
+      },
+      {
+        "size": "8 GB",
+        "type": "LPDDR5",
+        "speed": "7500 MT/s",
+        "manufacturer": "Micron Technology",
+        "part_number": "MT62F2G32D4DS-026 WT"
+      },
+      {
+        "size": "8 GB",
+        "type": "LPDDR5",
+        "speed": "7500 MT/s",
+        "manufacturer": "Micron Technology",
+        "part_number": "MT62F2G32D4DS-026 WT"
+      }
+    ],
+    "devices": "Available devices:\n  Vulkan0: AMD Radeon Graphics (RADV GFX1150) (24186 MiB, 14508 MiB free)"
+  },
+  "ram_bandwidth": {
+    "measured_at": "2026-10-25 15:25",
+    "method": "numpy threaded sum over 4 GiB int64, best of 3",
+    "read_GBps_by_threads": {
+      "1": 39.2,
+      "4": 82.3,
+      "8": 75.7,
+      "12": 73.9,
+      "16": 73.6,
+      "20": 76.2
+    }
+  },
+  "vulkan_control_step_4d": {
+    "without_no_host_failure": false,
+    "error_text": ""
+  },
+  "best_config": {
+    "n_cpu_moe": 0,
+    "best_tg128_tps": 43.99
+  },
+  "baseline_comparison": {
+    "ollama_baseline_tps": 35.7,
+    "best_measured_tps": 43.99,
+    "speedup_vs_ollama": 1.23
+  },
+  "runs": [
+    {
+      "name": "step_4d_control_no_nohost_moe0_d0",
+      "command": "/home/ohm/ohm_local_ai/llama-b11172/llama-bench -m /home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 12 -lm none -r 5 -o jsonl --n-cpu-moe 0 -d 0",
+      "exit_code": 0,
+      "elapsed_s": 29.91840124130249,
+      "mem_info": {
+        "peak_vram_mib": 16305.3,
+        "peak_gtt_mib": 6952.58,
+        "start_vram_mib": 9436.01,
+        "end_vram_mib": 9436.01
+      },
+      "nohost_failure": false,
+      "error_text": "",
+      "raw_stdout": "{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"f16\", \"type_v\": \"f16\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 0, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": false, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 512, \"n_gen\": 0, \"n_depth\": 0, \"test_time\": \"2026-10-25T19:25:45Z\", \"avg_ns\": 1068840590, \"stddev_ns\": 5672148, \"avg_ts\": 479.034544, \"stddev_ts\": 2.548682, \"samples_ns\": [ 1066514468, 1072145991, 1060345283, 1070155148, 1075042060 ],\"samples_ts\": [ 480.068, 477.547, 482.862, 478.435, 476.26 ]}\n{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"f16\", \"type_v\": \"f16\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 0, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": false, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 0, \"n_gen\": 128, \"n_depth\": 0, \"test_time\": \"2026-10-25T19:25:52Z\", \"avg_ns\": 2925803416, \"stddev_ns\": 649508, \"avg_ts\": 43.748669, \"stddev_ts\": 0.009695, \"samples_ns\": [ 2926577570, 2925344663, 2924951174, 2926045276, 2926098398 ],\"samples_ts\": [ 43.7371, 43.7555, 43.7614, 43.7451, 43.7443 ]}\n",
+      "raw_stderr": "load_backend: loaded RPC backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-rpc.so\nggml_vulkan: Found 1 Vulkan devices:\nggml_vulkan: 0 = AMD Radeon Graphics (RADV GFX1150) (radv) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat\nload_backend: loaded Vulkan backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-vulkan.so\nload_backend: loaded CPU backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-cpu-zen4.so\n"
+    },
+    {
+      "name": "step_4a_moe0_d0",
+      "command": "/home/ohm/ohm_local_ai/llama-b11172/llama-bench -m /home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 12 -lm none -r 5 -o jsonl --no-host 1 --n-cpu-moe 0 -d 0",
+      "exit_code": 0,
+      "elapsed_s": 28.855733156204224,
+      "mem_info": {
+        "peak_vram_mib": 16351.84,
+        "peak_gtt_mib": 6737.65,
+        "start_vram_mib": 9436.01,
+        "end_vram_mib": 9436.01
+      },
+      "raw_stdout": "{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"f16\", \"type_v\": \"f16\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 0, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 512, \"n_gen\": 0, \"n_depth\": 0, \"test_time\": \"2026-10-25T19:26:14Z\", \"avg_ns\": 1074965477, \"stddev_ns\": 6187936, \"avg_ts\": 476.307008, \"stddev_ts\": 2.745407, \"samples_ns\": [ 1069631673, 1080177521, 1067369529, 1076581458, 1081067207 ],\"samples_ts\": [ 478.669, 473.996, 479.684, 475.579, 473.606 ]}\n{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"f16\", \"type_v\": \"f16\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 0, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 0, \"n_gen\": 128, \"n_depth\": 0, \"test_time\": \"2026-10-25T19:26:21Z\", \"avg_ns\": 2909741308, \"stddev_ns\": 3165146, \"avg_ts\": 43.990207, \"stddev_ts\": 0.047833, \"samples_ns\": [ 2914483203, 2905878648, 2910465673, 2909593891, 2908285125 ],\"samples_ts\": [ 43.9186, 44.0486, 43.9792, 43.9924, 44.0122 ]}\n",
+      "raw_stderr": "load_backend: loaded RPC backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-rpc.so\nggml_vulkan: Found 1 Vulkan devices:\nggml_vulkan: 0 = AMD Radeon Graphics (RADV GFX1150) (radv) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat\nload_backend: loaded Vulkan backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-vulkan.so\nload_backend: loaded CPU backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-cpu-zen4.so\n"
+    },
+    {
+      "name": "step_4a_moe0_d8192",
+      "command": "/home/ohm/ohm_local_ai/llama-b11172/llama-bench -m /home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 12 -lm none -r 5 -o jsonl --no-host 1 --n-cpu-moe 0 -d 8192",
+      "exit_code": 0,
+      "elapsed_s": 82.46056818962097,
+      "mem_info": {
+        "peak_vram_mib": 16282.2,
+        "peak_gtt_mib": 7563.53,
+        "start_vram_mib": 9436.01,
+        "end_vram_mib": 9436.01
+      },
+      "raw_stdout": "{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"f16\", \"type_v\": \"f16\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 0, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 512, \"n_gen\": 0, \"n_depth\": 8192, \"test_time\": \"2026-10-25T19:26:43Z\", \"avg_ns\": 3721503974, \"stddev_ns\": 161489547, \"avg_ts\": 137.784932, \"stddev_ts\": 5.939876, \"samples_ns\": [ 3845818564, 3702247553, 3576333544, 3559061312, 3924058897 ],\"samples_ts\": [ 133.132, 138.294, 143.163, 143.858, 130.477 ]}\n{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"f16\", \"type_v\": \"f16\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 0, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 0, \"n_gen\": 128, \"n_depth\": 8192, \"test_time\": \"2026-10-25T19:27:37Z\", \"avg_ns\": 4119594377, \"stddev_ns\": 4825232, \"avg_ts\": 31.071054, \"stddev_ts\": 0.036335, \"samples_ns\": [ 4128102470, 4117588399, 4116973093, 4116583072, 4118724854 ],\"samples_ts\": [ 31.007, 31.0862, 31.0908, 31.0937, 31.0776 ]}\n",
+      "raw_stderr": "load_backend: loaded RPC backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-rpc.so\nggml_vulkan: Found 1 Vulkan devices:\nggml_vulkan: 0 = AMD Radeon Graphics (RADV GFX1150) (radv) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat\nload_backend: loaded Vulkan backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-vulkan.so\nload_backend: loaded CPU backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-cpu-zen4.so\n"
+    },
+    {
+      "name": "step_4b_moe12_d0",
+      "command": "/home/ohm/ohm_local_ai/llama-b11172/llama-bench -m /home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 12 -lm none -r 5 -o jsonl --no-host 1 --n-cpu-moe 12 -d 0",
+      "exit_code": 0,
+      "elapsed_s": 35.810436964035034,
+      "mem_info": {
+        "peak_vram_mib": 16304.91,
+        "peak_gtt_mib": 3917.64,
+        "start_vram_mib": 9436.01,
+        "end_vram_mib": 9436.01
+      },
+      "raw_stdout": "{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"f16\", \"type_v\": \"f16\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 12, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 512, \"n_gen\": 0, \"n_depth\": 0, \"test_time\": \"2026-10-25T19:28:06Z\", \"avg_ns\": 1370029069, \"stddev_ns\": 19014099, \"avg_ts\": 373.772004, \"stddev_ts\": 5.161572, \"samples_ns\": [ 1351827845, 1368866707, 1353094420, 1397341687, 1379014688 ],\"samples_ts\": [ 378.746, 374.032, 378.392, 366.41, 371.28 ]}\n{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"f16\", \"type_v\": \"f16\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 12, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 0, \"n_gen\": 128, \"n_depth\": 0, \"test_time\": \"2026-10-25T19:28:14Z\", \"avg_ns\": 3918323957, \"stddev_ns\": 20182327, \"avg_ts\": 32.667718, \"stddev_ts\": 0.167394, \"samples_ns\": [ 3909307222, 3907209696, 3920543790, 3952370506, 3902188575 ],\"samples_ts\": [ 32.7424, 32.76, 32.6485, 32.3856, 32.8021 ]}\n",
+      "raw_stderr": "load_backend: loaded RPC backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-rpc.so\nggml_vulkan: Found 1 Vulkan devices:\nggml_vulkan: 0 = AMD Radeon Graphics (RADV GFX1150) (radv) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat\nload_backend: loaded Vulkan backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-vulkan.so\nload_backend: loaded CPU backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-cpu-zen4.so\n"
+    },
+    {
+      "name": "step_4b_moe24_d0",
+      "command": "/home/ohm/ohm_local_ai/llama-b11172/llama-bench -m /home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 12 -lm none -r 5 -o jsonl --no-host 1 --n-cpu-moe 24 -d 0",
+      "exit_code": 0,
+      "elapsed_s": 37.77674698829651,
+      "mem_info": {
+        "peak_vram_mib": 16371.42,
+        "peak_gtt_mib": 869.73,
+        "start_vram_mib": 9436.01,
+        "end_vram_mib": 9436.01
+      },
+      "raw_stdout": "{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"f16\", \"type_v\": \"f16\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 24, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 512, \"n_gen\": 0, \"n_depth\": 0, \"test_time\": \"2026-10-25T19:28:40Z\", \"avg_ns\": 1565484630, \"stddev_ns\": 11296060, \"avg_ts\": 327.068901, \"stddev_ts\": 2.361256, \"samples_ns\": [ 1562549625, 1580659006, 1549705995, 1570108211, 1564400316 ],\"samples_ts\": [ 327.67, 323.916, 330.385, 326.092, 327.282 ]}\n{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"f16\", \"type_v\": \"f16\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 24, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 0, \"n_gen\": 128, \"n_depth\": 0, \"test_time\": \"2026-10-25T19:28:50Z\", \"avg_ns\": 4383739201, \"stddev_ns\": 37690096, \"avg_ts\": 29.200536, \"stddev_ts\": 0.249910, \"samples_ns\": [ 4396551931, 4358913806, 4377599508, 4344342503, 4441288259 ],\"samples_ts\": [ 29.1137, 29.3651, 29.2398, 29.4636, 28.8205 ]}\n",
+      "raw_stderr": "load_backend: loaded RPC backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-rpc.so\nggml_vulkan: Found 1 Vulkan devices:\nggml_vulkan: 0 = AMD Radeon Graphics (RADV GFX1150) (radv) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat\nload_backend: loaded Vulkan backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-vulkan.so\nload_backend: loaded CPU backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-cpu-zen4.so\n"
+    },
+    {
+      "name": "step_4b_moe48_d0",
+      "command": "/home/ohm/ohm_local_ai/llama-b11172/llama-bench -m /home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 12 -lm none -r 5 -o jsonl --no-host 1 --n-cpu-moe 48 -d 0",
+      "exit_code": 0,
+      "elapsed_s": 48.60670447349548,
+      "mem_info": {
+        "peak_vram_mib": 10598.25,
+        "peak_gtt_mib": 357.11,
+        "start_vram_mib": 9436.01,
+        "end_vram_mib": 9436.01
+      },
+      "raw_stdout": "{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"f16\", \"type_v\": \"f16\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 48, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 512, \"n_gen\": 0, \"n_depth\": 0, \"test_time\": \"2026-10-25T19:29:21Z\", \"avg_ns\": 2517514786, \"stddev_ns\": 24674889, \"avg_ts\": 203.390871, \"stddev_ts\": 2.002273, \"samples_ns\": [ 2483402645, 2539184722, 2499805668, 2536714306, 2528466589 ],\"samples_ts\": [ 206.169, 201.64, 204.816, 201.836, 202.494 ]}\n{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"f16\", \"type_v\": \"f16\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 48, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 0, \"n_gen\": 128, \"n_depth\": 0, \"test_time\": \"2026-10-25T19:29:37Z\", \"avg_ns\": 4629123605, \"stddev_ns\": 146554174, \"avg_ts\": 27.672655, \"stddev_ts\": 0.854378, \"samples_ns\": [ 4869321633, 4608177903, 4535154175, 4640982240, 4491982075 ],\"samples_ts\": [ 26.287, 27.7767, 28.224, 27.5804, 28.4952 ]}\n",
+      "raw_stderr": "load_backend: loaded RPC backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-rpc.so\nggml_vulkan: Found 1 Vulkan devices:\nggml_vulkan: 0 = AMD Radeon Graphics (RADV GFX1150) (radv) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat\nload_backend: loaded Vulkan backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-vulkan.so\nload_backend: loaded CPU backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-cpu-zen4.so\n"
+    },
+    {
+      "name": "step_4c_best_d16384_q8",
+      "command": "/home/ohm/ohm_local_ai/llama-b11172/llama-bench -m /home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 12 -lm none -r 5 -o jsonl --no-host 1 --n-cpu-moe 0 -ctk q8_0 -ctv q8_0 -d 16384",
+      "exit_code": 0,
+      "elapsed_s": 113.662832736969,
+      "mem_info": {
+        "peak_vram_mib": 16313.5,
+        "peak_gtt_mib": 7599.17,
+        "start_vram_mib": 9436.01,
+        "end_vram_mib": 9436.01
+      },
+      "raw_stdout": "{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"q8_0\", \"type_v\": \"q8_0\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 0, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 512, \"n_gen\": 0, \"n_depth\": 16384, \"test_time\": \"2026-10-25T19:30:08Z\", \"avg_ns\": 3126869565, \"stddev_ns\": 13643512, \"avg_ts\": 163.744526, \"stddev_ts\": 0.712376, \"samples_ns\": [ 3148502117, 3114360259, 3128002710, 3127496840, 3115985899 ],\"samples_ts\": [ 162.617, 164.4, 163.683, 163.709, 164.314 ]}\n{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"q8_0\", \"type_v\": \"q8_0\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 0, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 0, \"n_gen\": 128, \"n_depth\": 16384, \"test_time\": \"2026-10-25T19:31:30Z\", \"avg_ns\": 4743561960, \"stddev_ns\": 7073661, \"avg_ts\": 26.983990, \"stddev_ts\": 0.040165, \"samples_ns\": [ 4755973243, 4742542905, 4739452952, 4740829269, 4739011432 ],\"samples_ts\": [ 26.9135, 26.9897, 27.0073, 26.9995, 27.0099 ]}\n",
+      "raw_stderr": "load_backend: loaded RPC backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-rpc.so\nggml_vulkan: Found 1 Vulkan devices:\nggml_vulkan: 0 = AMD Radeon Graphics (RADV GFX1150) (radv) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat\nload_backend: loaded Vulkan backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-vulkan.so\nload_backend: loaded CPU backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-cpu-zen4.so\n"
+    },
+    {
+      "name": "step_4c_best_d32768_q8",
+      "command": "/home/ohm/ohm_local_ai/llama-b11172/llama-bench -m /home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 12 -lm none -r 5 -o jsonl --no-host 1 --n-cpu-moe 0 -ctk q8_0 -ctv q8_0 -d 32768",
+      "exit_code": 0,
+      "elapsed_s": 268.1240861415863,
+      "mem_info": {
+        "peak_vram_mib": 16272.85,
+        "peak_gtt_mib": 8582.72,
+        "start_vram_mib": 9436.01,
+        "end_vram_mib": 5383.28
+      },
+      "raw_stdout": "{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"q8_0\", \"type_v\": \"q8_0\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 0, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 512, \"n_gen\": 0, \"n_depth\": 32768, \"test_time\": \"2026-10-25T19:32:02Z\", \"avg_ns\": 5376443276, \"stddev_ns\": 12080907, \"avg_ts\": 95.230628, \"stddev_ts\": 0.213999, \"samples_ns\": [ 5392226227, 5378938836, 5360797142, 5381459453, 5368794722 ],\"samples_ts\": [ 94.9515, 95.1861, 95.5082, 95.1415, 95.3659 ]}\n{\"build_commit\": \"cdc06426e\", \"build_number\": 11172, \"cpu_info\": \"AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M\", \"gpu_info\": \"AMD Radeon Graphics (RADV GFX1150)\", \"backends\": \"Vulkan\", \"model_filename\": \"/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf\", \"model_type\": \"qwen3moe 30B.A3B Q3_K - Medium\", \"model_size\": 13827078144, \"model_n_params\": 30532122624, \"n_batch\": 2048, \"n_ubatch\": 512, \"n_threads\": 12, \"cpu_mask\": \"0x0\", \"cpu_strict\": false, \"poll\": 50, \"type_k\": \"q8_0\", \"type_v\": \"q8_0\", \"n_gpu_layers\": 99, \"n_cpu_moe\": 0, \"split_mode\": \"layer\", \"main_gpu\": 0, \"no_kv_offload\": false, \"flash_attn\": 1, \"devices\": \"auto\", \"tensor_split\": \"0.00\", \"tensor_buft_overrides\": \"none\", \"load_mode\": \"none\", \"lazy_mode\": \"auto\", \"embeddings\": false, \"no_op_offload\": 0, \"no_host\": true, \"fit_target\": 0, \"fit_min_ctx\": 0, \"n_prompt\": 0, \"n_gen\": 128, \"n_depth\": 32768, \"test_time\": \"2026-10-25T19:35:51Z\", \"avg_ns\": 6061688357, \"stddev_ns\": 7519571, \"avg_ts\": 21.116255, \"stddev_ts\": 0.026157, \"samples_ns\": [ 6074594576, 6056176317, 6058151510, 6057610552, 6061908833 ],\"samples_ts\": [ 21.0714, 21.1354, 21.1286, 21.1304, 21.1155 ]}\n",
+      "raw_stderr": "load_backend: loaded RPC backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-rpc.so\nggml_vulkan: Found 1 Vulkan devices:\nggml_vulkan: 0 = AMD Radeon Graphics (RADV GFX1150) (radv) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat\nload_backend: loaded Vulkan backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-vulkan.so\nload_backend: loaded CPU backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-cpu-zen4.so\n"
+    }
+  ],
+  "parsed_rows": [
+    {
+      "test": "pp512",
+      "depth": 0,
+      "n_cpu_moe": 0,
+      "type_k": "f16",
+      "type_v": "f16",
+      "tps": 479.03,
+      "sd": 2.55,
+      "samples": [
+        480.07,
+        477.55,
+        482.86,
+        478.44,
+        476.26
+      ]
+    },
+    {
+      "test": "tg128",
+      "depth": 0,
+      "n_cpu_moe": 0,
+      "type_k": "f16",
+      "type_v": "f16",
+      "tps": 43.75,
+      "sd": 0.01,
+      "samples": [
+        43.74,
+        43.76,
+        43.76,
+        43.75,
+        43.74
+      ]
+    },
+    {
+      "test": "pp512",
+      "depth": 0,
+      "n_cpu_moe": 0,
+      "type_k": "f16",
+      "type_v": "f16",
+      "tps": 476.31,
+      "sd": 2.75,
+      "samples": [
+        478.67,
+        474.0,
+        479.68,
+        475.58,
+        473.61
+      ]
+    },
+    {
+      "test": "tg128",
+      "depth": 0,
+      "n_cpu_moe": 0,
+      "type_k": "f16",
+      "type_v": "f16",
+      "tps": 43.99,
+      "sd": 0.05,
+      "samples": [
+        43.92,
+        44.05,
+        43.98,
+        43.99,
+        44.01
+      ]
+    },
+    {
+      "test": "pp512",
+      "depth": 8192,
+      "n_cpu_moe": 0,
+      "type_k": "f16",
+      "type_v": "f16",
+      "tps": 137.78,
+      "sd": 5.94,
+      "samples": [
+        133.13,
+        138.29,
+        143.16,
+        143.86,
+        130.48
+      ]
+    },
+    {
+      "test": "tg128",
+      "depth": 8192,
+      "n_cpu_moe": 0,
+      "type_k": "f16",
+      "type_v": "f16",
+      "tps": 31.07,
+      "sd": 0.04,
+      "samples": [
+        31.01,
+        31.09,
+        31.09,
+        31.09,
+        31.08
+      ]
+    },
+    {
+      "test": "pp512",
+      "depth": 0,
+      "n_cpu_moe": 12,
+      "type_k": "f16",
+      "type_v": "f16",
+      "tps": 373.77,
+      "sd": 5.16,
+      "samples": [
+        378.75,
+        374.03,
+        378.39,
+        366.41,
+        371.28
+      ]
+    },
+    {
+      "test": "tg128",
+      "depth": 0,
+      "n_cpu_moe": 12,
+      "type_k": "f16",
+      "type_v": "f16",
+      "tps": 32.67,
+      "sd": 0.17,
+      "samples": [
+        32.74,
+        32.76,
+        32.65,
+        32.39,
+        32.8
+      ]
+    },
+    {
+      "test": "pp512",
+      "depth": 0,
+      "n_cpu_moe": 24,
+      "type_k": "f16",
+      "type_v": "f16",
+      "tps": 327.07,
+      "sd": 2.36,
+      "samples": [
+        327.67,
+        323.92,
+        330.38,
+        326.09,
+        327.28
+      ]
+    },
+    {
+      "test": "tg128",
+      "depth": 0,
+      "n_cpu_moe": 24,
+      "type_k": "f16",
+      "type_v": "f16",
+      "tps": 29.2,
+      "sd": 0.25,
+      "samples": [
+        29.11,
+        29.37,
+        29.24,
+        29.46,
+        28.82
+      ]
+    },
+    {
+      "test": "pp512",
+      "depth": 0,
+      "n_cpu_moe": 48,
+      "type_k": "f16",
+      "type_v": "f16",
+      "tps": 203.39,
+      "sd": 2.0,
+      "samples": [
+        206.17,
+        201.64,
+        204.82,
+        201.84,
+        202.49
+      ]
+    },
+    {
+      "test": "tg128",
+      "depth": 0,
+      "n_cpu_moe": 48,
+      "type_k": "f16",
+      "type_v": "f16",
+      "tps": 27.67,
+      "sd": 0.85,
+      "samples": [
+        26.29,
+        27.78,
+        28.22,
+        27.58,
+        28.5
+      ]
+    },
+    {
+      "test": "pp512",
+      "depth": 16384,
+      "n_cpu_moe": 0,
+      "type_k": "q8_0",
+      "type_v": "q8_0",
+      "tps": 163.74,
+      "sd": 0.71,
+      "samples": [
+        162.62,
+        164.4,
+        163.68,
+        163.71,
+        164.31
+      ]
+    },
+    {
+      "test": "tg128",
+      "depth": 16384,
+      "n_cpu_moe": 0,
+      "type_k": "q8_0",
+      "type_v": "q8_0",
+      "tps": 26.98,
+      "sd": 0.04,
+      "samples": [
+        26.91,
+        26.99,
+        27.01,
+        27.0,
+        27.01
+      ]
+    },
+    {
+      "test": "pp512",
+      "depth": 32768,
+      "n_cpu_moe": 0,
+      "type_k": "q8_0",
+      "type_v": "q8_0",
+      "tps": 95.23,
+      "sd": 0.21,
+      "samples": [
+        94.95,
+        95.19,
+        95.51,
+        95.14,
+        95.37
+      ]
+    },
+    {
+      "test": "tg128",
+      "depth": 32768,
+      "n_cpu_moe": 0,
+      "type_k": "q8_0",
+      "type_v": "q8_0",
+      "tps": 21.12,
+      "sd": 0.03,
+      "samples": [
+        21.07,
+        21.14,
+        21.13,
+        21.13,
+        21.12
+      ]
+    }
+  ]
+}
