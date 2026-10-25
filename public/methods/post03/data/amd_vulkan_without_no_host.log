@@ -1,0 +1,7 @@
+flm stopped
+== CONTROL (no --no-host): ./llama-bench -m /home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 10 -lm none --n-cpu-moe 12 -p 64 -n 16 -r 1
+ggml_vulkan: 0 = AMD Radeon 890M Graphics (RADV GFX1150) (radv) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
+radv/amdgpu: Not enough memory for command submission.
+llama_bench: error: failed to load model '/home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf'
+exit 1
+flm after: active / models http 200

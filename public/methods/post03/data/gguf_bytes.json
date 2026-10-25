@@ -1,0 +1,25 @@
+{
+ "file_bytes": 13833048480,
+ "tensor_bytes": 13827078144,
+ "experts_routed_bytes (RAM with --n-cpu-moe 48)": 12804685824,
+ "everything_else_bytes (GPU weights)": 1022392320,
+ "experts read per token (8/128 of every layer)": 800292864.0,
+ "GB": {
+  "file": 13.833,
+  "experts_RAM": 12.805,
+  "weights_GPU": 1.022,
+  "expert_bytes_per_token": 0.8
+ },
+ "quant_types_by_group(ggml type id -> GB)": {
+  "everything_else": {
+   "14": 0.324,
+   "0": 0.051,
+   "12": 0.594,
+   "13": 0.053
+  },
+  "experts_routed": {
+   "11": 11.332,
+   "12": 1.472
+  }
+ }
+}

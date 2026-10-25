@@ -1,0 +1,132 @@
+{
+  "post": "03",
+  "title": "A 30B model on a 4 GB laptop GPU",
+  "status": "take",
+  "_doc": "status 'pending' = NOT published: 'expected' is the 2026-10-12 bench, kept only as a target. Friday's take (2026-10-23) writes 'measured_at', 'command' (verbatim, as run on camera) and 'results', then sets status 'take'. Only then does tools/site/build_agent_ohm_site.py render the method section.",
+  "hardware": {
+    "gpu": "NVIDIA RTX 3050 Ti Laptop, 4 GB",
+    "cpu": "Intel i7-12700H",
+    "ram": "24 GB DDR5-4800",
+    "os": "Windows 11"
+  },
+  "model": {
+    "name": "Qwen3-30B-A3B-Instruct-2507",
+    "params": "30.5B total, 3.3B active per token",
+    "file": "Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf",
+    "size": "13.8 GB",
+    "url": "https://huggingface.co/unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF"
+  },
+  "runtime": {
+    "name": "llama.cpp",
+    "build": "b11172 (CUDA 12.4)",
+    "url": "https://github.com/ggml-org/llama.cpp"
+  },
+  "credit": "The trick is llama.cpp's own option, --n-cpu-moe: it keeps the experts' weights in system RAM and the rest on the GPU. We measured it on this laptop; we did not invent it.",
+  "expected": {
+    "source": "2026-10-12 llama-bench, -ngl 99 -fa 1 --n-cpu-moe 48 -t 12",
+    "rows": [
+      {
+        "label": "short context",
+        "gen_tps": 27.7,
+        "prompt_tps": 187.9,
+        "vram_gb": 1.3
+      },
+      {
+        "label": "8K context",
+        "gen_tps": 26.7,
+        "prompt_tps": 290.9,
+        "vram_gb": 2.1
+      }
+    ]
+  },
+  "measured_at": "2026-10-25 (live take 11:13; llama-bench sweeps 11:20-12:10) - laptop on AC, Windows 11",
+  "command": "llama-server -m Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 --n-cpu-moe 48 -t 12 -fa on -c 8192",
+  "results": [
+    {
+      "label": "live, streaming + recording the screen (the post)",
+      "gen_tps": 17.6,
+      "prompt_tps": "-",
+      "vram_gb": 1.82
+    },
+    {
+      "label": "benchmark, all experts in RAM (5 runs)",
+      "gen_tps": "17-27",
+      "prompt_tps": 353.5,
+      "vram_gb": 2.01
+    },
+    {
+      "label": "8 expert layers on the card (--n-cpu-moe 40)",
+      "gen_tps": 24.4,
+      "prompt_tps": "-",
+      "vram_gb": 3.16
+    },
+    {
+      "label": "12 expert layers on the card (--n-cpu-moe 36)",
+      "gen_tps": 26.8,
+      "prompt_tps": "-",
+      "vram_gb": 3.84
+    }
+  ],
+  "vulkan": {
+    "status": "take",
+    "_doc": "Second machine, same model: an AMD laptop iGPU over Vulkan (Ryzen node). 'expected' = the 2026-10-12 bench (docs/HANDOFF_2026-10-12.md 'VULKAN WIN on Ryzen'), a target only. The 10/25 re-measure writes measured_at / hardware (from lscpu + vulkaninfo on the box, not from notes) / command / results, then status 'take'. Only then does it render.",
+    "hardware": {
+      "gpu": "AMD Radeon 880M, integrated (RDNA 3.5, gfx1150; the Vulkan driver reports it as 'Radeon 890M Graphics') - 512 MiB of its own memory + an 11.3 GiB window into system RAM",
+      "cpu": "AMD Ryzen AI 9 365 (lscpu on the machine)",
+      "ram": "24 GB, shared with the GPU (22.6 GiB usable)",
+      "os": "Ubuntu 24.04.4 LTS"
+    },
+    "runtime": {
+      "name": "llama.cpp",
+      "build": "b11172 (Vulkan)",
+      "url": "https://github.com/ggml-org/llama.cpp"
+    },
+    "gotcha": "Every run first failed with 'radv/amdgpu: Not enough memory for command submission' - even with all experts on the CPU. llama.cpp pins the CPU-side weights as Vulkan host buffers, and on an integrated GPU that pinned ~12 GB overflows the GPU's shared-memory window.",
+    "fix": "--no-host 1 (keep the CPU-side weights in plain RAM) and -lm none. With those, the same 30B file runs on a laptop iGPU that has half a gigabyte of its own memory.",
+    "expected": {
+      "source": "2026-10-12 llama-bench, -ngl 99 -fa 1 -t 10 -lm none --no-host 1",
+      "rows": [
+        {
+          "label": "short context, --n-cpu-moe 12",
+          "gen_tps": 25.1,
+          "prompt_tps": 220.3,
+          "vram_gb": null
+        },
+        {
+          "label": "8K context, --n-cpu-moe 12, q8 KV",
+          "gen_tps": 16.4,
+          "prompt_tps": 147.3,
+          "vram_gb": null
+        }
+      ]
+    },
+    "measured_at": "2026-10-24 22:41 EDT (llama-bench on the machine; flm paused for the run and restarted)",
+    "command": "llama-bench -m Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 10 -lm none --no-host 1 --n-cpu-moe 12",
+    "results": [
+      {
+        "label": "short context",
+        "gen_tps": 29.3,
+        "prompt_tps": 275.7,
+        "vram_gb": null
+      },
+      {
+        "label": "8K context, q8 KV cache (-ctk q8_0 -ctv q8_0 -d 8192)",
+        "gen_tps": 24.4,
+        "prompt_tps": 174.8,
+        "vram_gb": null
+      }
+    ],
+    "control": {
+      "command": "same, WITHOUT --no-host 1 (-p 64 -n 16 -r 1)",
+      "result": "radv/amdgpu: Not enough memory for command submission. -> llama_bench: error: failed to load model",
+      "measured_at": "2026-10-24 22:47 EDT"
+    },
+    "logs": [
+      "artifacts/tiktok/post03/ryzen_vulkan_bench.log",
+      "artifacts/tiktok/post03/ryzen_vulkan_nohost_control.log"
+    ]
+  },
+  "note": "Speed swings with free RAM: Windows leaves ~11 GB for 12.8 GB of experts, so part of them streams from the SSD (16k-42k page-ins/s measured). See /methods/post03/.",
+  "page": "/methods/post03/",
+  "units": "GPU memory = nvidia-smi MiB / 1024 (GiB), the same unit as the 4 GB card"
+}

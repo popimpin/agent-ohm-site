@@ -1,0 +1,205 @@
+{
+ "measured_at": "2026-10-25 11:22",
+ "rows": [
+  {
+   "sweep": "ctx",
+   "test": "pp512",
+   "depth": 0,
+   "threads": 12,
+   "n_cpu_moe": 48,
+   "type_k": "f16",
+   "tps": 119.33,
+   "sd": 45.32
+  },
+  {
+   "sweep": "ctx",
+   "test": "tg128",
+   "depth": 0,
+   "threads": 12,
+   "n_cpu_moe": 48,
+   "type_k": "f16",
+   "tps": 21.15,
+   "sd": 7.14
+  },
+  {
+   "sweep": "ctx",
+   "test": "pp512",
+   "depth": 8192,
+   "threads": 12,
+   "n_cpu_moe": 48,
+   "type_k": "f16",
+   "tps": 281.55,
+   "sd": 35.72
+  },
+  {
+   "sweep": "ctx",
+   "test": "tg128",
+   "depth": 8192,
+   "threads": 12,
+   "n_cpu_moe": 48,
+   "type_k": "f16",
+   "tps": 19.75,
+   "sd": 7.4
+  },
+  {
+   "sweep": "ctx_q8",
+   "test": "pp512",
+   "depth": 16384,
+   "threads": 12,
+   "n_cpu_moe": 48,
+   "type_k": "q8_0",
+   "tps": 309.27,
+   "sd": 15.47
+  },
+  {
+   "sweep": "ctx_q8",
+   "test": "tg128",
+   "depth": 16384,
+   "threads": 12,
+   "n_cpu_moe": 48,
+   "type_k": "q8_0",
+   "tps": 18.97,
+   "sd": 0.07
+  },
+  {
+   "sweep": "ctx_q8",
+   "test": "pp512",
+   "depth": 32768,
+   "threads": 12,
+   "n_cpu_moe": 48,
+   "type_k": "q8_0",
+   "tps": 268.3,
+   "sd": 4.38
+  },
+  {
+   "sweep": "ctx_q8",
+   "test": "tg128",
+   "depth": 32768,
+   "threads": 12,
+   "n_cpu_moe": 48,
+   "type_k": "q8_0",
+   "tps": 13.1,
+   "sd": 0.01
+  },
+  {
+   "sweep": "threads",
+   "test": "pp512",
+   "depth": 0,
+   "threads": 6,
+   "n_cpu_moe": 48,
+   "type_k": "f16",
+   "tps": 271.01,
+   "sd": 8.59
+  },
+  {
+   "sweep": "threads",
+   "test": "tg128",
+   "depth": 0,
+   "threads": 6,
+   "n_cpu_moe": 48,
+   "type_k": "f16",
+   "tps": 23.75,
+   "sd": 1.84
+  },
+  {
+   "sweep": "threads",
+   "test": "pp512",
+   "depth": 0,
+   "threads": 8,
+   "n_cpu_moe": 48,
+   "type_k": "f16",
+   "tps": 362.08,
+   "sd": 11.57
+  },
+  {
+   "sweep": "threads",
+   "test": "tg128",
+   "depth": 0,
+   "threads": 8,
+   "n_cpu_moe": 48,
+   "type_k": "f16",
+   "tps": 24.13,
+   "sd": 2.93
+  },
+  {
+   "sweep": "threads",
+   "test": "pp512",
+   "depth": 0,
+   "threads": 16,
+   "n_cpu_moe": 48,
+   "type_k": "f16",
+   "tps": 383.53,
+   "sd": 11.06
+  },
+  {
+   "sweep": "threads",
+   "test": "tg128",
+   "depth": 0,
+   "threads": 16,
+   "n_cpu_moe": 48,
+   "type_k": "f16",
+   "tps": 26.55,
+   "sd": 2.62
+  },
+  {
+   "sweep": "threads",
+   "test": "pp512",
+   "depth": 0,
+   "threads": 20,
+   "n_cpu_moe": 48,
+   "type_k": "f16",
+   "tps": 400.51,
+   "sd": 4.98
+  },
+  {
+   "sweep": "threads",
+   "test": "tg128",
+   "depth": 0,
+   "threads": 20,
+   "n_cpu_moe": 48,
+   "type_k": "f16",
+   "tps": 21.31,
+   "sd": 2.49
+  },
+  {
+   "sweep": "placement",
+   "test": "pp512",
+   "depth": 0,
+   "threads": 12,
+   "n_cpu_moe": 44,
+   "type_k": "f16",
+   "tps": 346.74,
+   "sd": 15.2
+  },
+  {
+   "sweep": "placement",
+   "test": "tg128",
+   "depth": 0,
+   "threads": 12,
+   "n_cpu_moe": 44,
+   "type_k": "f16",
+   "tps": 28.7,
+   "sd": 4.72
+  },
+  {
+   "sweep": "placement",
+   "test": "pp512",
+   "depth": 0,
+   "threads": 12,
+   "n_cpu_moe": 40,
+   "type_k": "f16",
+   "tps": 387.26,
+   "sd": 37.4
+  },
+  {
+   "sweep": "placement",
+   "test": "tg128",
+   "depth": 0,
+   "threads": 12,
+   "n_cpu_moe": 40,
+   "type_k": "f16",
+   "tps": 31.16,
+   "sd": 4.09
+  }
+ ]
+}

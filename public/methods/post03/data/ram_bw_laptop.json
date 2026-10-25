@@ -1,0 +1,12 @@
+{
+ "measured_at": "2026-10-25 10:40",
+ "method": "numpy threaded sum over 4 GiB int64, best of 3",
+ "read_GBps_by_threads": {
+  "1": 15.7,
+  "4": 37.2,
+  "8": 38.1,
+  "12": 38.0,
+  "16": 39.2,
+  "20": 38.9
+ }
+}

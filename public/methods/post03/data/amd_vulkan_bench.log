@@ -1,0 +1,25 @@
+flm scope: system
+flm stopped
+               total        used        free      shared  buff/cache   available
+Mem:           23131        2774        9527          51       11261       20356
+== date 2026-10-24 22:41:24 EDT
+Model name:                              AMD Ryzen AI 9 365 w/ Radeon 880M
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon 890M Graphics (RADV GFX1150) (radv) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
+load_backend: loaded Vulkan backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-vulkan.so
+load_backend: loaded Vulkan backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-vulkan.so
+== CMD1: ./llama-bench -m /home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 10 -lm none --no-host 1 --n-cpu-moe 12 -r 2
+| model                          |       size |     params | backend    | ngl |  n_cpu_moe |  fa |         lm |  noh |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ---------: | --: | ---------: | ---: | --------------: | -------------------: |
+| qwen3moe 30B.A3B Q3_K - Medium |  12.88 GiB |    30.53 B | Vulkan     |  99 |         12 |   1 |       none |    1 |           pp512 |       275.69 ± 20.18 |
+| qwen3moe 30B.A3B Q3_K - Medium |  12.88 GiB |    30.53 B | Vulkan     |  99 |         12 |   1 |       none |    1 |           tg128 |         29.30 ± 0.27 |
+== CMD2: ./llama-bench -m /home/ohm/ohm_local_ai/models/Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 10 -lm none --no-host 1 --n-cpu-moe 12 -ctk q8_0 -ctv q8_0 -d 8192 -r 2
+| model                          |       size |     params | backend    | ngl |  n_cpu_moe | type_k | type_v |  fa |         lm |  noh |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ---------: | -----: | -----: | --: | ---------: | ---: | --------------: | -------------------: |
+| qwen3moe 30B.A3B Q3_K - Medium |  12.88 GiB |    30.53 B | Vulkan     |  99 |         12 |   q8_0 |   q8_0 |   1 |       none |    1 |   pp512 @ d8192 |        174.79 ± 0.53 |
+| qwen3moe 30B.A3B Q3_K - Medium |  12.88 GiB |    30.53 B | Vulkan     |  99 |         12 |   q8_0 |   q8_0 |   1 |       none |    1 |   tg128 @ d8192 |         24.40 ± 0.74 |
+== build
+load_backend: loaded RPC backend from /home/ohm/ohm_local_ai/llama-b11172/libggml-rpc.so
+ggml_vulkan: Found 1 Vulkan devices:
+flm after: active
+flm :9100 http 000

@@ -1453,6 +1453,7 @@
       <a href="#section-stage">BUILT HERE</a>
       <a href="#try">TRY IT</a>
       <a href="#work">THE POSTS</a>
+      <a href="#method">THE METHOD</a>
       <a href="#matrix">THE LADDER</a>
       <a href="#contact">INSPECT IT</a>
     </nav>
@@ -1930,6 +1931,61 @@
           </div></div>
       </div>
 
+    </div>
+  </section>
+
+
+  <style>
+    .method-section { background: var(--bg-dark); color: #fff; padding: 112px 48px; position: relative; z-index: 10; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .method-wrap { max-width: 1240px; margin: 0 auto; }
+    .method-tag { font: 12px var(--font-mono); letter-spacing: .14em; color: var(--accent-cyan); margin-bottom: 16px; }
+    .method-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(32px, 4vw, 52px); line-height: .98; letter-spacing: -.03em; text-transform: uppercase; margin: 0 0 16px; }
+    .method-copy { color: #9aa3ad; font-size: 15px; line-height: 1.6; max-width: 720px; margin: 0 0 32px; }
+    .method-code { position: relative; background: #08090d; border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 20px 112px 20px 20px; margin-bottom: 28px; box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 16px 40px rgba(0,0,0,.45); }
+    .method-code code { font: 14px/1.6 var(--font-mono); color: #e8f6f3; word-break: break-all; white-space: pre-wrap; }
+    .method-copybtn { position: absolute; top: 14px; right: 14px; background: none; border: 1px solid rgba(255,255,255,.2); color: #fff; border-radius: 999px; padding: 6px 12px; font: 700 11px var(--font-mono); letter-spacing: .1em; cursor: pointer; transition: border-color .16s ease-out; }
+    .method-copybtn:hover { border-color: var(--accent-cyan); }
+    .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .method-card { border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: 20px; background: rgba(255,255,255,.02); }
+    .method-card h4 { font: 700 11px var(--font-mono); letter-spacing: .12em; color: #7d8590; margin: 0 0 12px; }
+    .method-card dl { margin: 0; display: grid; grid-template-columns: 120px 1fr; gap: 8px 12px; font-size: 14px; }
+    .method-card dt { color: #7d8590; } .method-card dd { margin: 0; }
+    .method-card a { color: var(--accent-cyan); }
+    .method-card table { width: 100%; border-collapse: collapse; font: 13px var(--font-mono); }
+    .method-card th, .method-card td { text-align: left; padding: 8px 6px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .method-card th { color: #7d8590; font-weight: 400; font-size: 11px; letter-spacing: .08em; }
+    .method-when { font: 11px var(--font-mono); letter-spacing: .1em; color: #ffd166; margin-top: 12px; }
+    .method-credit { color: #9aa3ad; font-size: 13px; line-height: 1.6; margin-top: 24px; }
+    @media (max-width: 760px) { .method-section { padding: 80px 16px; } .method-grid { grid-template-columns: 1fr; } .method-code { padding: 52px 16px 16px; } .method-card dl { grid-template-columns: 96px 1fr; } }
+  </style>
+  <section class="method-section" id="method">
+    <div class="method-wrap">
+      <div class="method-tag">04 // THE METHOD // POST 03</div>
+      <h2 class="method-title">Run it yourself.</h2>
+      <p class="method-copy">A 30B model on a 4 GB laptop GPU. The exact command from the take, the machine it ran on, and what it measured. If your laptop is close to this one, you can check every number.</p>
+      <div class="method-code"><code id="methodCmd">llama-server -m Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 --n-cpu-moe 48 -t 12 -fa on -c 8192</code><button class="method-copybtn" onclick="navigator.clipboard.writeText(document.getElementById('methodCmd').textContent);this.textContent='COPIED'">COPY</button></div>
+      <div class="method-grid">
+        <div class="method-card"><h4>THE MACHINE + THE MODEL</h4><dl>
+          <dt>GPU</dt><dd>NVIDIA RTX 3050 Ti Laptop, 4 GB</dd><dt>CPU</dt><dd>Intel i7-12700H</dd><dt>RAM</dt><dd>24 GB DDR5-4800</dd>
+          <dt>Model</dt><dd>Qwen3-30B-A3B-Instruct-2507 &middot; 30.5B total, 3.3B active per token</dd>
+          <dt>File</dt><dd><a href="https://huggingface.co/unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF" target="_blank" rel="noopener">Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf</a> &middot; 13.8 GB</dd>
+          <dt>Runtime</dt><dd><a href="https://github.com/ggml-org/llama.cpp" target="_blank" rel="noopener">llama.cpp</a> b11172 (CUDA 12.4)</dd></dl></div>
+        <div class="method-card"><h4>WHAT IT MEASURED</h4>
+          <table><tr><th>RUN</th><th>TOKENS/S</th><th>PROMPT/S</th><th>GPU MEMORY</th></tr><tr><td>live, streaming + recording the screen (the post)</td><td>17.6</td><td>-</td><td>1.82 GB</td></tr><tr><td>benchmark, all experts in RAM (5 runs)</td><td>17-27</td><td>353.5</td><td>2.01 GB</td></tr><tr><td>8 expert layers on the card (--n-cpu-moe 40)</td><td>24.4</td><td>-</td><td>3.16 GB</td></tr><tr><td>12 expert layers on the card (--n-cpu-moe 36)</td><td>26.8</td><td>-</td><td>3.84 GB</td></tr></table>
+          <div class="method-when">2026-10-25 (live take 11:13; llama-bench sweeps 11:20-12:10) - laptop on AC, Windows 11</div></div>
+      </div>
+      <p class="method-credit">The trick is llama.cpp&#x27;s own option, --n-cpu-moe: it keeps the experts&#x27; weights in system RAM and the rest on the GPU. We measured it on this laptop; we did not invent it.</p>
+      <h3 class="method-title" style="font-size:clamp(24px,3vw,36px);margin-top:72px">No NVIDIA card? Vulkan.</h3>
+      <p class="method-copy">The same file on an AMD laptop's integrated graphics - half a gigabyte of its own memory. Every run first failed with &#x27;radv/amdgpu: Not enough memory for command submission&#x27; - even with all experts on the CPU. llama.cpp pins the CPU-side weights as Vulkan host buffers, and on an integrated GPU that pinned ~12 GB overflows the GPU&#x27;s shared-memory window. The fix: --no-host 1 (keep the CPU-side weights in plain RAM) and -lm none. With those, the same 30B file runs on a laptop iGPU that has half a gigabyte of its own memory.</p>
+      <div class="method-code"><code id="methodCmdVk">llama-bench -m Qwen3-30B-A3B-Instruct-2507-UD-Q3_K_XL.gguf -ngl 99 -fa 1 -t 10 -lm none --no-host 1 --n-cpu-moe 12</code><button class="method-copybtn" onclick="navigator.clipboard.writeText(document.getElementById('methodCmdVk').textContent);this.textContent='COPIED'">COPY</button></div>
+      <div class="method-grid">
+        <div class="method-card"><h4>THE MACHINE</h4><dl>
+          <dt>GPU</dt><dd>AMD Radeon 880M, integrated (RDNA 3.5, gfx1150; the Vulkan driver reports it as &#x27;Radeon 890M Graphics&#x27;) - 512 MiB of its own memory + an 11.3 GiB window into system RAM</dd><dt>CPU</dt><dd>AMD Ryzen AI 9 365 (lscpu on the machine)</dd><dt>RAM</dt><dd>24 GB, shared with the GPU (22.6 GiB usable)</dd>
+          <dt>Runtime</dt><dd><a href="https://github.com/ggml-org/llama.cpp" target="_blank" rel="noopener">llama.cpp</a> b11172 (Vulkan)</dd></dl></div>
+        <div class="method-card"><h4>WHAT IT MEASURED</h4>
+          <table><tr><th>RUN</th><th>TOKENS/S</th><th>PROMPT/S</th><th>GPU MEMORY</th></tr><tr><td>short context</td><td>29.3</td><td>275.7</td><td>shared RAM</td></tr><tr><td>8K context, q8 KV cache (-ctk q8_0 -ctv q8_0 -d 8192)</td><td>24.4</td><td>174.8</td><td>shared RAM</td></tr></table>
+          <div class="method-when">2026-10-24 22:41 EDT (llama-bench on the machine; flm paused for the run and restarted)</div></div>
+      </div><p class="method-credit"><a href="/methods/post03/">Read the whole explainer - how it works, what slows it, every raw number &rarr;</a></p>
     </div>
   </section>
 
