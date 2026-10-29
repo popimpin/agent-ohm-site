@@ -1,0 +1,130 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROCm on an AMD iGPU · Agent Ohm</title>
+<meta name="description" content="Why ROCm saw 7.6 GiB on a 16 GB-VRAM mini PC, the one boot setting that fixes it, and which backend finishes first.">
+<style>
+  :root { --bg:#050508; --panel:#0b0e14; --line:rgba(255,255,255,.1); --tx:#f1f5f9; --mu:#9aa3ad; --cy:#00f0ff; --am:#f5b83d; --rd:#ff5468;
+          --display:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; --mono:'JetBrains Mono','Fira Code',Consolas,monospace; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--tx); font:17px/1.65 var(--display); }
+  a { color:var(--cy); }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 24px; }
+  nav.top { padding:22px 0; border-bottom:1px solid var(--line); font:12px var(--mono); letter-spacing:.14em; }
+  nav.top a { color:var(--mu); text-decoration:none; } nav.top a:hover { color:var(--tx); }
+  .tag { font:12px var(--mono); letter-spacing:.14em; color:var(--cy); text-transform:uppercase; margin:0 0 12px; }
+  h1 { font-weight:900; font-size:clamp(36px,6vw,72px); line-height:.98; letter-spacing:-.03em; margin:56px 0 18px; }
+  h1 b { color:var(--am); } h1 i { font-style:normal; color:var(--cy); }
+  h2 { font-weight:900; font-size:clamp(26px,3.4vw,40px); line-height:1.05; letter-spacing:-.02em; margin:0 0 16px; }
+  section { padding:72px 0; border-bottom:1px solid var(--line); }
+  p { color:#c8ced6; max-width:720px; } p.lead { font-size:20px; color:var(--tx); }
+  .facts { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:36px 0 0; }
+  .fact { border:1px solid var(--line); border-radius:12px; padding:16px; background:var(--panel); }
+  .fact b { display:block; font:800 30px/1.1 var(--mono); color:var(--cy); } .fact span { font:12px var(--mono); color:var(--mu); }
+  .two { display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:start; }
+  figure { margin:0; } figure img { width:100%; border-radius:14px; border:1px solid var(--line); display:block; background:#07090d; }
+  figcaption { font:12px var(--mono); color:var(--mu); margin-top:8px; }
+  .scroll { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font:14px var(--mono); margin:18px 0; }
+  th, td { text-align:left; padding:10px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--mu); font-weight:400; font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
+  td.r { color:var(--am); } td.v { color:var(--cy); } td.win { font-weight:800; }
+  .code { position:relative; background:#08090d; border:1px solid var(--line); border-radius:10px; padding:18px 96px 18px 18px; margin:16px 0; }
+  .code code { font:14px/1.6 var(--mono); color:#e8f6f3; white-space:pre-wrap; word-break:break-all; }
+  .code button { position:absolute; top:12px; right:12px; background:none; border:1px solid rgba(255,255,255,.25); color:var(--tx); border-radius:999px; padding:6px 12px; font:700 11px var(--mono); letter-spacing:.1em; cursor:pointer; }
+  .warn { color:var(--rd); font-family:var(--mono); font-size:14px; }
+  .q { border-left:3px solid var(--cy); padding:4px 0 4px 18px; margin:18px 0; }
+  ul.data li { font:14px var(--mono); margin:4px 0; }
+  footer { padding:48px 0 80px; color:var(--mu); font:13px var(--mono); }
+  @media (max-width:760px) { .facts { grid-template-columns:repeat(2,1fr); } .two { grid-template-columns:1fr; } .code { padding:48px 14px 14px; } }
+</style></head>
+<body>
+<div class="wrap">
+<nav class="top"><a href="/">&larr; AGENT OHM</a> &nbsp;·&nbsp; <a href="/#work">THE POSTS</a> &nbsp;·&nbsp; <a href="/methods/post03/">PART 1</a></nav>
+
+<header>
+  <p class="tag">Parts 2 + 3 · measured 2026-10-28</p>
+  <h1><b>ROCm</b> or <i>Vulkan</i> on an AMD iGPU: the fix, and the race.</h1>
+  <p class="lead">My mini PC said a 12B model didn't fit. ROCm could only see 7.6 GiB of a machine
+  with 16 GB set aside for graphics. One kernel boot setting fixed it - and then I timed both backends.</p>
+  <div class="facts">
+    <div class="fact"><b>7.6 → 12</b><span>GiB ROCm can use, one boot setting</span></div>
+    <div class="fact"><b>23.6</b><span>GiB Vulkan saw all along</span></div>
+    <div class="fact"><b>~221-231</b><span>tok/s ROCm reads prompts (Vulkan 146-194)</span></div>
+    <div class="fact"><b>+7-10%</b><span>Vulkan writes faster</span></div>
+  </div>
+</header>
+
+<section>
+  <p class="tag">Part 2 · the symptom</p><h2>"Doesn't fit" - over a 126 MiB buffer</h2>
+  <p>In September, Ollama refused to start a 12B model on this machine:</p>
+  <p class="warn">ggml_gallocr_reserve_n_impl: failed to allocate ROCm0 buffer of size 132137216</p>
+  <p>That is 126 MiB, on a 32 GB machine. The fix at the time was to switch Ollama to Vulkan.
+  This page is about why it happened, and how to fix ROCm itself.</p>
+</section>
+
+<section>
+  <p class="tag">Part 2 · two pools</p><h2>Integrated graphics borrow from RAM - in two pools</h2>
+  <p>The firmware sets aside <b>16.0 GiB</b> as video memory. Linux adds a <b>shared pool</b> (GTT) the
+  graphics driver can map on demand: <b>7.6 GiB</b> by default. On this machine:</p>
+  <table><tr><th>backend</th><th>what Ollama's startup log reports</th><th>which pools</th></tr>
+  <tr><td>Vulkan</td><td>total "23.6 GiB"</td><td>video memory + shared</td></tr>
+  <tr><td>ROCm</td><td>total "7.6 GiB"</td><td>the shared pool only (equals it on both boots I measured)</td></tr></table>
+  <p><b>Why 7.6?</b> Linux sizes the shared pool (the <code>ttm.pages_limit</code> kernel setting) at half the
+  RAM left after the video memory: 15,604 MiB ÷ 2 = 7,802 MiB. Here
+  pages_limit was 1,997,339 pages × 4 KiB = 7,802 MiB. A live change of that
+  setting does nothing - the pool is sized when the driver loads - so the fix is a boot parameter.</p>
+</section>
+
+<section>
+  <p class="tag">Part 2 · the fix</p><h2>One kernel boot setting</h2>
+  <p>I raised the shared pool to 12 GiB: <code>pages = GiB × 262,144</code> (4 KiB pages) → 3,145,728.</p>
+  <div class="code"><code id="c1">GRUB_CMDLINE_LINUX_DEFAULT=&quot;... ttm.pages_limit=3145728 ttm.page_pool_size=3145728&quot;</code><button onclick="navigator.clipboard.writeText(document.getElementById('c1').textContent);this.textContent='COPIED'">COPY</button></div>
+  <div class="code"><code id="c2">sudo update-grub &amp;&amp; sudo reboot</code><button onclick="navigator.clipboard.writeText(document.getElementById('c2').textContent);this.textContent='COPIED'">COPY</button></div>
+  <p>After the reboot the shared pool was <b>12.0 GiB</b>; ROCm reported <b>12 GiB</b>
+  and Vulkan 28. The 12B loaded on ROCm with 49/49 layers on the GPU.</p>
+  <p class="warn">Leave room for the system. This box has no swap; the shared pool is a ceiling, not a reservation, but anything that
+  trusts the bigger number can now ask for more RAM than exists. I keep one big model loaded at a time.</p>
+  <p><b>Or skip all of it:</b> Vulkan already sees both pools, no reboot. In Ollama it is one line (a systemd drop-in here):</p>
+  <div class="code"><code id="c3">Environment=&quot;OLLAMA_LLM_LIBRARY=vulkan&quot;</code><button onclick="navigator.clipboard.writeText(document.getElementById('c3').textContent);this.textContent='COPIED'">COPY</button></div>
+  <p>To see what your own backend can use, read Ollama's startup log:</p>
+  <div class="code"><code id="c4">journalctl -u ollama | grep &quot;inference compute&quot;</code><button onclick="navigator.clipboard.writeText(document.getElementById('c4').textContent);this.textContent='COPIED'">COPY</button></div>
+</section>
+
+<section>
+  <p class="tag">Part 3 · the race</p><h2>ROCm reads faster. Vulkan writes faster. ROCm finished first.</h2>
+  <p>gemma4:12b, temperature 0, seed 1, 128-token answer, num_ctx 16384, 2 runs per length after a warm-up, nothing else loaded; boot with the shared pool raised to 12 GiB. Speeds in tokens/s, median of 2 (runs within 0.1 tok/s on Vulkan, 5 on ROCm). "Total" is the
+  time to read the prompt plus write the 128-token answer, model already loaded.</p>
+  <div class="scroll"><table><tr><th>prompt</th><th>read ROCm</th><th>read Vulkan</th><th>write ROCm</th><th>write Vulkan</th>
+  <th>total ROCm</th><th>total Vulkan</th><th>Vulkan first past</th></tr><tr><td>524</td><td class="r">222.5</td><td class="v">146.0</td><td class="r">10.52</td><td class="v">11.23</td><td class="r win">7.2 s</td><td class="v">7.8 s</td><td>~204</td></tr><tr><td>2,000</td><td class="r">227.9</td><td class="v">163.2</td><td class="r">10.01</td><td class="v">10.80</td><td class="r win">14.4 s</td><td class="v">17.3 s</td><td>~476</td></tr><tr><td>3,927</td><td class="r">230.7</td><td class="v">184.5</td><td class="r">9.86</td><td class="v">10.75</td><td class="r win">23.0 s</td><td class="v">26.4 s</td><td>~502</td></tr><tr><td>7,904</td><td class="r">221.1</td><td class="v">194.1</td><td class="r">9.71</td><td class="v">10.64</td><td class="r win">41.8 s</td><td class="v">46.3 s</td><td>~554</td></tr></table></div>
+  <p>Reading a prompt is compute-bound - ROCm stays flat around 226 tok/s while Vulkan
+  climbs with length. Writing is bandwidth-bound - every token reads the whole 7 GB model from RAM, and on this chip Vulkan runs close to
+  the memory's limit. The last column is computed, not measured: the answer length (tokens) past which Vulkan's faster writing wins
+  back the time ROCm saved reading.</p>
+  <div class="two">
+    <figure><img src="reading.png" alt="prompt reading speed by length, ROCm vs Vulkan"><figcaption>reading speed (the post's chart)</figcaption></figure>
+    <figure><img src="finish.png" alt="total time by prompt length, ROCm vs Vulkan"><figcaption>who finishes first</figcaption></figure>
+  </div>
+  <p><b>The rule on this machine:</b> agents (big context, short replies) → ROCm. Long chat answers → Vulkan, which also needs no reboot.
+  One model, one machine - test yours.</p>
+  <p>Short-prompt check, 256-token answers, 3 runs each: ROCm 10.62 · Vulkan 11.32
+  · Vulkan on the default boot 11.30 tok/s - the boot setting does not change Vulkan.</p>
+</section>
+
+<section>
+  <p class="tag">Open questions</p><h2>Why does ROCm write slower?</h2>
+  <p>Vulkan put the model in the video memory; ROCm can only use the shared pool. So I forced Vulkan into host memory
+  (<code>GGML_VK_PREFER_HOST_MEMORY=1</code>) with a ~3.9K-token prompt:</p>
+  <table><tr><th>arm</th><th>read tok/s</th><th>write tok/s</th></tr><tr><td>A ROCm</td><td>218.6</td><td>9.83</td></tr><tr><td>B Vulkan</td><td>184.3</td><td>10.73</td></tr><tr><td>D Vulkan + host memory</td><td>165.3</td><td>10.51</td></tr></table>
+  <div class="q">Placement explains about a quarter of the writing gap, if the setting moved the buffers at all - Ollama's log labels
+  them the same either way. What is the rest: ROCm's kernels for gfx1150, or how the shared pool is mapped?</div>
+  <div class="q">Is "ROCm only uses the shared pool" by design on these chips, and is a small firmware carve + a large shared pool the
+  intended setup? On this machine ROCm's total equalled the shared pool on both boots.</div>
+  <p>Tell me in the comments of the post, or open an issue on <a href="https://github.com/popimpin/agent-ohm-site">the repo</a>.</p>
+</section>
+
+<section>
+  <p class="tag">The data</p><h2>Every number on this page</h2>
+  <p>mini PC, AMD Radeon 890M integrated graphics (RADV GFX1150), 32 GB RAM with 16 GB set aside as video memory, no swap; Linux kernel 6.12; Ollama 0.30.10; model gemma4:12b (Q4). Derived from the take logs (which carry local addresses, so they are not published as-is):</p>
+  <ul class="data"><li><a href="data/results.json">results.json</a></li></ul>
+</section>
+<footer>Agent Ohm · Parts 2 + 3 · measured 2026-10-28</footer>
+</div></body></html>

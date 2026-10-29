@@ -992,6 +992,37 @@
       }
       return null;
     }
+    if (s.kind === 'camera') {
+      /* A LIVE CAMERA as a plane (2026-10-24, post 05: "use the live feed as the video you would add to the post not off
+         to the side but as an asset"). src names the device by label substring ('iriun'); empty = the default camera.
+         Live, so it never takes scene time (syncVideoPlanesTime skips data-live) and an offline export has no feed. */
+      let want = String(src || '').toLowerCase();
+      if (/[\/.]/.test(want)) want = '';      // a file path left from the previous kind cannot name a camera: the default one
+      const existing = LB && LB.imgs && LB.imgs[q.index];
+      if (existing && existing.tagName === 'VIDEO' && existing.getAttribute('data-cam') === want) return existing;
+      const v = document.createElement('video');
+      v.setAttribute('data-cam', want); v.dataset.live = '1';
+      v.muted = true; v.playsInline = true; v.autoplay = true;
+      (async function () {
+        try {
+          let stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          if (want) {
+            const cams = (await navigator.mediaDevices.enumerateDevices()).filter(function (d) { return d.kind === 'videoinput'; });
+            const hit = cams.find(function (d) { return (d.label || '').toLowerCase().indexOf(want) >= 0; });
+            if (!hit) throw new Error('no camera whose name contains "' + want + '"');
+            if (stream.getVideoTracks()[0].getSettings().deviceId !== hit.deviceId) {
+              stream.getTracks().forEach(function (t) { t.stop(); });
+              stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: hit.deviceId } } });
+            }
+          }
+          v.srcObject = stream; v.play().catch(function () {});
+        } catch (e) {
+          const msg = 'plane ' + q.index + ' (' + (q.label || '') + ') camera failed: ' + (e && e.message || e);
+          console.error('[station] ' + msg); window.__paneSourceError = msg;
+        }
+      })();
+      return v;
+    }
     if (!src || s.kind === 'none') return null;
     if (s.kind === 'color') {
       const cv = document.createElement('canvas');
@@ -3820,7 +3851,7 @@
   }
   function syncVideoPlanesTime(tt) {
     const syncEl = function (el) {
-      if (!el || el.tagName !== 'VIDEO' || !(el.duration > 0)) return;
+      if (!el || el.tagName !== 'VIDEO' || (el.dataset && el.dataset.live) || !(el.duration > 0)) return;
       const targetT = el.loop ? (tt % el.duration) : Math.min(tt, el.duration);
       if (Math.abs(el.currentTime - targetT) > 0.08) {
         try { el.currentTime = targetT; } catch (e) {}
@@ -6137,8 +6168,8 @@
         return { error: 'motion must be one of ' + MOTION_KINDS.join(', ') + ' - got ' + patch.motion };
       if (patch.source !== undefined) {
         if (isLightbox()) {
-          if (!patch.source || ['image', 'video', 'none', 'avatar', 'actor', 'color'].indexOf(patch.source.kind) < 0)
-            return { error: 'a depth plane carries an image, video, avatar (or none)' };
+          if (!patch.source || ['image', 'video', 'camera', 'none', 'avatar', 'actor', 'color'].indexOf(patch.source.kind) < 0)
+            return { error: 'a depth plane carries an image, video, live camera, avatar (or none)' };
           q.source = Object.assign({
             kind: patch.source.kind,
             fit: patch.source.fit || 'contain',
@@ -7291,7 +7322,7 @@
      sourceKinds(). A plane's content is polymorphic (image, video, colour); it is
      drawn at the plane's own parallax and through the same paintPane, so the
      corrections apply to it too. `tile` repeats at native size and is image-only. */
-  const SOURCE_KINDS = ['image', 'video', 'color', 'avatar', 'actor', 'none'];
+  const SOURCE_KINDS = ['image', 'video', 'camera', 'color', 'avatar', 'actor', 'none'];
   const SOURCE_FITS = ['cover', 'contain', 'tile'];
   const SRC_EL = {};
   function loadSource(q) {
@@ -7611,6 +7642,7 @@
   function syncVideoPlanesPlayback() {
     const checkEl = function (el) {
       if (!el || el.tagName !== 'VIDEO') return;
+      if (el.dataset && el.dataset.live) { if (el.paused) el.play().catch(function () {}); return; }   // a live camera has no timeline to pause
       if (isPlaying) {
         if (el.paused && !el.ended) el.play().catch(function () {});
       } else {

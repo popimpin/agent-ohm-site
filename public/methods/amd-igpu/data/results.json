@@ -1,0 +1,220 @@
+{
+ "machine": "mini PC, AMD Radeon 890M integrated graphics (RADV GFX1150), 32 GB RAM with 16 GB set aside as video memory, no swap; Linux kernel 6.12; Ollama 0.30.10; model gemma4:12b (Q4)",
+ "measured": "2026-10-28",
+ "september_error_bytes": 132137216,
+ "vram_carve_mib": 16384,
+ "shared_pool_mib_default": 7802,
+ "ram_after_carve_mib": 15604,
+ "pages_limit_default": 1997339,
+ "rocm_sees_default_gib": 7.6,
+ "vulkan_sees_default_gib": 23.6,
+ "boot_param": "ttm.pages_limit=3145728 ttm.page_pool_size=3145728",
+ "shared_pool_mib_fixed": 12288,
+ "rocm_sees_fixed_gib": 12.0,
+ "vulkan_sees_fixed_gib": 28.0,
+ "ab_short_prompt": {
+  "prompt_tokens": 27,
+  "answer_tokens": 256,
+  "gen_tps": {
+   "ROCm": [
+    10.6,
+    10.62,
+    10.63
+   ],
+   "Vulkan (fixed boot)": [
+    11.32,
+    11.33,
+    11.32
+   ],
+   "Vulkan (default boot)": [
+    11.31,
+    11.3,
+    11.3
+   ]
+  },
+  "layers_on_gpu": "49/49"
+ },
+ "placement_test_4k": {
+  "A ROCm": {
+   "prefill_tps": [
+    220.4,
+    218.6,
+    217.5
+   ],
+   "gen_tps": [
+    9.78,
+    9.89,
+    9.83
+   ]
+  },
+  "B Vulkan": {
+   "prefill_tps": [
+    184.3,
+    184.3,
+    184.2
+   ],
+   "gen_tps": [
+    10.73,
+    10.75,
+    10.73
+   ]
+  },
+  "D Vulkan + host memory": {
+   "prefill_tps": [
+    165.4,
+    165.0,
+    165.3
+   ],
+   "gen_tps": [
+    10.5,
+    10.51,
+    10.51
+   ]
+  }
+ },
+ "sweep": {
+  "ROCm": [
+   {
+    "prompt_tokens": 524,
+    "prefill_tps": [
+     225.0,
+     220.0
+    ],
+    "gen_tps": [
+     10.64,
+     10.4
+    ],
+    "work_s": [
+     6.75,
+     7.67
+    ]
+   },
+   {
+    "prompt_tokens": 2000,
+    "prefill_tps": [
+     227.2,
+     228.6
+    ],
+    "gen_tps": [
+     10.03,
+     9.99
+    ],
+    "work_s": [
+     13.89,
+     14.95
+    ]
+   },
+   {
+    "prompt_tokens": 3927,
+    "prefill_tps": [
+     231.8,
+     229.6
+    ],
+    "gen_tps": [
+     9.87,
+     9.84
+    ],
+    "work_s": [
+     22.61,
+     23.4
+    ]
+   },
+   {
+    "prompt_tokens": 7904,
+    "prefill_tps": [
+     223.7,
+     218.5
+    ],
+    "gen_tps": [
+     9.71,
+     9.71
+    ],
+    "work_s": [
+     41.1,
+     42.55
+    ]
+   }
+  ],
+  "Vulkan": [
+   {
+    "prompt_tokens": 525,
+    "prefill_tps": [
+     146.0,
+     146.0
+    ],
+    "gen_tps": [
+     11.23,
+     11.24
+    ],
+    "work_s": [
+     7.78,
+     7.78
+    ]
+   },
+   {
+    "prompt_tokens": 2001,
+    "prefill_tps": [
+     162.5,
+     164.0
+    ],
+    "gen_tps": [
+     10.8,
+     10.8
+    ],
+    "work_s": [
+     17.41,
+     17.2
+    ]
+   },
+   {
+    "prompt_tokens": 3928,
+    "prefill_tps": [
+     184.5,
+     184.5
+    ],
+    "gen_tps": [
+     10.75,
+     10.76
+    ],
+    "work_s": [
+     26.4,
+     26.49
+    ]
+   },
+   {
+    "prompt_tokens": 7905,
+    "prefill_tps": [
+     194.2,
+     194.1
+    ],
+    "gen_tps": [
+     10.64,
+     10.63
+    ],
+    "work_s": [
+     46.53,
+     45.99
+    ]
+   }
+  ]
+ },
+ "sweep_conditions": "gemma4:12b, temperature 0, seed 1, 128-token answer, num_ctx 16384, 2 runs per length after a warm-up, nothing else loaded; boot with the shared pool raised to 12 GiB",
+ "breakeven_answer_tokens": [
+  {
+   "prompt_tokens": 524,
+   "vulkan_first_past": 204
+  },
+  {
+   "prompt_tokens": 2000,
+   "vulkan_first_past": 476
+  },
+  {
+   "prompt_tokens": 3927,
+   "vulkan_first_past": 502
+  },
+  {
+   "prompt_tokens": 7904,
+   "vulkan_first_past": 554
+  }
+ ]
+}
