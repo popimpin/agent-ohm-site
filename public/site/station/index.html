@@ -7134,7 +7134,7 @@
         let url = typeof specOrUrl === 'string' ? specOrUrl : (specOrUrl.url || specOrUrl.src);
         const hash = new URLSearchParams((location.hash || '').replace(/^#/, ''));
         const search = new URLSearchParams(location.search || '');
-        const s0 = hash.get('s0') || search.get('s0') || (window.parent && window.parent.S0) || localStorage.getItem('ohm_s0_token') || '5539be580e7a298178744dc0f620b41fb936d705544ed9de4d15012ba9ec72e1';
+        const s0 = hash.get('s0') || search.get('s0') || (window.parent && window.parent.S0) || localStorage.getItem('ohm_s0_token');
 
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!window.__stageAudioCtx) window.__stageAudioCtx = new AudioCtx();
@@ -7168,7 +7168,7 @@
       try {
         const hash = new URLSearchParams((location.hash || '').replace(/^#/, ''));
         const search = new URLSearchParams(location.search || '');
-        const s0 = hash.get('s0') || search.get('s0') || (window.parent && window.parent.S0) || localStorage.getItem('ohm_s0_token') || '5539be580e7a298178744dc0f620b41fb936d705544ed9de4d15012ba9ec72e1';
+        const s0 = hash.get('s0') || search.get('s0') || (window.parent && window.parent.S0) || localStorage.getItem('ohm_s0_token');
         const kernel = hash.get('kernel') || search.get('kernel') || (window.parent && window.parent.KERNEL) || `${location.protocol}//${location.hostname}:8889`;
 
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
