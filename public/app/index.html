@@ -1,0 +1,89 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The app · Agent Ohm</title>
+<meta name="description" content="The Agent Ohm phone app: its own node in the mesh, one tap to any machine, and approvals that are never blind and signed in hardware.">
+<style>
+  :root { --bg:#050508; --panel:#0b0e14; --line:rgba(255,255,255,.1); --tx:#f1f5f9; --mu:#9aa3ad; --cy:#00f0ff; --am:#f5b83d; --rd:#ff4d5e;
+          --display:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; --mono:'JetBrains Mono','Fira Code',Consolas,monospace; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--tx); font:17px/1.6 var(--display); }
+  a { color:var(--cy); font:700 12px var(--mono); letter-spacing:.1em; text-decoration:none; } a:hover { text-decoration:underline; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 24px; }
+  nav.top { padding:22px 0; border-bottom:1px solid var(--line); } nav.top a { color:var(--mu); }
+  h1 { font-weight:900; font-size:clamp(36px,6vw,64px); line-height:1; letter-spacing:-.03em; margin:56px 0 12px; }
+  h2 { font-weight:900; font-size:clamp(24px,3.4vw,32px); letter-spacing:-.02em; margin:56px 0 12px; }
+  .lead { color:#c8ced6; max-width:680px; margin:0 0 32px; font-size:19px; }
+  p { max-width:680px; } b { color:#fff; }
+  .tag { font:12px var(--mono); letter-spacing:.14em; color:var(--cy); text-transform:uppercase; margin:0 0 6px; }
+  .tag.fail { color:var(--rd); } .tag.ok { color:#3ddc97; }
+  figure { margin:24px 0; } figcaption { color:var(--mu); font:13px/1.5 var(--mono); margin-top:10px; max-width:760px; }
+  video, figure img { width:100%; display:block; border-radius:12px; border:1px solid var(--line); background:var(--panel); }
+  .pair { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .steps { list-style:none; padding:0; margin:24px 0; counter-reset:s; display:grid; gap:12px; }
+  .steps li { counter-increment:s; display:grid; grid-template-columns:44px 1fr; gap:14px; padding:16px 18px;
+              background:var(--panel); border:1px solid var(--line); border-radius:12px; }
+  .steps li::before { content:counter(s, decimal-leading-zero); font:700 14px var(--mono); color:var(--cy); padding-top:3px; }
+  .steps li.fail::before { color:var(--rd); } .steps b { display:block; margin-bottom:2px; }
+  .steps span { color:#c8ced6; font-size:15px; }
+  .jump { display:inline-block; margin-top:10px; padding:8px 12px; border:1px solid var(--line); border-radius:8px; cursor:pointer;
+          background:none; color:var(--rd); font:700 12px var(--mono); letter-spacing:.1em; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin:24px 0; }
+  .cell { padding:18px; background:var(--panel); border:1px solid var(--line); border-radius:12px; }
+  .cell b { display:block; margin-bottom:4px; } .cell span { color:#c8ced6; font-size:15px; }
+  .note { border-left:3px solid var(--am); padding:4px 0 4px 16px; color:#c8ced6; }
+  footer { margin-top:64px; padding:48px 0 80px; color:var(--mu); font:13px var(--mono); border-top:1px solid var(--line); }
+  @media (max-width:720px) { .pair { grid-template-columns:1fr; } body { font-size:16px; } }
+</style></head>
+<body><div class="wrap">
+<nav class="top"><a href="/">&larr; AGENT OHM</a> &nbsp;·&nbsp; <a href="/orchestration/">WHEN IT BREAKS</a> &nbsp;·&nbsp; <a href="/app/">THE APP</a> &nbsp;·&nbsp; <a href="/posts/">ALL POSTS</a></nav>
+
+<p class="tag">THE PHONE APP // ONE PHONE, THREE COMPUTERS</p>
+<h1>The app</h1>
+<p class="lead">The phone is not a remote control for one PC. It is its own node in the mesh: it carries intent in, and it is
+where a human says yes. The work runs on the computers; the decisions stay in your hand.</p>
+<figure>
+  <img src="app_unfolded.jpg" alt="The Ohm app on a folding phone, unfolded: the mesh on the left, a live terminal on the right" loading="lazy">
+  <figcaption>The app unfolded, from the phone's own screen recording. Left: the three computers as coloured pills and
+  everything the agents do, the same feed the PC console shows. Right: a live terminal on any machine in the mesh - here,
+  the coding agent on the PC, running with its permission prompts switched off.</figcaption>
+</figure>
+<p class="note">Look at the red line in that terminal: <b>bypass permissions on</b>. That is not a slip. The agent in it is
+building this app, and its builder trusts it enough to let it work without asking, from a phone, away from the PC.
+That trust was earned the slow way - receipts, guards, failures shown and fixed in public - and it is a setting a human
+chose, not a default. What still asks, every time, is anything that goes out into the world under his name: the card below.</p>
+<p class="note">And bypass did not open the door. Before the phone could reach that terminal at all, it needed a fingerprint.
+The audit log on the machine that guards the door - each entry hashed into the next, so none can be quietly edited -
+records it at 13:08:12 that day: <b>terminal attach, signed, key: StrongBox</b>, three and a half minutes before this
+recording began. Bypass is the agent's setting. The fingerprint is the human's, and it is never switched off.</p>
+
+<h2>What it does</h2>
+<div class="grid">
+  <div class="cell"><b>Reaches every seat</b><span>A terminal on any of the three computers, an agent already running on a
+  PC, or the agents themselves - from the same screen.</span></div>
+  <div class="cell"><b>One tap, one fingerprint</b><span>Open your agent the way you open a website. It reuses the session that is
+  running instead of starting another; machine pickers are the escape hatch, not the path.</span></div>
+  <div class="cell"><b>The computers are the hands</b><span>The phone sends intent. A mini PC in the mesh does the work and reaches
+  the other machines, so nothing heavy runs on the phone.</span></div>
+  <div class="cell"><b>Colour is identity</b><span>Every agent and every machine has its own colour, so who is doing what reads at
+  a glance instead of in a log.</span></div>
+</div>
+
+<h2>Nothing runs until a thumb says so</h2>
+<figure>
+  <img src="approval_card.jpg" alt="An approval card: post this video to X, publicly, now - with the caption, the video and the address, then Decline or Approve with the phone key" loading="lazy">
+  <figcaption>The real card for Agent Ohm's first post on X. Before the button: what it will do, where, with exactly which
+  video and caption. Approved on the phone, then posted.</figcaption>
+</figure>
+<div class="grid">
+  <div class="cell"><b>Never a blind yes</b><span>An approval only means something if you can see what you are approving. Every
+  card shows why the agent stopped, the exact action, where it will happen, and its own reasoning - before any button.</span></div>
+  <div class="cell"><b>Signed in the phone's security chip</b><span>A yes is a signature from a key that never leaves the phone's
+  hardware security chip. The receiving side checks which kind of key signed it and refuses anything weaker.</span></div>
+  <div class="cell"><b>Phone away, keyboard at the desk</b><span>When the phone isn't connected, the same question appears as a
+  dialog at the PC instead of waiting on a phone in another room. A human yes is still required either way.</span></div>
+</div>
+
+<p class="note">Honest status: this is a working build on one phone - a Pixel 10 Pro Fold - installed by hand. It is not in an
+app store. Everything on this page is what that build does today, recorded on the phone itself.</p>
+
+<footer>Agent Ohm · <a href="https://github.com/popimpin/agent-ohm-site" target="_blank" rel="noopener">this site's source</a> · PolyForm Noncommercial 1.0.0</footer>
+</div></body></html>
