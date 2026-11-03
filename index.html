@@ -808,7 +808,7 @@
   --bg-dark: #050508;
   --text-light: #f3f4f6;
   --border-dark: rgba(255, 255, 255, 0.12);
-  --accent-cyan: #00f0ff;
+  --accent-cyan: #7FA7B8;
 }
 
 /* ── IMPECCABLE DESIGN SYSTEM TOKENS ── */
@@ -2044,7 +2044,7 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
 #method .method-when { color: #B45309 !important; }
 
 /* Live edit, now inside "Watch it work": controls on white, the page itself on a dark screen */
-.try-in-tab { --try-ink: #00f0ff; align-items: stretch !important; }
+.try-in-tab { --try-ink: #7FA7B8; align-items: stretch !important; }
 .try-in-tab .try-label { color: #475569 !important; }
 .try-in-tab .try-input { background: #FFFFFF !important; border: 1px solid rgba(15, 23, 42, 0.14) !important; color: var(--pe-ink) !important; }
 .try-in-tab .try-input:focus { border-color: var(--yours) !important; }
@@ -2110,14 +2110,238 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
 }
 #work .card-action-btn:hover { background: #fff; color: #000; }
 </style>
+
+<style id="quiet-layer">
+/* ── QUIET LAYER (2026-11-03): editorial calm. One serif voice for headlines, light grey Inter for prose,
+   small grey mono for labels, almost no colour, hairline panels, art made on the mini PC for warmth. ── */
+@font-face { font-family: 'Instrument Serif'; font-style: normal; font-weight: 400; font-display: swap; src: url('./fonts/instrument-serif/instrument-serif-400.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 400; font-display: swap; src: url('./fonts/inter/inter-400.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 500; font-display: swap; src: url('./fonts/inter/inter-500.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap; src: url('./fonts/inter/inter-600.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('./fonts/ibm-plex-mono/ibm-plex-mono-400.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('./fonts/ibm-plex-mono/ibm-plex-mono-500.woff2') format('woff2'); }
+
+:root, body, #page, .ohm-sec, #daylight-hero, #hero {
+  --q-serif: 'Instrument Serif', 'Times New Roman', serif;
+  --q-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --q-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --q-ink: #0A0A0A; --q-ink-2: #5B5B63; --q-ink-3: #8B8B93;
+  --q-paper: #FFFFFF; --q-panel: #F7F7F5; --q-line: #E7E7E3; --q-line-2: #D6D6D1;
+  --q-yours: #3F6F5C; --q-yours-soft: #EEF3F0;
+  --q-night: #141414;
+  --font-display: var(--q-sans); --font-mono: var(--q-mono);
+  --yours: #3F6F5C; --yours-ink: #2F5747; --yours-soft: #EEF3F0;
+  --pe-ink: #0A0A0A; --pe-ink-dim: #5B5B63; --pe-line: #E7E7E3;
+  --pe-shadow-1: none; --pe-shadow-2: none; --pe-shadow-3: 0 1px 2px rgba(10,10,10,.04), 0 12px 32px rgba(10,10,10,.06);
+}
+html, body { background: var(--q-paper) !important; }
+body { font-family: var(--q-sans) !important; color: var(--q-ink) !important; -webkit-font-smoothing: antialiased; }
+
+/* one serif voice for every section-level headline */
+.hero-headline, .section-title, .yours-title, .receipts-headline, #matrix .matrix-header h2, #method .method-title,
+.mesh-breakthrough-banner h3, .verbatim-quote, #work .cards-title-block h3, .morph-intro-overlay h2 {
+  font-family: var(--q-serif) !important; font-weight: 400 !important; text-transform: none !important;
+  letter-spacing: -0.035em !important; line-height: 1.02 !important;
+}
+.hero-headline { font-size: clamp(44px, 6.2vw, 84px) !important; color: var(--q-ink) !important; max-width: 980px !important; margin: 0 0 24px !important; }
+.section-title, .yours-title, .receipts-headline, #matrix .matrix-header h2, #method .method-title { font-size: clamp(36px, 4.6vw, 60px) !important; color: var(--q-ink) !important; }
+.yours-title em { color: var(--q-yours) !important; font-style: normal; }
+
+/* prose: light grey and airy */
+.hero-subhead, .section-desc, .yours-lede, .receipts-sub, .tab-info-col p, #method .method-copy, .mesh-breakthrough-banner p, .verbatim-sub {
+  font-family: var(--q-sans) !important; color: var(--q-ink-2) !important; font-weight: 400 !important; letter-spacing: -0.01em;
+}
+.hero-subhead { font-size: clamp(18px, 1.6vw, 22px) !important; line-height: 1.45 !important; max-width: 640px !important; margin: 0 0 32px !important; }
+.section-desc { font-size: 19px !important; line-height: 1.5 !important; max-width: 680px !important; margin: 0 !important; }
+
+/* labels: small grey mono, no pills */
+.eyebrow-pill { background: none !important; border: 0 !important; padding: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+  font: 400 12px/1 var(--q-mono) !important; letter-spacing: 0.12em !important; color: var(--q-ink-3) !important; margin-bottom: 20px !important; }
+.eyebrow-pill .pulse-dot { display: none !important; }
+.does-num, #matrix .tile-node, #method .method-tag, .mesh-breakthrough-tag, .callout-number, .vs-head > div, .home-map-caption, .control-label, .try-in-tab .try-label {
+  font-family: var(--q-mono) !important; font-weight: 400 !important; letter-spacing: 0.1em !important; color: var(--q-ink-3) !important; }
+
+/* left-aligned editorial layout */
+.hero-section { text-align: left !important; max-width: 1216px !important; padding: 112px 32px 0 !important; }
+.hero-cta-cluster, .hero-trust-bar { justify-content: flex-start !important; }
+.section-intro { text-align: left !important; max-width: 1216px; margin-left: auto !important; margin-right: auto !important; }
+.pe-section, .sandbox-section { max-width: 1280px !important; padding-top: 120px !important; padding-bottom: 40px !important; }
+
+/* buttons: black pill + soft grey pill */
+.btn-hero-primary, .site-header .btn-primary, .btn-receipt:first-child {
+  background: var(--q-ink) !important; color: #fff !important; border: 0 !important; border-radius: 999px !important; box-shadow: none !important;
+  font: 400 16px var(--q-sans) !important; padding: 12px 28px !important; transition: background 160ms ease-out !important; }
+.btn-hero-primary:hover, .site-header .btn-primary:hover { background: #2A2A2A !important; transform: none !important; }
+.btn-hero-secondary, .site-header .btn-secondary, .btn-receipt {
+  background: #EDEDEB !important; color: var(--q-ink) !important; border: 0 !important; border-radius: 999px !important; box-shadow: none !important;
+  font: 400 16px var(--q-sans) !important; padding: 12px 24px !important; transition: background 160ms ease-out !important; }
+.btn-hero-secondary:hover, .site-header .btn-secondary:hover, .btn-receipt:hover { background: #E2E2DF !important; }
+.btn-receipt:first-child:hover { background: #2A2A2A !important; }
+.site-header .btn-primary, .site-header .btn-secondary { font-size: 14px !important; padding: 8px 18px !important; }
+
+/* header: white, hairline, serif wordmark */
+.site-header { background: rgba(255,255,255,.88) !important; backdrop-filter: blur(12px); border-bottom: 1px solid var(--q-line) !important; box-shadow: none !important; }
+.brand-badge { gap: 0 !important; }
+.brand-word { font-family: var(--q-serif); font-size: 30px; font-weight: 400; letter-spacing: -0.03em; color: var(--q-ink); line-height: 1; }
+.nav-link { font: 400 15px var(--q-sans) !important; color: var(--q-ink) !important; }
+.nav-link:hover { color: var(--q-ink-2) !important; }
+
+/* hero trust line: quiet ticks */
+.hero-trust-bar { gap: 8px 28px !important; margin: 0 0 64px !important; }
+.trust-item { font: 400 14px var(--q-sans) !important; color: var(--q-ink-2) !important; }
+.hero-trust-bar .trust-item span:first-child { color: var(--q-yours) !important; font-weight: 600; }
+
+/* the painting stage */
+.hero-stage { position: relative; margin: 0 -32px; border-radius: 12px; overflow: hidden; aspect-ratio: 1344 / 700; background: #DCE3E6; }
+.hero-paint { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero-window { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(62%, 800px);
+  background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,.7);
+  box-shadow: 0 2px 6px rgba(10,10,10,.08), 0 30px 80px rgba(20,30,40,.28); }
+.hero-window-bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; background: #F7F7F5; border-bottom: 1px solid var(--q-line); }
+.hero-window-bar span { width: 9px; height: 9px; border-radius: 50%; background: #DADAD5; }
+.hero-window-bar em { margin-left: 10px; font: 400 11px var(--q-mono); font-style: normal; letter-spacing: .08em; color: var(--q-ink-3); text-transform: uppercase; }
+.hero-window img { display: block; width: 100%; height: auto; }
+.hero-stage-caption { position: absolute; left: 20px; bottom: 14px; right: 20px; font: 400 12px var(--q-mono); letter-spacing: .04em; color: rgba(10,10,10,.66); }
+
+/* pull quote */
+.verbatim-banner { background: none !important; border: 0 !important; box-shadow: none !important; text-align: left !important; padding: 96px 0 0 !important; max-width: 900px; }
+.verbatim-quote { font-size: clamp(30px, 3.4vw, 44px) !important; color: var(--q-ink) !important; }
+.verbatim-sub { font-size: 18px !important; margin-top: 16px !important; max-width: 680px; }
+
+/* panels: pale, hairline, no shadow */
+.does-card, #matrix .matrix-tile, .mesh-cap-box, .callout-card, #method .method-card, .vs-table, .home-map, .sandbox-container, .kernel-mode-btn {
+  background: var(--q-panel) !important; border: 1px solid var(--q-line) !important; border-radius: 8px !important; box-shadow: none !important; }
+a.does-card:hover, #matrix .matrix-tile:hover { transform: none !important; border-color: var(--q-line-2) !important; box-shadow: none !important; background: #F2F2EF !important; }
+.does-card h3, #matrix .tile-name, .mesh-cap-box h5, .callout-card h4, .promise-list strong, .tab-info-col h3 {
+  font-family: var(--q-sans) !important; font-weight: 500 !important; letter-spacing: -0.015em !important; color: var(--q-ink) !important; text-transform: none !important; }
+.does-card h3 { font-size: 20px !important; line-height: 1.3 !important; }
+.does-card p, #matrix .tile-desc, .mesh-cap-box p, .callout-card p, .promise-list .promise-text { color: var(--q-ink-2) !important; font-size: 16px !important; line-height: 1.55 !important; }
+.does-link { color: var(--q-ink) !important; font-weight: 500 !important; }
+.tab-info-col h3 { font-size: 26px !important; line-height: 1.25 !important; }
+.promise-mark { background: var(--q-yours-soft) !important; color: var(--q-yours) !important; font-weight: 500 !important; }
+
+/* "your data": the diagram card floats on its painting */
+.home-map-stage { position: relative; border-radius: 12px; overflow: hidden; padding: 40px 40px 48px; background: #DCE3E6 center / cover no-repeat; }
+.home-map-stage .home-map { background: rgba(255,255,255,.94) !important; box-shadow: 0 2px 6px rgba(10,10,10,.06), 0 24px 64px rgba(20,30,40,.22) !important; border-color: rgba(255,255,255,.8) !important; }
+.home-map-stage .paint-note { position: absolute; left: 16px; bottom: 12px; font: 400 11px var(--q-mono); color: rgba(10,10,10,.66); letter-spacing: .04em; }
+.home-map svg text { font-family: var(--q-sans) !important; }
+.vs-row .vs-them { background: #FAFAF9 !important; color: var(--q-ink-3) !important; }
+.vs-row .vs-us { background: var(--q-yours-soft) !important; color: var(--q-yours) !important; font-weight: 500 !important; }
+.vs-row .vs-q { font-weight: 500 !important; }
+
+/* tabs: a quiet panel with underlined tabs */
+.sandbox-tabs { background: transparent !important; border-bottom: 1px solid var(--q-line) !important; padding: 0 16px !important; gap: 8px !important; }
+.sandbox-tab { background: transparent !important; border: 0 !important; border-bottom: 2px solid transparent !important; border-radius: 0 !important; box-shadow: none !important;
+  font: 400 15px var(--q-sans) !important; color: var(--q-ink-2) !important; padding: 16px 12px !important; }
+.sandbox-tab.active { color: var(--q-ink) !important; border-bottom-color: var(--q-ink) !important; }
+.sandbox-pane { background: var(--q-paper) !important; }
+.kernel-mode-btn.active { background: #fff !important; border-color: var(--q-ink) !important; }
+.kernel-mode-title { font: 500 15px var(--q-sans) !important; color: var(--q-ink) !important; }
+.kernel-mode-sub { color: var(--q-ink-2) !important; }
+.terminal-window { background: #FBFBFA !important; color: var(--q-ink) !important; border: 1px solid var(--q-line) !important; box-shadow: none !important; font-family: var(--q-mono) !important; }
+.terminal-window .term-green, .terminal-window .term-violet, .terminal-window .term-cyan { color: var(--q-yours) !important; }
+.terminal-window .term-dim { color: var(--q-ink-3) !important; }
+
+/* live-edit preview: a soft night screen, no glow */
+.try-in-tab .try-stage { background: var(--q-night) !important; border: 1px solid #222 !important; box-shadow: 0 1px 2px rgba(10,10,10,.06), 0 18px 48px rgba(10,10,10,.14) !important; }
+.try-in-tab .try-head { text-shadow: none !important; font-family: var(--q-serif) !important; font-weight: 400 !important; text-transform: none !important; letter-spacing: -0.03em !important; }
+.try-in-tab .try-receipt { color: #B9B9B4 !important; }
+.try-in-tab .try-sub { color: #8A8A8E !important; }
+
+/* proof video in a light window */
+.video-container-frame { background: #fff !important; border: 1px solid var(--q-line) !important; border-radius: 12px !important; box-shadow: 0 1px 2px rgba(10,10,10,.04), 0 20px 56px rgba(10,10,10,.08) !important; overflow: hidden; }
+.video-header-chrome { background: var(--q-panel) !important; border-bottom: 1px solid var(--q-line) !important; }
+.video-header-chrome .dot { background: #DADAD5 !important; }
+.video-header-title { color: var(--q-ink-3) !important; font-family: var(--q-mono) !important; }
+.video-tag-badge { background: var(--q-ink) !important; color: #fff !important; border: 0 !important; box-shadow: none !important; }
+
+/* the machines + method: plain document sections */
+.mesh-breakthrough-banner { background: none !important; border: 0 !important; box-shadow: none !important; text-align: left !important; max-width: 1216px !important; margin: 0 auto !important; padding: 120px 32px 0 !important; }
+.mesh-breakthrough-banner h3 { font-size: clamp(34px, 4.2vw, 56px) !important; color: var(--q-ink) !important; max-width: 900px; }
+.mesh-breakthrough-banner p { max-width: 720px; font-size: 18px !important; }
+#matrix .matrix-header { text-align: left !important; max-width: 1216px !important; }
+#matrix .matrix-header p { color: var(--q-ink-3) !important; }
+#method .method-code { background: var(--q-panel) !important; border: 1px solid var(--q-line) !important; box-shadow: none !important; }
+#method .method-code code { color: var(--q-ink) !important; }
+#method .method-copybtn { color: var(--q-ink) !important; border-color: var(--q-line-2) !important; background: #fff !important; }
+#method .method-when { color: var(--q-ink-3) !important; }
+#method .method-card a, #method .method-credit a { color: var(--q-ink) !important; }
+
+/* the two night screens: softer black, smaller radius, no neon glow */
+#work .morph-sticky-frame, #collapse .anamorph-sticky-wrapper { background: var(--q-night) !important; clip-path: inset(80px 24px 24px 24px round 14px); }
+#collapse * { text-shadow: none !important; }
+#collapse .anamorph-hero-title { font-family: var(--q-serif) !important; font-weight: 400 !important; text-transform: none !important; letter-spacing: -0.03em !important; }
+#collapse .anamorph-subhead-bottom { border-color: rgba(255,255,255,.14) !important; box-shadow: none !important; background: transparent !important; }
+#work .kinetic-card { background: #1B1B1B !important; border-color: rgba(255,255,255,.08) !important; box-shadow: none !important; backdrop-filter: none !important; }
+#work .kinetic-card:hover { border-color: rgba(255,255,255,.22) !important; box-shadow: none !important; transform: translateY(-4px) !important; }
+#work .badge-dot { background: #8DAE96 !important; box-shadow: none !important; }
+#work .cards-title-block p { color: #A1A1A6 !important; }
+#work .card-title { font-family: var(--q-sans) !important; font-weight: 500 !important; }
+
+/* closing: white, centred serif, art behind */
+.receipts-section { background: var(--q-paper) !important; color: var(--q-ink) !important; position: relative; overflow: hidden; }
+.receipts-section .receipts-wrapper { position: relative; z-index: 1; }
+.receipts-section .eyebrow-pill { color: var(--q-ink-3) !important; border: 0 !important; background: none !important; }
+.receipts-headline { color: var(--q-ink) !important; }
+.receipts-sub { color: var(--q-ink-2) !important; }
+.closing-paint { position: absolute; inset: 0; background: center / cover no-repeat; opacity: .5;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 65%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 65%, transparent); }
+.footer-bottom { color: var(--q-ink-3) !important; border-top-color: var(--q-line) !important; }
+
+@media (max-width: 900px) {
+  .hero-section { padding: 72px 16px 0 !important; }
+  .hero-stage { margin: 0 -16px; aspect-ratio: 4 / 5; border-radius: 0; }
+  .hero-window { width: 88%; }
+  .home-map-stage { padding: 16px 16px 36px; }
+  #work .morph-sticky-frame, #collapse .anamorph-sticky-wrapper { clip-path: inset(72px 8px 8px 8px round 12px); }
+}
+
+/* pass 2: one left edge for hero and sections; captions readable on paint; muted diagram */
+.hero-section { max-width: 1280px !important; }
+.hero-stage { margin: 0 !important; }
+.verbatim-banner { margin: 0 !important; }
+.verbatim-sub { margin-left: 0 !important; margin-right: 0 !important; }
+.hero-stage-caption, .home-map-stage .paint-note {
+  left: 16px !important; right: auto !important; bottom: 14px !important; padding: 6px 12px; border-radius: 999px;
+  background: rgba(255,255,255,.82); backdrop-filter: blur(6px); color: var(--q-ink-2) !important; }
+.home-map svg path[stroke="#0E9F6E"] { stroke: var(--q-yours); }
+.home-map svg g[stroke="#0E9F6E"] { stroke: var(--q-yours); }
+.home-map svg text[fill="#065F46"] { fill: var(--q-yours); }
+.home-map svg text[fill="#0F172A"], .home-map svg g[stroke="#0F172A"] { fill: var(--q-ink); }
+@media (max-width: 900px) { .hero-stage { margin: 0 -16px !important; } .hero-stage-caption { font-size: 10px !important; } }
+
+/* pass 3: one left edge (content at 1216 wide), lighter labels, idea screen calmer */
+.proof-section { max-width: 1280px !important; margin: 0 auto !important; padding: 120px 32px 40px !important; }
+.proof-section .section-intro { max-width: none !important; }
+.mesh-breakthrough-banner { max-width: 1280px !important; }
+#method .method-wrap { max-width: 1216px !important; }
+#method.method-section { padding: 120px 32px 96px !important; }
+.mesh-cap-box h5 { font-size: 16px !important; margin-bottom: 6px !important; }
+.mesh-cap-box p { font-size: 15px !important; }
+.video-container-frame .video-header-title { color: var(--q-ink-3) !important; }
+#method .method-card h4 { font-weight: 400 !important; letter-spacing: .1em !important; color: var(--q-ink-3) !important; }
+#method .method-card dt { color: var(--q-ink-3) !important; }
+#work .tag-pill { font-weight: 400 !important; color: #C9C9C4 !important; }
+#work .card-action-btn { font-weight: 500 !important; letter-spacing: .06em !important; }
+#work .card-meta { font-weight: 500 !important; }
+#collapse .anamorph-subhead-top, #collapse .anamorph-subhead-bottom { font-weight: 500 !important; color: rgba(255,255,255,.72) !important; letter-spacing: .16em !important; }
+#collapse .anamorph-hud-tag { font-weight: 500 !important; }
+#collapse .palette-btn, #collapse .msg-pill-btn { font-weight: 500 !important; }
+#collapse .morph-hud-label { font: 500 11px var(--q-mono); letter-spacing: .1em; color: rgba(255,255,255,.5); text-transform: uppercase; }
+#collapse .anamorph-hero-title { font-size: clamp(52px, 7.4vw, 120px) !important; }
+
+/* pass 4: no palette toy on the idea screen; hero buttons never break mid-label */
+#collapse #paletteHud { display: none !important; }
+.btn-hero-primary, .btn-hero-secondary { white-space: nowrap !important; }
+@media (max-width: 600px) { .hero-cta-cluster { flex-wrap: wrap !important; gap: 12px !important; } .btn-hero-primary, .btn-hero-secondary { font-size: 15px !important; padding: 12px 20px !important; } }
+</style>
 </head>
 <body>
 
   <!-- HEADER -->
   <header class="site-header">
     <a href="#hero" class="brand-badge">
-      <div class="brand-icon">⚡</div>
-      <span>OHM OS</span>
+      <span class="brand-word">Ohm</span>
     </a>
     <nav class="nav-links">
       <a href="#does" class="nav-link">What it does</a>
@@ -2135,8 +2359,7 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
   <!-- BEAT 1: DAYLIGHT HERO WITH VISUAL PROMINENCE (TASTE COMPLIANT) -->
   <section id="hero" class="hero-section">
     <div class="eyebrow-pill">
-      <span class="pulse-dot"></span>
-      <span>OHM OS // AN AI THAT WORKS FOR YOU, ON COMPUTERS YOU OWN</span>
+      <span>AN AI THAT WORKS FOR YOU, ON COMPUTERS YOU OWN</span>
     </div>
     <h1 class="hero-headline">
       You already own the computer. Your work lives on someone else's.
@@ -2161,40 +2384,20 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
       <div class="trust-item"><span>✓</span> <span>Leave anytime, keep everything</span></div>
     </div>
 
-    <!-- HERO PHOTOGRAPHY SPOTLIGHT: Real pixels that POP against the daylight canvas -->
-    <div class="hero-photography-grid">
-      <div class="hero-photo-card wfx-u">
-        <div class="hero-photo-header">
-          <span>THE WORKSPACE</span>
-          <span style="color: #27272A; font-weight: 700;">ON YOUR SCREEN</span>
-        </div>
-        <div class="hero-photo-img-wrap">
-          <img src="./site/design_space/assets/agent_ohm_site/card_post02.jpg" alt="Design Space Multi-Track Creative Studio" loading="eager">
-        </div>
-        <div class="hero-photo-caption">
-          <h4>Your website, your videos, your designs, made in one place on your own computer.</h4>
-          <p>One workspace instead of four subscriptions. You see every step it takes.</p>
-        </div>
+    <!-- PAINTING STAGE: art made on the mini PC, with the real desk framed on top -->
+    <figure class="hero-stage">
+      <img class="hero-paint" src="./media/paint_hero.jpg" alt="" loading="eager">
+      <div class="hero-window">
+        <div class="hero-window-bar"><span></span><span></span><span></span><em>The real desk, 31 Oct</em></div>
+        <img src="./media/take2_full_run_poster.jpg" alt="Four computers on a desk: a Windows laptop, a Linux laptop, a Linux mini PC's screen and an Android phone" loading="eager">
       </div>
-      <div class="hero-photo-card wfx-u">
-        <div class="hero-photo-header">
-          <span>THE RECORDING</span>
-          <span style="color: #27272A; font-weight: 700;">MADE BY THE AGENT</span>
-        </div>
-        <div class="hero-photo-img-wrap">
-          <img src="./site/design_space/assets/agent_ohm_site/card_post01.jpg" alt="Design Space 2.5D Multiplane Compositor" loading="eager">
-        </div>
-        <div class="hero-photo-caption">
-          <h4>Two words from your phone: "Run it."</h4>
-          <p>Four computers do the job, your fingerprint approves it, and the agent records and cuts the video itself.</p>
-        </div>
-      </div>
-    </div>
+      <figcaption class="hero-stage-caption" id="paintCaption">Painted on the mini PC in 173 seconds, no cloud. In the frame: the real desk from the 31 Oct run.</figcaption>
+    </figure>
 
     <!-- ADRIAN VERBATIM PRINCIPLE BANNER ([A] COMPLIANCE) -->
     <div class="verbatim-banner">
       <div class="verbatim-quote">
-        "Add a machine, get more. Nodes are independent — one going down doesn't take the others with it."
+        “Add a machine, get more. Nodes are independent: one going down doesn’t take the others with it.”
       </div>
       <div class="verbatim-sub">
         Every computer you own adds to what it can do: the laptop, the desktop, even the old PC in the closet.
@@ -2264,6 +2467,7 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
           <li><span class="promise-mark">4</span><div><strong>Leave anytime, keep everything.</strong><span class="promise-text">Uninstall Ohm and your work is still there, in ordinary files. No account to close, nothing to export.</span></div></li>
         </ul>
       </div>
+      <div class="home-map-stage" style="background-image: url('./media/paint_home.jpg')">
       <figure class="home-map" id="homeMap" aria-label="Diagram: your laptop, mini PC, phone and old PC sit inside your home with your files. A cloud AI sits outside, reached only through a door that opens with your fingerprint.">
         <svg viewBox="24 40 536 306" role="img" aria-hidden="true">
           <g fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -2306,6 +2510,8 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
         </svg>
         <figcaption class="home-map-caption"><span><b>Green</b> = yours</span><span>Grey = someone else's</span></figcaption>
       </figure>
+      <span class="paint-note">Painted on the mini PC in 172 seconds</span>
+      </div>
     </div>
 
     <div class="vs-table" role="table" aria-label="A typical cloud AI app compared with Ohm">
@@ -2332,13 +2538,13 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
     <div class="sandbox-container">
       <div class="sandbox-tabs">
         <button id="btn-tab-watch" class="sandbox-tab active" onclick="switchSandboxTab('watch')">
-          <span>👁️</span> <span>1. Watch it work</span>
+          <span>1. Watch it work</span>
         </button>
         <button id="btn-tab-run" class="sandbox-tab" onclick="switchSandboxTab('run')">
-          <span>🏠</span> <span>2. Choose where it thinks</span>
+          <span>2. Choose where it thinks</span>
         </button>
         <button id="btn-tab-gate" class="sandbox-tab" onclick="switchSandboxTab('gate')">
-          <span>📱</span> <span>3. Approve with your thumb</span>
+          <span>3. Approve with your thumb</span>
         </button>
       </div>
 
@@ -2354,12 +2560,12 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
             <input class="try-input" id="tryText" maxlength="40" value="Your words. Your colour." autocomplete="off" spellcheck="false">
             <span class="try-label">COLOUR</span>
             <div class="try-swatches" id="trySwatches">
-              <button class="try-sw on" style="background:#00f0ff" data-c="#00f0ff" aria-label="cyan"></button>
-              <button class="try-sw" style="background:#ff0055" data-c="#ff0055" aria-label="crimson"></button>
-              <button class="try-sw" style="background:#00ff88" data-c="#00ff88" aria-label="emerald"></button>
-              <button class="try-sw" style="background:#c084fc" data-c="#c084fc" aria-label="violet"></button>
-              <button class="try-sw" style="background:#ffd166" data-c="#ffd166" aria-label="amber"></button>
-              <input class="try-pick" id="tryPick" type="color" value="#00f0ff" aria-label="any colour">
+              <button class="try-sw on" style="background:#7FA7B8" data-c="#7FA7B8" aria-label="cyan"></button>
+              <button class="try-sw" style="background:#C08A82" data-c="#C08A82" aria-label="crimson"></button>
+              <button class="try-sw" style="background:#8DAE96" data-c="#8DAE96" aria-label="emerald"></button>
+              <button class="try-sw" style="background:#A99BC4" data-c="#A99BC4" aria-label="violet"></button>
+              <button class="try-sw" style="background:#C9AE7C" data-c="#C9AE7C" aria-label="amber"></button>
+              <input class="try-pick" id="tryPick" type="color" value="#7FA7B8" aria-label="any colour">
             </div>
             <div class="try-share">
               <button class="try-share-btn" id="tryShare">Open on another device &#x2197;</button>
@@ -2394,11 +2600,11 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
             <div class="control-label">Where should this job run?</div>
             <div class="kernel-mode-selector">
               <button id="btn-kernel-local" class="kernel-mode-btn active" onclick="setKernelMode('local')">
-                <div class="kernel-mode-title"><span>🏠</span> <span>On my computers</span></div>
+                <div class="kernel-mode-title"><span>On my computers</span></div>
                 <div class="kernel-mode-sub">The default • No monthly bill • Files stay home</div>
               </button>
               <button id="btn-kernel-frontier" class="kernel-mode-btn" onclick="setKernelMode('frontier')">
-                <div class="kernel-mode-title"><span>☁️</span> <span>A cloud AI</span></div>
+                <div class="kernel-mode-title"><span>A cloud AI</span></div>
                 <div class="kernel-mode-sub">Claude, Gemini or GPT • For the hard jobs • Your call</div>
               </button>
             </div>
@@ -2442,7 +2648,7 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
                 </div>
                 <div>
                   <button id="biometric-btn" class="biometric-sensor-btn" onclick="triggerBiometricApproval()">
-                    <span>🔒</span> <span>Touch to approve</span>
+                    <span>Touch to approve</span>
                   </button>
                   <div id="biometric-status" style="margin-top: 10px; font-size: 11px; text-align: center; color: #9CA3AF;">
                     Nothing happens until you approve.
@@ -2463,7 +2669,7 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
       <div class="eyebrow-pill">
         <span>THE FULL RUN // 31 OCT</span>
       </div>
-      <h2 class="section-title">Two words from your phone: "Run it."</h2>
+      <h2 class="section-title">Two words from your phone: “Run it.”</h2>
       <p class="section-desc">
         Four computers, four operating systems, one agent. The mini PC draws a picture, a second PC builds and publishes the page, and nothing ships until a fingerprint on the phone says yes. The same agent recorded and cut this video. The full take is on YouTube, unedited.
       </p>
@@ -2544,7 +2750,7 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
   <!-- PRESERVED AUTHENTIC MESH TOPOLOGY & MATRIX -->
   <section class="matrix-section" id="matrix">
     <div class="matrix-header">
-      <h2>WHAT IT RUNS ON</h2>
+      <h2>What it runs on.</h2>
       <p style="color: #888; font-family: var(--font-mono); font-size: 14px;">OUR OWN MACHINES // MEASURED, NOT CLAIMED</p>
     </div>
     <div class="matrix-grid">
@@ -2697,12 +2903,12 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
       <div class="anamorph-hud">
         <div class="anamorph-hud-tag" id="anamorphHudTag">THE IDEA // WHAT IT IS</div>
         <div class="live-morph-hud" id="paletteHud">
-          <span class="morph-hud-label">&#x26A1; LIVE PALETTE:</span>
+          <span class="morph-hud-label">Palette</span>
           <div class="palette-swatches">
-            <button class="palette-btn active" data-color="cyan" onclick="setGlobalColorway('cyan', true)"><span class="swatch" style="background:#00f0ff; color:#00f0ff;"></span>CYAN</button>
-            <button class="palette-btn" data-color="crimson" onclick="setGlobalColorway('crimson', true)"><span class="swatch" style="background:#ff0055; color:#ff0055;"></span>CRIMSON</button>
-            <button class="palette-btn" data-color="emerald" onclick="setGlobalColorway('emerald', true)"><span class="swatch" style="background:#00ff88; color:#00ff88;"></span>EMERALD</button>
-            <button class="palette-btn" data-color="violet" onclick="setGlobalColorway('violet', true)"><span class="swatch" style="background:#c084fc; color:#c084fc;"></span>VIOLET</button>
+            <button class="palette-btn active" data-color="cyan" onclick="setGlobalColorway('cyan', true)"><span class="swatch" style="background:#7FA7B8;"></span>CYAN</button>
+            <button class="palette-btn" data-color="crimson" onclick="setGlobalColorway('crimson', true)"><span class="swatch" style="background:#C08A82;"></span>CRIMSON</button>
+            <button class="palette-btn" data-color="emerald" onclick="setGlobalColorway('emerald', true)"><span class="swatch" style="background:#8DAE96;"></span>EMERALD</button>
+            <button class="palette-btn" data-color="violet" onclick="setGlobalColorway('violet', true)"><span class="swatch" style="background:#A99BC4;"></span>VIOLET</button>
           </div>
         </div>
       </div>
@@ -2714,10 +2920,10 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
         </div>
 
         <div class="anamorph-msg-stepper" id="msgStepper">
-          <button class="msg-pill-btn active" data-msg="0" data-color="cyan" onclick="selectAnamorphMessage(0)"><span class="swatch" style="background:#00f0ff; box-shadow:0 0 6px #00f0ff;"></span><span class="msg-num">01</span> WHAT IT IS</button>
-          <button class="msg-pill-btn" data-msg="1" data-color="crimson" onclick="selectAnamorphMessage(1)"><span class="swatch" style="background:#ff0055; box-shadow:0 0 6px #ff0055;"></span><span class="msg-num">02</span> TRUST</button>
-          <button class="msg-pill-btn" data-msg="2" data-color="emerald" onclick="selectAnamorphMessage(2)"><span class="swatch" style="background:#00ff88; box-shadow:0 0 6px #00ff88;"></span><span class="msg-num">03</span> NO API</button>
-          <button class="msg-pill-btn" data-msg="3" data-color="violet" onclick="selectAnamorphMessage(3)"><span class="swatch" style="background:#c084fc; box-shadow:0 0 6px #c084fc;"></span><span class="msg-num">04</span> THE LADDER</button>
+          <button class="msg-pill-btn active" data-msg="0" data-color="cyan" onclick="selectAnamorphMessage(0)"><span class="swatch" style="background:#7FA7B8;"></span><span class="msg-num">01</span> WHAT IT IS</button>
+          <button class="msg-pill-btn" data-msg="1" data-color="crimson" onclick="selectAnamorphMessage(1)"><span class="swatch" style="background:#C08A82;"></span><span class="msg-num">02</span> TRUST</button>
+          <button class="msg-pill-btn" data-msg="2" data-color="emerald" onclick="selectAnamorphMessage(2)"><span class="swatch" style="background:#8DAE96;"></span><span class="msg-num">03</span> NO API</button>
+          <button class="msg-pill-btn" data-msg="3" data-color="violet" onclick="selectAnamorphMessage(3)"><span class="swatch" style="background:#A99BC4;"></span><span class="msg-num">04</span> THE LADDER</button>
         </div>
 
         <div class="anamorph-hint">
@@ -2761,6 +2967,7 @@ a.does-card:hover { transform: translateY(-4px); box-shadow: var(--pe-shadow-3);
 
   <!-- BEAT 5: RECEIPTS & OPEN CODE -->
   <section id="receipts" class="receipts-section">
+    <div class="closing-paint" style="background-image: url('./media/paint_window.jpg')" aria-hidden="true"></div>
     <div class="receipts-wrapper">
       <div class="eyebrow-pill" style="background: rgba(255, 255, 255, 0.1); color: #60A5FA; border-color: rgba(96, 165, 250, 0.3);">
         <span>OPEN PROOF // SHOWN, NOT SOLD</span>
@@ -5531,32 +5738,32 @@ function triggerBiometricApproval() {
         tag: "THE IDEA // WHAT IT IS",
         colorway: "cyan",
         subheadTop: "WINDOWS \u00B7 LINUX \u00B7 YOUR PHONE",
-        line1: ["EVERY", "COMPUTER."],
-        line2: ["ONE", "AGENT."],
+        line1: ["Every", "computer."],
+        line2: ["One", "agent."],
         subheadBottom: "EACH MACHINE DOES THE JOB ITS HARDWARE IS BEST AT"
       },
       {
         tag: "THE IDEA // WHY TRUST IT",
         colorway: "crimson",
         subheadTop: "AGENTS SAY WHAT THEY DID",
-        line1: ["IT", "CHECKS ITSELF."],
-        line2: ["THEN", "IT ASKS YOU."],
+        line1: ["It", "checks itself."],
+        line2: ["Then", "it asks you."],
         subheadBottom: "OHM CHECKS IT \u00B7 NOTHING SHIPS UNTIL YOU SAY YES"
       },
       {
         tag: "THE IDEA // NO API",
         colorway: "emerald",
         subheadTop: "POSTED THROUGH THE WEBSITES THEMSELVES",
-        line1: ["NO", "API KEYS."],
-        line2: ["JUST", "THE WEB."],
+        line1: ["No", "API keys."],
+        line2: ["Just", "the web."],
         subheadBottom: "A VISIBLE BROWSER \u00B7 YOUR ACCOUNTS \u00B7 READ BACK BEFORE EVERY CLICK"
       },
       {
         tag: "THE IDEA // THE LADDER",
         colorway: "violet",
         subheadTop: "MEASURED ON A MID-RANGE LAPTOP",
-        line1: ["30B", "MODEL."],
-        line2: ["4", "GB CARD."],
+        line1: ["30B", "model."],
+        line2: ["4 GB", "card."],
         subheadBottom: "ABOUT 21 WORDS A SECOND \u00B7 ON A 4 GB LAPTOP GRAPHICS CARD"
       }
     ];
@@ -5724,10 +5931,10 @@ function triggerBiometricApproval() {
 
       anamorphCtx.clearRect(0, 0, anamorphW, anamorphH);
 
-      let cr = 0, cg = 240, cb = 255;
-      if (activeColorway === 'crimson') { cr = 255; cg = 0; cb = 85; }
-      else if (activeColorway === 'emerald') { cr = 0; cg = 255; cb = 136; }
-      else if (activeColorway === 'violet') { cr = 192; cg = 132; cb = 252; }
+      let cr = 127, cg = 167, cb = 184;
+      if (activeColorway === 'crimson') { cr = 192; cg = 138; cb = 130; }
+      else if (activeColorway === 'emerald') { cr = 141; cg = 174; cb = 150; }
+      else if (activeColorway === 'violet') { cr = 169; cg = 155; cb = 196; }
 
       const now = performance.now();
       const BREATH = 0.22;
@@ -6364,22 +6571,22 @@ function triggerBiometricApproval() {
       const swatches = {
         cyan: {
           accent: '#ff0055',
-          accentCyan: '#00f0ff',
+          accentCyan: '#7FA7B8',
           glow: 'rgba(0, 240, 255, 0.25)'
         },
         crimson: {
           accent: '#00f0ff',
-          accentCyan: '#ff0055',
+          accentCyan: '#C08A82',
           glow: 'rgba(255, 0, 85, 0.25)'
         },
         emerald: {
           accent: '#00f0ff',
-          accentCyan: '#00ff88',
+          accentCyan: '#8DAE96',
           glow: 'rgba(0, 255, 136, 0.25)'
         },
         violet: {
           accent: '#ff0055',
-          accentCyan: '#c084fc',
+          accentCyan: '#A99BC4',
           glow: 'rgba(192, 132, 252, 0.25)'
         }
       };
