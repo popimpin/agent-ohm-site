@@ -802,6 +802,15 @@
        url('/fonts/space-grotesk/space-grotesk-700.woff2') format('woff2');
 }
 
+/* Read by the posts rail and the idea section. Defined on :root ONLY: the palette switcher
+   sets --accent-cyan inline on <html>, and a body-level default would override it. */
+:root {
+  --bg-dark: #050508;
+  --text-light: #f3f4f6;
+  --border-dark: rgba(255, 255, 255, 0.12);
+  --accent-cyan: #00f0ff;
+}
+
 /* ── IMPECCABLE DESIGN SYSTEM TOKENS ── */
 :root, body, #page, .ohm-sec, #daylight-hero, #hero {
   --bg-base: #FBFBFD;
@@ -809,11 +818,6 @@
   --bg-subtle: #F1F5F9;
   --bg-card: #FFFFFF;
   --bg-dark-viewport: #090D16;
-  /* dark-band sections (posts rail, thesis morph) still read these */
-  --bg-dark: #050508;
-  --text-light: #f3f4f6;
-  --border-dark: rgba(255, 255, 255, 0.12);
-  --accent-cyan: #00f0ff;
   --border-subtle: rgba(15, 23, 42, 0.08);
   --border-card: rgba(15, 23, 42, 0.06);
   --border-focus: rgba(37, 99, 235, 0.4);
