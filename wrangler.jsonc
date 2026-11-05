@@ -4,6 +4,11 @@
   "name": "agent-ohm-site",
   "main": "worker/index.js",
   "compatibility_date": "2025-09-01",
+  // agent-ohm.com (zone active on Cloudflare 2026-11-05). custom_domain creates the DNS records itself.
+  "routes": [
+    { "pattern": "agent-ohm.com", "custom_domain": true },
+    { "pattern": "www.agent-ohm.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",

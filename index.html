@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ohm OS — The Agent-First Operating System</title>
   <meta name="description" content="You already own the computer. Software on demand. Not a subscription. Add a machine, get more. Nodes are independent — one going down doesn't take the others with it.">
+  <link rel="canonical" href="https://agent-ohm.com/">
+  <meta property="og:url" content="https://agent-ohm.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Ohm">
+  <meta property="og:title" content="Ohm OS — The Agent-First Operating System">
+  <meta property="og:description" content="An AI that works for you, on computers you own. Nothing ships until you say yes on your phone.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -765,7 +771,13 @@
 }
 
     @media (max-width: 760px) { .method-section { padding: 80px 16px; } .method-grid { grid-template-columns: 1fr; } .method-code { padding: 52px 16px 16px; } .method-card dl { grid-template-columns: 96px 1fr; } }
-  </style>
+  
+    /* ── BEAT 3.5: 19-MINUTE RECEPT // THE AGENCY KILLER ────────────────── */
+    .agency-killer-section {
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-base);
+    }
+</style>
   <style>
     
 /* ── FONT DECLARATIONS (SELF-HOSTED SPACE GROTESK & JETBRAINS MONO) ── */
@@ -2348,6 +2360,7 @@ a.does-card:hover, #matrix .matrix-tile:hover { transform: none !important; bord
       <a href="#yours" class="nav-link">Your data</a>
       <a href="#test-drive" class="nav-link">Try it</a>
       <a href="#proof" class="nav-link">Proof</a>
+      <a href="#agency-killer" class="nav-link">19-Min Proof</a>
       <a href="#work" class="nav-link">Posts</a>
     </nav>
     <div class="nav-actions">
@@ -2747,6 +2760,60 @@ a.does-card:hover, #matrix .matrix-tile:hover { transform: none !important; bord
     </div>
   </section>
 
+  <!-- BEAT 3.5: ONE REFERENCE, ONE CORRECTION, 19 MINUTES (rewritten 2026-11-05: only what the footage shows) -->
+  <section id="agency-killer" class="proof-section agency-killer-section">
+    <div class="section-intro">
+      <div class="eyebrow-pill">
+        <span>RECORDED 4 NOV 2026 // UNEDITED, SPED UP 20×</span>
+      </div>
+      <h2 class="section-title">One reference site, one correction, 19 minutes.</h2>
+      <p class="section-desc">
+        A Japanese seasonal studio page with ink-wash mountains and falling petals, built in the Design Space from a single reference link. Two lines from a person; the agent did the rest. The whole session is below, start to finish.
+      </p>
+    </div>
+
+    <div class="video-container-frame">
+      <div class="video-header-chrome">
+        <div class="window-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+        <div class="video-header-title">THE FULL SESSION // 19 MIN 47 S, SHOWN AT 20×</div>
+      </div>
+      <div class="video-wrapper">
+        <video id="kigo-19min-video" controls playsinline preload="metadata" poster="./media/kigo_19min_poster.jpg">
+          <source src="./media/kigo_19min_timelapse.mp4" type="video/mp4">
+          <source src="/ui/surfaces/design_space/assets/agent_ohm_site/kigo_19min_timelapse.mp4" type="video/mp4">
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+    </div>
+
+    <p style="text-align: center; font-size: 15px; color: #475569; margin: 20px 0 40px;">
+      Nothing cut. The reasoning model for this session was Gemini Flash in the cloud, by choice; the same work can run on local models.
+    </p>
+
+    <div class="callouts-grid">
+      <div class="callout-card">
+        <div class="callout-number">08:28</div>
+        <h4>The ask</h4>
+        <p>One reference link (<a href="https://kigo.studio/" target="_blank" rel="noopener">kigo.studio</a>) and one line: <em>"this is a hard one, take your time"</em>. The agent reads the live page and plans the build.</p>
+      </div>
+      <div class="callout-card">
+        <div class="callout-number">08:38</div>
+        <h4>The correction</h4>
+        <p>The person looks at the first version and writes: <em>"so its just the falling petals and scroll reveals that were missed, otherwise fantastic"</em>. That is the only other instruction in the session.</p>
+      </div>
+      <div class="callout-card">
+        <div class="callout-number">08:44</div>
+        <h4>The real bug</h4>
+        <p>The petals froze because two animations were writing to the same element's <code>transform</code>, and the later one wins. The fix: an outer layer moves the petal, an inner layer spins it, so neither overwrites the other.</p>
+      </div>
+      <div class="callout-card">
+        <div class="callout-number">08:48</div>
+        <h4>Live on screen</h4>
+        <p>The page updates in place while you watch. The agent's own change summary in the footage: 9 files, +1,186 / −523 lines.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- PRESERVED AUTHENTIC MESH TOPOLOGY & MATRIX -->
   <section class="matrix-section" id="matrix">
     <div class="matrix-header">
@@ -2980,9 +3047,10 @@ a.does-card:hover, #matrix .matrix-tile:hover { transform: none !important; bord
         <a href="https://github.com/popimpin/agent-ohm-site" class="btn-receipt" target="_blank">Read the code ↗</a>
         <a href="/app/" class="btn-receipt">The phone app ↗</a>
         <a href="/orchestration/" class="btn-receipt">When it breaks ↗</a>
+        <a href="mailto:info@agent-ohm.com" class="btn-receipt">info@agent-ohm.com</a>
       </div>
       <div class="footer-bottom">
-        <div>OHM OS © 2026 — AN AI THAT WORKS FOR YOU, ON COMPUTERS YOU OWN</div>
+        <div>OHM OS © 2026 — AN AI THAT WORKS FOR YOU, ON COMPUTERS YOU OWN · <a href="mailto:info@agent-ohm.com" style="color: inherit;">INFO@AGENT-OHM.COM</a></div>
         <div>NO RENTED SERVERS REQUIRED</div>
       </div>
     </div>
