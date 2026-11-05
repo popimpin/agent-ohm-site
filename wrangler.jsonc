@@ -5,6 +5,8 @@
   "main": "worker/index.js",
   "compatibility_date": "2025-09-01",
   // agent-ohm.com (zone active on Cloudflare 2026-11-05). custom_domain creates the DNS records itself.
+  // Keep the old agent-ohm-site.agent-ohm.workers.dev address alive for links already posted (canonical points at agent-ohm.com).
+  "workers_dev": true,
   "routes": [
     { "pattern": "agent-ohm.com", "custom_domain": true },
     { "pattern": "www.agent-ohm.com", "custom_domain": true }
