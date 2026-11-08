@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design Space — build pages with Agent-Ohm</title>
+  <meta name="description" content="Design Space is where you and Agent-Ohm build web pages together. Say what you want, watch the page change, and undo anything.">
+  <!-- Agent-Ohm site, 'Quiet path' design (2026-11-07). Built in Design Space; shared look in /kit/. -->
+  <link rel="stylesheet" href="/kit/agent_ohm_kit.css">
+  <style>
+    .try { display: grid; grid-template-columns: 1fr 1.2fr; gap: 32px; align-items: start; margin-top: 36px; --try-ink: #7FA7B8; }
+    .try-label { display: block; font-family: var(--font-data); font-size: 11px; letter-spacing: .12em; color: var(--color-text-faint); margin: 18px 0 8px; }
+    .try-input { width: 100%; font: inherit; font-size: var(--fs-3); padding: 12px 14px; border-radius: var(--radius-base);
+      border: 1px solid var(--color-border); background: #fff; transition: border-color .15s ease-out, box-shadow .15s ease-out; }
+    .try-input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 4px var(--color-primary-soft); }
+    .try-swatches { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .try-sw { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px var(--color-border); cursor: pointer;
+      transition: transform .15s ease-out, box-shadow .15s ease-out; }
+    .try-sw:hover { transform: scale(1.08); }
+    .try-sw.on { box-shadow: 0 0 0 2px var(--color-text); }
+    .try-pick { width: 38px; height: 38px; border: 0; padding: 0; background: none; cursor: pointer; }
+    .try-share { margin-top: 22px; }
+    .try-share-btn { font: inherit; font-size: var(--fs-1); font-weight: 600; letter-spacing: .04em; padding: 10px 16px; border-radius: 999px;
+      border: 1px solid var(--color-text); background: #fff; cursor: pointer; transition: background .15s ease-out, color .15s ease-out; }
+    .try-share-btn:hover { background: var(--color-text); color: #fff; }
+    .try-room { display: flex; gap: 16px; align-items: center; margin-top: 16px; padding: 14px; background: #fff; border: 1px solid var(--color-border);
+      border-radius: var(--radius-base); box-shadow: var(--shadow-1); }
+    .try-room[hidden] { display: none; }
+    .try-qr { width: 132px; height: 132px; flex: none; background: #fff; padding: 6px; border-radius: 8px; border: 1px solid var(--color-border); }
+    .try-qr svg, .try-qr img { width: 100%; height: 100%; display: block; }
+    .try-room-info { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    .try-room-info .try-label { margin: 0; }
+    .try-link { font-family: var(--font-data); font-size: 12px; word-break: break-all; color: var(--color-text-dim); }
+    .try-presence { font-family: var(--font-data); font-size: 11px; letter-spacing: .1em; color: var(--color-primary); font-weight: 600; }
+    .try-stage { background: var(--screen); border-radius: 14px; min-height: 300px; padding: 40px 36px 56px; display: flex; flex-direction: column;
+      justify-content: center; box-shadow: var(--shadow-3); position: relative; }
+    .try-head { font-family: var(--font-heading); font-weight: 400; font-size: 52px; line-height: 1.05; color: var(--try-ink); margin: 0;
+      transition: color .25s ease-out; word-break: break-word; }
+    .try-sub { font-family: var(--font-data); font-size: 11px; letter-spacing: .14em; color: #8A8A84; margin-top: 18px; }
+    .try-receipt { position: absolute; left: 36px; right: 36px; bottom: 18px; font-family: var(--font-data); font-size: 10.5px; letter-spacing: .08em; color: #6FCF97; }
+    .moments { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+    .frames { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
+    .frames img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; border-radius: 10px; box-shadow: var(--shadow-2); display: block; }
+    @media (max-width: 1000px) { .try { grid-template-columns: 1fr; } .try-room { flex-direction: column; align-items: flex-start; } .moments { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .moments, .frames { grid-template-columns: 1fr; } .try-head { font-size: 38px; } }
+  </style>
+</head>
+<body>
+
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="logo" href="/">Agent-Ohm</a>
+      <nav class="top-links">
+        <a class="pill" href="/">Home</a>
+        <a class="pill" href="/app/">The phone app</a>
+        <a class="pill solid" href="https://github.com/popimpin/agent-ohm-site">Read the code</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap layout">
+    <aside class="rail" aria-label="Your path through this page">
+      <div class="rail-label">DESIGN SPACE</div>
+      <ol>
+        <span class="fill" id="railFill"></span>
+        <li><a href="#what"><b>STEP 1</b>What is it?</a></li>
+        <li><a href="#do"><b>STEP 2</b>What can I make?</a></li>
+        <li><a href="#trust"><b>STEP 3</b>What if it goes wrong?</a></li>
+        <li><a href="#runs"><b>STEP 4</b>What do I need?</a></li>
+        <li><a href="#proof"><b>STEP 5</b>Show me.</a></li>
+        <li><a href="#start"><b>STEP 6</b>Try it.</a></li>
+      </ol>
+    </aside>
+
+    <main>
+      <div class="mobar" aria-hidden="true"><b id="moStep">STEP 1 OF 6</b><span id="moQ">What is it?</span><span class="bar"><i id="moFill"></i></span></div>
+
+      <!-- STEP 1 -->
+      <section class="step" id="what" data-q="What is it?">
+        <div class="eyebrow rise">Step 1 <span class="q">· What is it?</span></div>
+        <h1 class="rise">Build web pages by saying what you want.</h1>
+        <p class="lead rise">
+          Design Space is where you and Agent-Ohm make pages together. You say what you want, the agent builds it on the page in front of you,
+          and <strong>you can point at any part and ask for it to change.</strong>
+        </p>
+        <div class="screen rise">
+          <div class="screen-bar"><span class="dots"></span><span>A REAL DESIGN SPACE TAKE // 1 MIN 56 S // UNEDITED</span></div>
+          <video controls playsinline preload="none" poster="/media/site/ds_session_poster.jpg" src="/orchestration/take_failed.mp4"></video>
+        </div>
+        <p class="caption">Nobody is at the keyboard: the agent drives the real tool with its own cursor. At 1:13 it types "/plug calendar" and a working calendar appears.
+          This is a real take, and it breaks at the very end. <a href="/orchestration/">See what happened next →</a></p>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" id="do" data-q="What can I make?">
+        <div class="eyebrow rise">Step 2 <span class="q">· What can I make?</span></div>
+        <h2 class="rise">Whole websites, working parts and video posts.</h2>
+
+        <div class="job rise">
+          <div class="job-media">
+            <div class="screen"><div class="screen-bar"><span class="dots"></span><span>19 MIN 47 S, SHOWN AT 20×</span></div>
+              <video autoplay muted loop playsinline preload="none" poster="/media/kigo_19min_poster.jpg"
+                src="/media/kigo_19min_timelapse.mp4"></video></div>
+          </div>
+          <div>
+            <div class="n">A WHOLE WEBSITE</div>
+            <h3>From one link to a finished page.</h3>
+            <p>A person shared one website they liked and wrote "this is a hard one, take your time". The agent built a Japanese studio
+              page with ink-wash mountains and falling petals. One correction, 19 minutes, nothing cut.</p>
+          </div>
+        </div>
+
+        <div class="job flip rise">
+          <div class="job-media">
+            <div class="screen"><div class="screen-bar"><span class="dots"></span><span>FROM THE SESSION ABOVE // 1:22</span></div>
+              <img src="/media/site/ds_calendar_122.jpg" alt="Design Space with a working team calendar placed on the page"></div>
+          </div>
+          <div>
+            <div class="n">WORKING PARTS</div>
+            <h3>Type what you need. It appears, and it works.</h3>
+            <p>Type "/plug calendar" and a real, clickable calendar lands on the page. Other ready-made parts work the same way,
+              so you aren't starting from a blank screen.</p>
+          </div>
+        </div>
+
+        <div class="also">
+          <div class="card rise"><div class="tag">VIDEO POSTS</div><h4>Phone-shaped videos for social media.</h4>
+            <p>The same space has a tall 9:16 studio. Our own TikTok posts were put together there.</p></div>
+          <div class="card rise"><div class="tag">CHANGE IT LIVE</div><h4>Edit while your client watches.</h4>
+            <p>They say what they'd like different, and the real page changes in front of them. No mock-up, no "revision next week".</p></div>
+          <div class="card rise"><div class="tag">A FINISHED EXAMPLE</div><h4>See a site it built.</h4>
+            <p>STILL / FORM is a sample architecture site made in Design Space.</p>
+            <a class="more" href="/property/">Open STILL / FORM →</a></div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" id="trust" data-q="What if it goes wrong?">
+        <div class="eyebrow rise">Step 3 <span class="q">· What if it goes wrong?</span></div>
+        <h2 class="rise">Nothing is lost. You can always go back.</h2>
+        <p class="lead rise">Building with an AI means some changes will be wrong. Design Space is built for that.</p>
+        <ol class="promises rise" style="margin-top:28px">
+          <li><div><b>Undo works.</b><span>Ctrl+Z steps back through your changes, and Ctrl+Shift+Z steps forward again.</span></div></li>
+          <li><div><b>A bad save can't wipe your page.</b><span>Every save keeps the version it replaced, so you can roll back to it.</span></div></li>
+          <li><div><b>Precise changes stay precise.</b><span>Ask for one part to change, and the agent changes that part, not the whole page.</span></div></li>
+          <li><div><b>Your pages are yours.</b><span>They're saved on your own computer as ordinary files.</span></div></li>
+        </ol>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" id="runs" data-q="What do I need?">
+        <div class="eyebrow rise">Step 4 <span class="q">· What do I need?</span></div>
+        <h2 class="rise">A web browser. Your other computers help with the heavy jobs.</h2>
+        <p class="lead rise">Design Space runs in your browser. Big jobs, like making pictures, can go to another of your machines,
+          so the one you're working on stays quick.</p>
+        <div class="split">
+          <div class="screen rise"><img src="/media/paint_hero.jpg" alt="A painting made by the mini PC for the Agent-Ohm home page"></div>
+          <div class="rise">
+            <h3>Made on the mini PC.</h3>
+            <p class="lead" style="font-size:var(--fs-3)">The paintings on our home page were made by our mini PC, each in a few minutes,
+              with no cloud service involved.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 5 -->
+      <section class="step" id="proof" data-q="Show me.">
+        <div class="eyebrow rise">Step 5 <span class="q">· Show me.</span></div>
+        <h2 class="rise">What to look for in the session.</h2>
+        <div class="moments">
+          <div class="card rise"><div class="tag">0:00</div><h4>A real post being made</h4><p>A phone-shaped video post is put together in the 9:16 studio, its captions placed word by word.</p></div>
+          <div class="card rise"><div class="tag">0:50</div><h4>A graphic lands</h4><p>The "152 minutes" graphic is placed on the post from the panel on the left.</p></div>
+          <div class="card rise"><div class="tag">1:13</div><h4>"/plug calendar"</h4><p>The agent types it in plain words, and a team calendar is placed on the page.</p></div>
+          <div class="card rise"><div class="tag">1:34</div><h4>It works</h4><p>The agent books a post into the new calendar, and at 1:46 it shows up on the right day. A working part, not a picture of one.</p></div>
+        </div>
+        <div class="frames">
+          <img class="rise" src="/media/site/ds_session_poster.jpg" alt="Frame from the session">
+          <img class="rise" src="/media/kigo_19min_poster.jpg" alt="Frame from the 19-minute build">
+          <img class="rise" src="/site/design_space/assets/agent_ohm_site/card_post01.jpg" alt="A post made in the 9:16 studio">
+        </div>
+        <p class="footnote">The 19-minute build's own timeline (the ask, the correction, the real bug, live on screen) is on <a href="/#proof">the home page</a>.</p>
+      </section>
+
+      <!-- STEP 6 -->
+      <section class="step start" id="start" data-q="Try it.">
+        <div class="eyebrow rise">Step 6 <span class="q">· Try it.</span></div>
+        <h2 class="rise">Try it: change the page as you type.</h2>
+        <p class="lead rise">Type some words and pick a colour, and the page in the frame changes as you go. The number in the corner is measured
+          in your browser, on every edit. <strong>Tap "Open on another device" and scan the code with your phone:</strong> change it there, and watch it change here.</p>
+        <div class="try rise" id="try">
+          <div>
+            <label class="try-label" for="tryText">YOUR WORDS</label>
+            <input class="try-input" id="tryText" maxlength="40" value="Your words. Your colour." autocomplete="off" spellcheck="false">
+            <span class="try-label">COLOUR</span>
+            <div class="try-swatches" id="trySwatches">
+              <button class="try-sw on" type="button" style="background:#7FA7B8" data-c="#7FA7B8" aria-label="Blue"></button>
+              <button class="try-sw" type="button" style="background:#C08A82" data-c="#C08A82" aria-label="Clay"></button>
+              <button class="try-sw" type="button" style="background:#8DAE96" data-c="#8DAE96" aria-label="Green"></button>
+              <button class="try-sw" type="button" style="background:#A99BC4" data-c="#A99BC4" aria-label="Violet"></button>
+              <button class="try-sw" type="button" style="background:#C9AE7C" data-c="#C9AE7C" aria-label="Amber"></button>
+              <input class="try-pick" id="tryPick" type="color" value="#7FA7B8" aria-label="Any colour">
+            </div>
+            <div class="try-share">
+              <button class="try-share-btn" id="tryShare" type="button">Open on another device &#x2197;</button>
+              <div class="try-room" id="tryRoom" hidden>
+                <div class="try-qr" id="tryQr"></div>
+                <div class="try-room-info">
+                  <span class="try-label">SCAN WITH YOUR PHONE, OR OPEN</span>
+                  <a class="try-link" id="tryLink" target="_blank" rel="noopener"></a>
+                  <div class="try-presence" id="tryPresence">CONNECTING&hellip;</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="try-stage" id="tryStage" aria-live="polite">
+            <h3 class="try-head" id="tryHead">Your words. Your colour.</h3>
+            <div class="try-sub">AGENT-OHM // DESIGN SPACE</div>
+            <div class="try-receipt" id="tryReceipt">EDIT SOMETHING</div>
+          </div>
+        </div>
+        <div class="cta-row rise">
+          <a class="cta main" href="mailto:info@agent-ohm.com">Want it for your own pages? info@agent-ohm.com</a>
+          <a class="cta" href="/">Back to Agent-Ohm</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="wrap foot">
+      <span>AGENT-OHM © 2026 · AN AI THAT WORKS FOR YOU, ON COMPUTERS YOU OWN</span>
+      <span>AGENT-OHM.COM · <a href="mailto:info@agent-ohm.com">INFO@AGENT-OHM.COM</a></span>
+    </div>
+  </footer>
+
+  <script src="/kit/agent_ohm_kit.js"></script>
+  <script src="/kit/qrcode.js"></script>
+  <script>
+    // Ported verbatim from the live agent-ohm.com try-it (index.html, tab 1). Same room protocol as worker/index.js:
+    // /api/room/<6 chars>; {t:'edit', id, text, colour} relayed to the other screens; their {t:'ack'} = the measured round trip.
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var sec = $('try'), head = $('tryHead'), rec = $('tryReceipt'), txt = $('tryText'), pick = $('tryPick'), sw = $('trySwatches');
+      var n = 0, ws = null, screens = 1, joined = false, sent = {}, seq = 0;
+      function frame(cb) { requestAnimationFrame(function () { requestAnimationFrame(cb); }); }   // after the paint
+      function say(s) { rec.textContent = s; }
+
+      // the edit itself - the same two functions whether the edit came from this screen or the other one
+      function setText(v) { head.textContent = v || ' '; if (txt.value !== v) txt.value = v; }
+      function setInk(c) {
+        sec.style.setProperty('--try-ink', c); pick.value = c;
+        [].forEach.call(sw.querySelectorAll('.try-sw'), function (b) { b.classList.toggle('on', b.dataset.c === c); });
+      }
+
+      function local(apply, what, msg) {                 // measured: input -> the frame that shows it (this screen)
+        var t0 = performance.now(); apply();
+        frame(function () {
+          n += 1; say('EDIT ' + n + ' · ' + what + ' · ON SCREEN IN ' + (performance.now() - t0).toFixed(1) + ' MS · NO RELOAD');
+          if (ws && ws.readyState === 1 && screens > 1) {   // then the other screens: round trip, measured on the way back
+            var id = 'e' + (++seq); msg.t = 'edit'; msg.id = id; sent[id] = { t0: performance.now(), acks: 0, what: what };
+            ws.send(JSON.stringify(msg));
+          }
+        });
+      }
+      txt.addEventListener('input', function () { local(function () { setText(txt.value); }, 'TEXT', { text: txt.value }); });
+      sw.addEventListener('click', function (e) { var b = e.target.closest('.try-sw'); if (b) local(function () { setInk(b.dataset.c); }, 'COLOUR', { colour: b.dataset.c }); });
+      pick.addEventListener('input', function () { local(function () { setInk(pick.value); }, 'COLOUR', { colour: pick.value }); });
+
+      // the room: every screen with the same code sees every edit
+      function code() {
+        var a = new Uint8Array(6), s = '', abc = 'abcdefghijkmnpqrstuvwxyz23456789';
+        crypto.getRandomValues(a); for (var i = 0; i < 6; i++) s += abc[a[i] % abc.length]; return s;
+      }
+      function open(room) {
+        var link = location.origin + location.pathname + '?room=' + room + '#try';
+        $('tryRoom').hidden = false; $('tryLink').textContent = link; $('tryLink').href = link;
+        if (window.qrcode) { var q = qrcode(0, 'M'); q.addData(link); q.make(); $('tryQr').innerHTML = q.createSvgTag(4, 0); }
+        if (!/^https?:$/.test(location.protocol) || location.port === '9500') {
+          $('tryPresence').textContent = 'LIVE ROOMS RUN ON THE PUBLISHED SITE'; return;
+        }
+        ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/api/room/' + room);
+        ws.onmessage = function (ev) {
+          var m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+          if (m.t === 'presence') {
+            var grew = m.screens > screens; screens = m.screens;
+            $('tryPresence').textContent = screens > 1 ? 'LIVE · ' + screens + ' SCREENS IN ROOM ' + room.toUpperCase()
+                                                       : 'WAITING FOR THE OTHER SCREEN · ROOM ' + room.toUpperCase();
+            if (grew && joined) ws.send(JSON.stringify({ t: 'edit', id: 'sync', text: txt.value, colour: pick.value }));
+            joined = true;                                // the newest screen takes the room's state, never imposes its own
+          } else if (m.t === 'edit') {
+            if ('text' in m) setText(m.text);
+            if ('colour' in m) setInk(m.colour);
+            frame(function () {
+              ws.send(JSON.stringify({ t: 'ack', id: m.id, to: m.from }));
+              if (m.id !== 'sync') say('EDIT FROM THE OTHER SCREEN · LIVE');
+            });
+          } else if (m.t === 'ack' && sent[m.id]) {
+            var s = sent[m.id]; s.acks += 1;
+            say('EDIT ' + n + ' · ' + s.what + ' · ON ' + s.acks + ' OTHER SCREEN' + (s.acks > 1 ? 'S' : '') + ' IN '
+                + (performance.now() - s.t0).toFixed(0) + ' MS ROUND TRIP');
+          }
+        };
+        ws.onclose = function () { $('tryPresence').textContent = 'ROOM CLOSED · RELOAD TO REJOIN'; };
+      }
+      $('tryShare').addEventListener('click', function () {
+        if (ws) return;
+        var room = code(); history.replaceState(null, '', '?room=' + room + '#try'); open(room);
+      });
+      var r = new URLSearchParams(location.search).get('room');
+      if (r && /^[a-z0-9]{6}$/.test(r)) { open(r); setTimeout(function () { sec.scrollIntoView(); }, 600); }
+    })();
+  </script>
+</body>
+</html>

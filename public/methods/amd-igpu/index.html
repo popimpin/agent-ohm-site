@@ -1,7 +1,12 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ROCm on an AMD iGPU · Agent Ohm</title>
-<meta name="description" content="Why ROCm saw 7.6 GiB on a 16 GB-VRAM mini PC, the one boot setting that fixes it, and which backend finishes first.">
-<style>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ROCm or Vulkan on an AMD iGPU — Agent-Ohm</title>
+  <!-- Agent-Ohm site, 'Quiet path' design (2026-11-07). Built in Design Space; shared look in /kit/. -->
+  <link rel="stylesheet" href="/kit/agent_ohm_kit.css">
+  <style>
   :root { --bg:#050508; --panel:#0b0e14; --line:rgba(255,255,255,.1); --tx:#f1f5f9; --mu:#9aa3ad; --cy:#00f0ff; --am:#f5b83d; --rd:#ff5468;
           --display:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; --mono:'JetBrains Mono','Fira Code',Consolas,monospace; }
   * { box-sizing:border-box; }
@@ -35,16 +40,48 @@
   ul.data li { font:14px var(--mono); margin:4px 0; }
   footer { padding:48px 0 80px; color:var(--mu); font:13px var(--mono); }
   @media (max-width:760px) { .facts { grid-template-columns:repeat(2,1fr); } .two { grid-template-columns:1fr; } .code { padding:48px 14px 14px; } }
-</style></head>
+</style>
+  <style>
+  /* Agent-Ohm kit re-skin (2026-11-07): the page's own variables pointed at the daylight kit. Content unchanged. */
+  :root { --bg: var(--color-surface); --panel: #fff; --line: var(--color-border); --tx: var(--color-text); --mu: var(--color-text-faint);
+    --cy: var(--color-primary); --am: #B7791F; --rd: #B4372E; --display: var(--font-body); --mono: var(--font-data); }
+  body { background: var(--color-surface); color: var(--color-text); font-family: var(--font-body); }
+  .wrap.article { max-width: 1040px; }
+  .wrap.article h1, .wrap.article h2 { font-family: var(--font-heading); font-weight: 400; letter-spacing: -.015em; }
+  .wrap.article h1 { line-height: 1.02; }
+  .wrap.article h1 b, .wrap.article h1 i { font-weight: 400; }
+  .wrap.article p { color: var(--color-text-dim); }
+  .wrap.article p.lead { color: var(--color-text); }
+  .wrap.article .fact { box-shadow: var(--shadow-1); }
+  .wrap.article figure img, .wrap.article figure video { box-shadow: var(--shadow-2); }
+  .plain { margin: 36px 0 0; padding: 22px 24px; border-radius: var(--radius-base); background: var(--color-primary-soft);
+    border: 1px solid #CFE0D5; }
+  .plain b { display: block; font-family: var(--font-data); font-size: 11px; letter-spacing: .14em; color: var(--color-primary); margin-bottom: 8px; }
+  .plain p { margin: 0; max-width: none; color: var(--color-text) !important; font-size: var(--fs-3); }
+</style>
+</head>
 <body>
-<div class="wrap">
-<nav class="top"><a href="/">&larr; AGENT OHM</a> &nbsp;·&nbsp; <a href="/#work">THE POSTS</a> &nbsp;·&nbsp; <a href="/methods/post03/">PART 1</a></nav>
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="logo" href="/">Agent-Ohm</a>
+      <nav class="top-links">
+        <a class="pill" href="/">Home</a>
+        <a class="pill" href="/posts/">The posts</a>
+        <a class="pill solid" href="https://github.com/popimpin/agent-ohm-site">Read the code</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap article">
+
+
 
 <header>
   <p class="tag">Parts 2 + 3 · measured 2026-10-28</p>
   <h1><b>ROCm</b> or <i>Vulkan</i> on an AMD iGPU: the fix, and the race.</h1>
   <p class="lead">My mini PC said a 12B model didn't fit. ROCm could only see 7.6 GiB of a machine
   with 16 GB set aside for graphics. One kernel boot setting fixed it - and then I timed both backends.</p>
+<div class="plain"><b>IN PLAIN WORDS</b><p>Our mini PC said an AI model was too big for it. It wasn't: the software was only looking at part of the memory its graphics chip can use. One setting fixed that. Then we timed the two ways of running AI on AMD graphics to see which one is faster. Every number and command is below.</p></div>
+
   <div class="facts">
     <div class="fact"><b>7.6 → 12</b><span>GiB ROCm can use, one boot setting</span></div>
     <div class="fact"><b>23.6</b><span>GiB Vulkan saw all along</span></div>
@@ -100,8 +137,8 @@
   the memory's limit. The last column is computed, not measured: the answer length (tokens) past which Vulkan's faster writing wins
   back the time ROCm saved reading.</p>
   <div class="two">
-    <figure><img src="reading.png" alt="prompt reading speed by length, ROCm vs Vulkan"><figcaption>reading speed (the post's chart)</figcaption></figure>
-    <figure><img src="finish.png" alt="total time by prompt length, ROCm vs Vulkan"><figcaption>who finishes first</figcaption></figure>
+    <figure><img src="/methods/amd-igpu/reading.png" alt="prompt reading speed by length, ROCm vs Vulkan"><figcaption>reading speed (the post's chart)</figcaption></figure>
+    <figure><img src="/methods/amd-igpu/finish.png" alt="total time by prompt length, ROCm vs Vulkan"><figcaption>who finishes first</figcaption></figure>
   </div>
   <p><b>The rule on this machine:</b> agents (big context, short replies) → ROCm. Long chat answers → Vulkan, which also needs no reboot.
   One model, one machine - test yours.</p>
@@ -124,7 +161,10 @@
 <section>
   <p class="tag">The data</p><h2>Every number on this page</h2>
   <p>mini PC, AMD Radeon 890M integrated graphics (RADV GFX1150), 32 GB RAM with 16 GB set aside as video memory, no swap; Linux kernel 6.12; Ollama 0.30.10; model gemma4:12b (Q4). Derived from the take logs (which carry local addresses, so they are not published as-is):</p>
-  <ul class="data"><li><a href="data/results.json">results.json</a></li></ul>
+  <ul class="data"><li><a href="/methods/amd-igpu/data/results.json">results.json</a></li></ul>
 </section>
-<footer>Agent Ohm · Parts 2 + 3 · measured 2026-10-28</footer>
-</div></body></html>
+<footer>Agent-Ohm · Parts 2 + 3 · measured 2026-10-28</footer>
+
+  </div>
+</body>
+</html>

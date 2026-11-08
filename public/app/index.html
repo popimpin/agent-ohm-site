@@ -1,89 +1,177 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The app · Agent Ohm</title>
-<meta name="description" content="The Agent Ohm phone app: its own node in the mesh, one tap to any machine, and approvals that are never blind and signed in hardware.">
-<style>
-  :root { --bg:#050508; --panel:#0b0e14; --line:rgba(255,255,255,.1); --tx:#f1f5f9; --mu:#9aa3ad; --cy:#00f0ff; --am:#f5b83d; --rd:#ff4d5e;
-          --display:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; --mono:'JetBrains Mono','Fira Code',Consolas,monospace; }
-  * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--tx); font:17px/1.6 var(--display); }
-  a { color:var(--cy); font:700 12px var(--mono); letter-spacing:.1em; text-decoration:none; } a:hover { text-decoration:underline; }
-  .wrap { max-width:1040px; margin:0 auto; padding:0 24px; }
-  nav.top { padding:22px 0; border-bottom:1px solid var(--line); } nav.top a { color:var(--mu); }
-  h1 { font-weight:900; font-size:clamp(36px,6vw,64px); line-height:1; letter-spacing:-.03em; margin:56px 0 12px; }
-  h2 { font-weight:900; font-size:clamp(24px,3.4vw,32px); letter-spacing:-.02em; margin:56px 0 12px; }
-  .lead { color:#c8ced6; max-width:680px; margin:0 0 32px; font-size:19px; }
-  p { max-width:680px; } b { color:#fff; }
-  .tag { font:12px var(--mono); letter-spacing:.14em; color:var(--cy); text-transform:uppercase; margin:0 0 6px; }
-  .tag.fail { color:var(--rd); } .tag.ok { color:#3ddc97; }
-  figure { margin:24px 0; } figcaption { color:var(--mu); font:13px/1.5 var(--mono); margin-top:10px; max-width:760px; }
-  video, figure img { width:100%; display:block; border-radius:12px; border:1px solid var(--line); background:var(--panel); }
-  .pair { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-  .steps { list-style:none; padding:0; margin:24px 0; counter-reset:s; display:grid; gap:12px; }
-  .steps li { counter-increment:s; display:grid; grid-template-columns:44px 1fr; gap:14px; padding:16px 18px;
-              background:var(--panel); border:1px solid var(--line); border-radius:12px; }
-  .steps li::before { content:counter(s, decimal-leading-zero); font:700 14px var(--mono); color:var(--cy); padding-top:3px; }
-  .steps li.fail::before { color:var(--rd); } .steps b { display:block; margin-bottom:2px; }
-  .steps span { color:#c8ced6; font-size:15px; }
-  .jump { display:inline-block; margin-top:10px; padding:8px 12px; border:1px solid var(--line); border-radius:8px; cursor:pointer;
-          background:none; color:var(--rd); font:700 12px var(--mono); letter-spacing:.1em; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin:24px 0; }
-  .cell { padding:18px; background:var(--panel); border:1px solid var(--line); border-radius:12px; }
-  .cell b { display:block; margin-bottom:4px; } .cell span { color:#c8ced6; font-size:15px; }
-  .note { border-left:3px solid var(--am); padding:4px 0 4px 16px; color:#c8ced6; }
-  footer { margin-top:64px; padding:48px 0 80px; color:var(--mu); font:13px var(--mono); border-top:1px solid var(--line); }
-  @media (max-width:720px) { .pair { grid-template-columns:1fr; } body { font-size:16px; } }
-</style></head>
-<body><div class="wrap">
-<nav class="top"><a href="/">&larr; AGENT OHM</a> &nbsp;·&nbsp; <a href="/orchestration/">WHEN IT BREAKS</a> &nbsp;·&nbsp; <a href="/app/">THE APP</a> &nbsp;·&nbsp; <a href="/posts/">ALL POSTS</a></nav>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent-Ohm on your phone</title>
+  <meta name="description" content="Agent-Ohm on your phone: your home screen becomes the remote for your computers. It buzzes when an agent needs you, and nothing goes out in your name until your fingerprint says yes.">
+  <!-- Agent-Ohm site, 'Quiet path' design (2026-11-07). Built in Design Space; shared look in /kit/. -->
+  <link rel="stylesheet" href="/kit/agent_ohm_kit.css">
+  <style>
+    .askmock { background: #1E1710; border: 1.5px solid var(--color-accent); border-radius: 18px; padding: 16px; color: #fff;
+      font-family: var(--font-data); font-size: 13px; box-shadow: var(--shadow-3); }
+    .askmock .h { color: var(--color-accent); font-size: 11px; letter-spacing: .1em; font-weight: 600; margin-bottom: 10px; }
+    .askmock .q { background: rgba(0,0,0,.35); border-radius: 10px; padding: 12px; line-height: 1.5; }
+    .askmock .btns { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .askmock .btns span { padding: 10px 14px; border-radius: 12px; background: #2A2723; font-family: var(--font-body); font-size: 13px; font-weight: 600; }
+    .askmock .btns span:first-child { background: #16A34A; }
+  </style>
+</head>
+<body>
 
-<p class="tag">THE PHONE APP // ONE PHONE, THREE COMPUTERS</p>
-<h1>The app</h1>
-<p class="lead">The phone is not a remote control for one PC. It is its own node in the mesh: it carries intent in, and it is
-where a human says yes. The work runs on the computers; the decisions stay in your hand.</p>
-<figure>
-  <img src="app_unfolded.jpg" alt="The Ohm app on a folding phone, unfolded: the mesh on the left, a live terminal on the right" loading="lazy">
-  <figcaption>The app unfolded, from the phone's own screen recording. Left: the three computers as coloured pills and
-  everything the agents do, the same feed the PC console shows. Right: a live terminal on any machine in the mesh - here,
-  the coding agent on the PC, running with its permission prompts switched off.</figcaption>
-</figure>
-<p class="note">Look at the red line in that terminal: <b>bypass permissions on</b>. That is not a slip. The agent in it is
-building this app, and its builder trusts it enough to let it work without asking, from a phone, away from the PC.
-That trust was earned the slow way - receipts, guards, failures shown and fixed in public - and it is a setting a human
-chose, not a default. What still asks, every time, is anything that goes out into the world under his name: the card below.</p>
-<p class="note">And bypass did not open the door. Before the phone could reach that terminal at all, it needed a fingerprint.
-The audit log on the machine that guards the door - each entry hashed into the next, so none can be quietly edited -
-records it at 13:08:12 that day: <b>terminal attach, signed, key: StrongBox</b>, three and a half minutes before this
-recording began. Bypass is the agent's setting. The fingerprint is the human's, and it is never switched off.</p>
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="logo" href="/">Agent-Ohm</a>
+      <nav class="top-links">
+        <a class="pill" href="/">Home</a>
+        <a class="pill" href="/design-space/#try">Try it</a>
+        <a class="pill solid" href="https://github.com/popimpin/agent-ohm-site">Read the code</a>
+      </nav>
+    </div>
+  </header>
 
-<h2>What it does</h2>
-<div class="grid">
-  <div class="cell"><b>Reaches every seat</b><span>A terminal on any of the three computers, an agent already running on a
-  PC, or the agents themselves - from the same screen.</span></div>
-  <div class="cell"><b>One tap, one fingerprint</b><span>Open your agent the way you open a website. It reuses the session that is
-  running instead of starting another; machine pickers are the escape hatch, not the path.</span></div>
-  <div class="cell"><b>The computers are the hands</b><span>The phone sends intent. A mini PC in the mesh does the work and reaches
-  the other machines, so nothing heavy runs on the phone.</span></div>
-  <div class="cell"><b>Colour is identity</b><span>Every agent and every machine has its own colour, so who is doing what reads at
-  a glance instead of in a log.</span></div>
-</div>
+  <div class="wrap layout">
+    <aside class="rail" aria-label="Your path through this page">
+      <div class="rail-label">THE PHONE APP</div>
+      <ol>
+        <span class="fill" id="railFill"></span>
+        <li><a href="#what"><b>STEP 1</b>What is it?</a></li>
+        <li><a href="#do"><b>STEP 2</b>What does it do?</a></li>
+        <li><a href="#trust"><b>STEP 3</b>Is my phone safe?</a></li>
+        <li><a href="#phone"><b>STEP 4</b>Is it still my phone?</a></li>
+        <li><a href="#proof"><b>STEP 5</b>Show me.</a></li>
+        <li><a href="#start"><b>STEP 6</b>Can I have it?</a></li>
+      </ol>
+    </aside>
 
-<h2>Nothing runs until a thumb says so</h2>
-<figure>
-  <img src="approval_card.jpg" alt="An approval card: post this video to X, publicly, now - with the caption, the video and the address, then Decline or Approve with the phone key" loading="lazy">
-  <figcaption>The real card for Agent Ohm's first post on X. Before the button: what it will do, where, with exactly which
-  video and caption. Approved on the phone, then posted.</figcaption>
-</figure>
-<div class="grid">
-  <div class="cell"><b>Never a blind yes</b><span>An approval only means something if you can see what you are approving. Every
-  card shows why the agent stopped, the exact action, where it will happen, and its own reasoning - before any button.</span></div>
-  <div class="cell"><b>Signed in the phone's security chip</b><span>A yes is a signature from a key that never leaves the phone's
-  hardware security chip. The receiving side checks which kind of key signed it and refuses anything weaker.</span></div>
-  <div class="cell"><b>Phone away, keyboard at the desk</b><span>When the phone isn't connected, the same question appears as a
-  dialog at the PC instead of waiting on a phone in another room. A human yes is still required either way.</span></div>
-</div>
+    <main>
+      <div class="mobar" aria-hidden="true"><b id="moStep">STEP 1 OF 6</b><span id="moQ">What is it?</span><span class="bar"><i id="moFill"></i></span></div>
 
-<p class="note">Honest status: this is a working build on one phone - a Pixel 10 Pro Fold - installed by hand. It is not in an
-app store. Everything on this page is what that build does today, recorded on the phone itself.</p>
+      <!-- STEP 1 -->
+      <section class="step" id="what" data-q="What is it?">
+        <div class="eyebrow rise">Step 1 <span class="q">· What is it?</span></div>
+        <h1 class="rise">Your phone becomes the remote for your computers.</h1>
+        <p class="lead rise">
+          Agent-Ohm's phone app is a home screen. From it you can see which of your computers are on, give them a job,
+          and say yes or no when an agent needs you. <strong>It works on mobile data, from anywhere, not just on your home Wi-Fi.</strong>
+        </p>
+        <div class="screen rise">
+          <div class="screen-bar"><span class="dots"></span><span>PIXEL 10 PRO FOLD // MOBILE DATA, WI-FI OFF // UNEDITED</span></div>
+          <video controls playsinline preload="none" poster="/media/site/cellular_poster.jpg" src="/app/media/cellular_receipt_45s.mp4"></video>
+        </div>
+        <p class="caption">A 45-second screen recording on mobile data with Wi-Fi switched off: the phone sends a job to a computer at home and watches it happen.</p>
+      </section>
 
-<footer>Agent Ohm · <a href="https://github.com/popimpin/agent-ohm-site" target="_blank" rel="noopener">this site's source</a> · PolyForm Noncommercial 1.0.0</footer>
-</div></body></html>
+      <!-- STEP 2 -->
+      <section class="step" id="do" data-q="What does it do?">
+        <div class="eyebrow rise">Step 2 <span class="q">· What does it do?</span></div>
+        <h2 class="rise">It buzzes when an agent needs you.</h2>
+        <p class="lead rise">Agents get stuck when nobody is at the desk to answer. Agent-Ohm sends the question to your phone instead.
+          <strong>It beeps, it buzzes, and the card shows you exactly what it's asking.</strong></p>
+
+        <div class="job rise">
+          <div class="job-media">
+            <div class="phone" style="max-width:300px"><img src="/media/site/phone_ask_card.jpg"
+              alt="A real ask on the phone: two links looked the same, so the agent asked which one, with a picture of the page and each choice numbered."></div>
+          </div>
+          <div>
+            <div class="n">WHEN IT ISN'T SURE</div>
+            <h3>"Which one did you mean?"</h3>
+            <p>A real card from 7 Nov. Two links looked the same, so the agent asked, with a picture of the page and each choice
+              numbered to match the buttons. One tap, and it clicked that link and checked the right page opened.</p>
+          </div>
+        </div>
+
+        <div class="job flip rise">
+          <div class="job-media">
+            <div class="askmock" role="img" aria-label="An example permission card">
+              <div class="h">⚡ AN AGENT IS ASKING</div>
+              <div class="q">Allow it to run a command on your PC?</div>
+              <div class="btns"><span>Allow</span><span>Always allow</span><span>Deny</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="n">WHEN IT NEEDS PERMISSION</div>
+            <h3>Allow, or deny, from wherever you are.</h3>
+            <p>When an agent on your computer hits something it needs permission for, the same card shows real buttons.
+              Your tap goes straight to that computer, so the job carries on without you walking back to the desk.</p>
+          </div>
+        </div>
+
+        <div class="also">
+          <div class="card rise"><div class="tag">AT A GLANCE</div><h4>See which computers are on.</h4>
+            <p>The top of the home screen shows each machine: green when it's on, hollow when it's off.</p></div>
+          <div class="card rise"><div class="tag">GIVE IT A JOB</div><h4>Type a job from your pocket.</h4>
+            <p>Send a job to any of your computers and watch the answer come back to the phone as it's written.</p></div>
+          <div class="card rise"><div class="tag">APPROVE</div><h4>Say yes before anything goes out.</h4>
+            <p>Posts, pages and anything else in your name wait for your fingerprint on the phone.</p></div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" id="trust" data-q="Is my phone safe?">
+        <div class="eyebrow rise">Step 3 <span class="q">· Is my phone safe?</span></div>
+        <h2 class="rise">Your fingerprint is the key. It never leaves the phone.</h2>
+        <p class="lead rise">The app doesn't come with a master password inside it. It only joins your computers after you say yes at your PC
+          and touch the fingerprint sensor.</p>
+        <ol class="promises rise" style="margin-top:28px">
+          <li><div><b>Paired by you, at your desk.</b><span>The phone shows a 6-digit code. You approve it at your PC, then confirm with your fingerprint. Only then can it talk to your computers.</span></div></li>
+          <li><div><b>Signed with a key locked in the phone's security chip.</b><span>Your approvals are signed by a key that stays in the phone's hardware. It can't be copied out.</span></div></li>
+          <li><div><b>Android's own lock screen stays in charge.</b><span>Agent-Ohm never draws over your lock screen. Lock your phone and everything waits for your fingerprint or PIN, the same as always.</span></div></li>
+          <li><div><b>Nothing private on the notification.</b><span>While the phone is locked, the alert only says an agent needs you. The question shows after you unlock.</span></div></li>
+        </ol>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" id="phone" data-q="Is it still my phone?">
+        <div class="eyebrow rise">Step 4 <span class="q">· Is it still my phone?</span></div>
+        <h2 class="rise">Yes. Calls, apps and the camera all still work.</h2>
+        <p class="lead rise">Agent-Ohm replaces your home screen, not your phone. Your dialer, messages, camera and every app are still there:
+          swipe up for the full app drawer. Press the home button and your computers are one look away.</p>
+        <figure class="rise" style="margin:36px 0 0; max-width:300px">
+          <div class="phone"><img src="/media/site/phone_home.jpg"
+            alt="The Agent-Ohm home screen: which computers are on, Dialer and Messages, the usual app dock, and a search bar that also opens every app."></div>
+          <figcaption class="phone-cap">The Agent-Ohm home screen on 7 Nov: which computers are on at the top, Dialer and Messages,
+            the usual app dock, and "swipe up for apps" for everything else.</figcaption>
+        </figure>
+      </section>
+
+      <!-- STEP 5 -->
+      <section class="step" id="proof" data-q="Show me.">
+        <div class="eyebrow rise">Step 5 <span class="q">· Show me.</span></div>
+        <h2 class="rise">What to look for in the recording.</h2>
+        <div class="grid g3">
+          <div class="card rise"><div class="tag">01 · 1:55 PM, 6 NOV</div><h4>Wi-Fi is off</h4>
+            <p>The phone pulls down its status shade: mobile data on, the Wi-Fi tile off. Everything after this goes over mobile data.</p></div>
+          <div class="card rise"><div class="tag">02 · LIVE</div><h4>A job typed on the phone</h4>
+            <p>A job is typed on the phone and sent to the PC at home. The answer streams back to the phone as it's written.</p></div>
+          <div class="card rise"><div class="tag">03 · ON THE PC</div><h4>The PC's own record</h4>
+            <p>The PC's log shows the job arriving from the phone (reference DLV-65a5dbad7a) and finishing there.</p></div>
+        </div>
+        <p class="footnote">Recorded on a Pixel 10 Pro Fold on 6 Nov 2026. Nothing cut.</p>
+      </section>
+
+      <!-- STEP 6 -->
+      <section class="step start" id="start" data-q="Can I have it?">
+        <div class="eyebrow rise">Step 6 <span class="q">· Can I have it?</span></div>
+        <h2 class="rise">It runs on our own phone every day. Want it on yours?</h2>
+        <p class="lead rise">The phone app is a working build we use daily. If you'd like to try it, get in touch.</p>
+        <div class="cta-row rise">
+          <a class="cta main" href="mailto:info@agent-ohm.com">info@agent-ohm.com</a>
+          <a class="cta" href="/">Back to Agent-Ohm</a>
+          <a class="cta" href="/orchestration/">When a take breaks</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="wrap foot">
+      <span>AGENT-OHM © 2026 · AN AI THAT WORKS FOR YOU, ON COMPUTERS YOU OWN</span>
+      <span>AGENT-OHM.COM · <a href="mailto:info@agent-ohm.com">INFO@AGENT-OHM.COM</a></span>
+    </div>
+  </footer>
+
+  <script src="/kit/agent_ohm_kit.js"></script>
+</body>
+</html>
