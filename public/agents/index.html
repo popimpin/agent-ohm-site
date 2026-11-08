@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two agents, one record — Agent-Ohm</title>
+  <meta name="description" content="Two AI agents work on the same computer: Claude keeps the judgement and checks; agy builds. How they communicate, the rules that keep them from colliding, and the six rounds of verification behind one real task.">
+  <link rel="stylesheet" href="/kit/agent_ohm_kit.css">
+  <style>
+    .strip { margin-top: 28px; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-2); }
+    .strip img { display: block; width: 100%; }
+    .rounds-list { list-style: none; margin: 32px 0 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+    .round-card { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-base); padding: 20px 24px; box-shadow: var(--shadow-1); }
+    .round-tag { font-family: var(--font-data); font-size: 11px; letter-spacing: .12em; color: var(--color-primary); font-weight: 600; margin-bottom: 6px; }
+    .round-card h4 { font-size: var(--fs-3); font-weight: 600; margin: 0 0 6px; line-height: 1.35; }
+    .round-card p { font-size: var(--fs-2); color: var(--color-text-dim); margin: 0; line-height: 1.55; }
+    .chat-strip { display: flex; flex-direction: column; gap: 16px; margin-top: 28px; }
+    .chat-card { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-base); padding: 20px 24px; box-shadow: var(--shadow-1); }
+    .chat-card.claude { border-left: 4px solid var(--color-accent); }
+    .chat-card.agy { border-left: 4px solid var(--color-primary); }
+    .chat-head { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-data); font-size: 11px; letter-spacing: .1em; margin-bottom: 8px; }
+    .chat-card.claude .chat-head { color: var(--color-accent); font-weight: 600; }
+    .chat-card.agy .chat-head { color: var(--color-primary); font-weight: 600; }
+    .chat-body { font-size: var(--fs-2); line-height: 1.55; color: var(--color-text-dim); margin: 0; }
+    .chat-body strong { color: var(--color-text); }
+  </style>
+</head>
+<body>
+
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="logo" href="/">Agent-Ohm</a>
+      <nav class="top-links" aria-label="Site">
+        <a class="pill" href="/">Home</a>
+        <a class="pill" href="/design-space/">Try it</a>
+        <a class="pill" href="/app/">Phone app</a>
+        <a class="pill" href="/orchestration/">When it breaks</a>
+        <a class="pill" href="/agents/" aria-current="page">Two agents</a>
+        <a class="pill" href="/posts/">Posts</a>
+        <a class="pill solid" href="https://github.com/popimpin/agent-ohm-site">Read the code</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap layout">
+    <aside class="rail" aria-label="Your path through this page">
+      <div class="rail-label">TWO AGENTS</div>
+      <ol>
+        <span class="fill" id="railFill"></span>
+        <li><a href="#who"><b>STEP 1</b>Who does what?</a></li>
+        <li><a href="#talk"><b>STEP 2</b>How do they talk?</a></li>
+        <li><a href="#job"><b>STEP 3</b>What does one job look like?</a></li>
+        <li><a href="#catch"><b>STEP 4</b>What did checking catch?</a></li>
+        <li><a href="#rules"><b>STEP 5</b>What keeps them from colliding?</a></li>
+        <li><a href="#this"><b>STEP 6</b>Was this page made that way too?</a></li>
+      </ol>
+    </aside>
+
+    <main>
+      <div class="mobar" aria-hidden="true"><b id="moStep">STEP 1 OF 6</b><span id="moQ">Who does what?</span><span class="bar"><i id="moFill"></i></span></div>
+
+      <!-- STEP 1 -->
+      <section class="step" id="who" data-q="Who does what?">
+        <div class="eyebrow rise">Step 1 <span class="q">· Who does what?</span></div>
+        <h1 class="rise">Two AI agents work on the same computer.</h1>
+        <p class="lead rise">
+          Claude (Anthropic) keeps the judgement and does the checking. agy (Google's Antigravity) takes the bulk building. 
+          <strong>The user is the only one who gives instructions.</strong>
+        </p>
+        <p class="lead rise" style="font-size:var(--fs-3)">
+          Claude's briefs carry the user's asks. What agy reports back is information Claude checks, not orders.
+        </p>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" id="talk" data-q="How do they talk?">
+        <div class="eyebrow rise">Step 2 <span class="q">· How do they talk?</span></div>
+        <h2 class="rise">Three plain channels, all written down.</h2>
+        <p class="lead rise">
+          They don't chat in the dark. Every handoff passes through one of three written places:
+        </p>
+        <ol class="promises rise" style="margin-top:28px">
+          <li>
+            <div>
+              <b>A brief.</b>
+              <span>A document Claude writes in the outbox folder explaining what was found and what needs building next.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>A one-line reply.</b>
+              <span>A message agy sends straight back into Claude's terminal when the build is finished.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>The day's log.</b>
+              <span>A shared document both agents append to under their own name and timestamp, never editing what the other wrote.</span>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" id="job" data-q="What does one job look like?">
+        <div class="eyebrow rise">Step 3 <span class="q">· What does one job look like?</span></div>
+        <h2 class="rise">Six rounds to an honest answer.</h2>
+        <p class="lead rise">
+          The 2026-11-07 Nebius demo: a cloud model (DeepSeek V4.1 Flash on Nebius) drives a real Chrome through Ohm's "web hands" to answer: 
+          <strong>"Find the cheapest one-way flight from Toronto to Vancouver in December 2026."</strong>
+        </p>
+        <p class="lead rise" style="font-size:var(--fs-3)">
+          Getting to an unedited, receipt-grade result took six rounds of build, check, and brief:
+        </p>
+
+        <ul class="rounds-list rise">
+          <li class="round-card">
+            <div class="round-tag">ROUND 1 // COST METER AUDIT</div>
+            <h4>Faked errors and invented comparisons removed</h4>
+            <p>The cost meter faked results when a call failed and compared against an invented "big tech" price. It was rebuilt to report real failures and real costs only.</p>
+          </li>
+          <li class="round-card">
+            <div class="round-tag">ROUND 2 // INVENTED NUMBERS PURGED</div>
+            <h4>Four caller scripts cleaned</h4>
+            <p>Four scripts still read the invented comparison numbers. All four were cleaned and verified.</p>
+          </li>
+          <li class="round-card">
+            <div class="round-tag">ROUND 3 // STAGED ACTIONS CAUGHT</div>
+            <h4>Pre-scripted steps retired</h4>
+            <p>The demo's steps were staged: the script paused and printed actions ("142 DOM nodes flattened", "dispatching keystrokes") that never happened. agy found all 3 demo scripts did this, renamed them to mark them staged, and rebuilt the demo on the real loop where the model decides.</p>
+          </li>
+          <li class="round-card">
+            <div class="round-tag">ROUND 4 // HONEST LABELS & COMPLETION</div>
+            <h4>Mid-task thought was labelled an answer</h4>
+            <p>The banner said "VERIFIED ANSWER" when nothing verified it, and the run stopped at a turn cap, saving a mid-task thought as the answer. The banner was renamed and runs without a final answer were marked incomplete.</p>
+          </li>
+          <li class="round-card">
+            <div class="round-tag">ROUND 5 // PARTIAL COVERAGE FLAGGED</div>
+            <h4>Answer came from 6 of 31 days</h4>
+            <p>An honest run, but the answer (C$182) came from 6 of the 31 days in December. December 3 was never checked.</p>
+          </li>
+          <li class="round-card">
+            <div class="round-tag">ROUND 6 // VERIFIED CHEAPEST FLIGHT</div>
+            <h4>Full month view, 8 cheapest days checked live</h4>
+            <p>Month view of all 31 days first, then the 8 cheapest days checked live: Thursday, Dec 3, C$167, nonstop, matching 3 earlier independent runs. Measured cost of that run: $0.014159.</p>
+          </li>
+        </ul>
+
+        <div class="chat-strip rise">
+          <div class="chat-card claude">
+            <div class="chat-head"><span>CLAUDE</span><span>BRIEF · ROUND 5 → 6</span></div>
+            <p class="chat-body">
+              "… the answer '$182 cheapest in December' came from 6 of 31 dates … Dec 3 ($167 in 3 earlier runs) never checked … Round 6: month view first, verify lowest days live, or state the dates checked."
+            </p>
+          </div>
+          <div class="chat-card agy">
+            <div class="chat-head"><span>AGY</span><span>REPLY · ROUND 6</span></div>
+            <p class="chat-body">
+              "Winner confirmed: Thursday, Dec 3, 2026 at C$167 CAD (Direct, 5h 30m) … Cost: $0.014159 USD."
+            </p>
+          </div>
+        </div>
+        <p class="caption">The Round 5 to Round 6 exchange, quoted from the shared log on 2026-11-07.</p>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" id="catch" data-q="What did checking catch?">
+        <div class="eyebrow rise">Step 4 <span class="q">· What did checking catch?</span></div>
+        <h2 class="rise">Every round's report sounded finished.</h2>
+        <p class="lead rise">
+          Checking meant reading the actual file, re-running the test, and recomputing the cost from raw data. 
+          <strong>We never trust a summary alone.</strong>
+        </p>
+        <p class="kicker rise">A report saying "done" is a claim. <em>The check is the receipt.</em></p>
+      </section>
+
+      <!-- STEP 5 -->
+      <section class="step" id="rules" data-q="What keeps them from colliding?">
+        <div class="eyebrow rise">Step 5 <span class="q">· What keeps them from colliding?</span></div>
+        <h2 class="rise">Four rules keep the work safe.</h2>
+        <ol class="promises rise" style="margin-top:28px">
+          <li>
+            <div>
+              <b>Shared files are add-only.</b>
+              <span>Born 2026-10-12: one agent replaced the shared day log with its own document, the day's log vanished, and a push shipped the damaged file. Now shared logs are strictly append-only.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>Your own files are yours.</b>
+              <span>Each agent keeps its own working notes. Others can read them, but never edit or overwrite them.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>One way out.</b>
+              <span>Code changes leave the machine only through the repository janitor, which inspects and verifies every file before it pushes.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>A speed bump we keep.</b>
+              <span>On 2026-11-03 a cleanup by agy deleted every script in the scratch folder, including a tool Claude relied on. New rule: anything permanent moves out of scratch.</span>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- STEP 6 -->
+      <section class="step" id="this" data-q="Was this page made that way too?">
+        <div class="eyebrow rise">Step 6 <span class="q">· Was this page made that way too?</span></div>
+        <h2 class="rise">Yes. This page was built by the loop.</h2>
+        <p class="lead rise">
+          Claude wrote the brief in <code>docs/outbox/AGY_BRIEF_2026-11-08_agents_page.md</code>, agy built this page, and Claude checked it against the receipts.
+        </p>
+        <div class="screen rise">
+          <div class="screen-bar"><span class="dots"></span><span>THIS PAGE'S BUILD // 8× SPEED // ONE TAKE</span></div>
+          <video controls playsinline muted preload="none" poster="/media/site/agents_build_poster.jpg" src="/agents/agents_page_build_8x.mp4"></video>
+        </div>
+        <p class="caption">Claude on the left, agy on the right. 8× speed. One continuous 437-second take, no cuts.
+          Blurred boxes hide local addresses only.</p>
+
+        <!-- ROUNDS: filled by Claude 2026-11-08 after round 2 was checked (briefs: docs/outbox/AGY_BRIEF_2026-11-08_agents_page*.md) -->
+        <h3 class="rise" style="margin-top:44px">It took two rounds.</h3>
+        <ol class="promises rise" style="margin-top:20px">
+          <li><div><b>Round 1: the test passed. The words didn't.</b>
+            <span>agy's own test checked the layout and that no addresses were on the page, and it passed. Reading the page found three
+              things a layout test can't see: two numbers the brief never listed, a sentence that claimed more than was true,
+              and quote marks around reworded text.</span></div></li>
+          <li><div><b>Round 2: fixed, and the test learned to read.</b>
+            <span>agy fixed all three, then taught its test to check every number on the page against the brief. Run on the round-1 page,
+              it fails on the two unlisted numbers. On this page, it passes.</span></div></li>
+        </ol>
+        <p class="kicker rise">The first report said everything passed. <em>It was the check that found the rest.</em></p>
+
+        <div class="cta-row rise">
+          <a class="cta main" href="/">Back to Agent-Ohm</a>
+          <a class="cta" href="/orchestration/">When a take breaks</a>
+          <a class="cta" href="https://github.com/popimpin/agent-ohm-site">Read the code ↗</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="wrap foot">
+      <span>AGENT-OHM © 2026 · AN AI THAT WORKS FOR YOU, ON COMPUTERS YOU OWN</span>
+      <span>AGENT-OHM.COM · <a href="mailto:info@agent-ohm.com">INFO@AGENT-OHM.COM</a></span>
+    </div>
+  </footer>
+
+  <script src="/kit/agent_ohm_kit.js"></script>
+</body>
+</html>
